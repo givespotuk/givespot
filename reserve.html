@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserve Item - GiveSpot</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <span class="heart-icon">❤</span>
+                    <span class="logo-text">GiveSpot</span>
+                </a>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="browse.html" class="nav-link">Browse</a>
+                    <a href="charity/register.html" class="nav-link">For Charities</a>
+                    <a href="charity/login.html" class="nav-link">Login</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="reservation-section">
+        <div class="container">
+            <!-- Back Button -->
+            <div class="back-navigation">
+                <button onclick="goBack()" class="back-btn">
+                    ← Back to Browse
+                </button>
+            </div>
+
+            <!-- Reservation Content -->
+            <div class="reservation-content">
+                <!-- Item Details Section -->
+                <div class="item-preview" id="itemPreview">
+                    <div class="loading-placeholder">
+                        <div class="loading-spinner"></div>
+                        <p>Loading item details...</p>
+                    </div>
+                </div>
+
+                <!-- Reservation Form Section -->
+                <div class="reservation-form-section">
+                    <div class="form-header">
+                        <h1>Reserve This Item</h1>
+                        <p>Complete your details below to reserve this item for 24 hours</p>
+                    </div>
+
+                    <!-- Step Indicator -->
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Your Details</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Confirmation</div>
+                        </div>
+                    </div>
+
+                    <!-- Reservation Form -->
+                    <form id="reservationForm" class="reservation-form">
+                        <div class="form-step active" data-step="1">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="customerName" class="form-label">Full Name *</label>
+                                    <input type="text" id="customerName" name="customerName" 
+                                           class="form-input" required
+                                           placeholder="Enter your full name">
+                                    <div class="form-error" id="nameError"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="customerEmail" class="form-label">Email Address *</label>
+                                    <input type="email" id="customerEmail" name="customerEmail" 
+                                           class="form-input" required
+                                           placeholder="your.email@example.com">
+                                    <div class="form-error" id="emailError"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="customerPhone" class="form-label">Phone Number *</label>
+                                    <input type="tel" id="customerPhone" name="customerPhone" 
+                                           class="form-input" required
+                                           placeholder="07123 456789">
+                                    <div class="form-error" id="phoneError"></div>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="customerMessage" class="form-label">Message to Charity (Optional)</label>
+                                    <textarea id="customerMessage" name="customerMessage" 
+                                              class="form-textarea" rows="3"
+                                              placeholder="Any specific questions or collection preferences..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Collection Information -->
+                            <div class="collection-info">
+                                <h3>Collection Information</h3>
+                                <div class="info-card">
+                                    <div class="info-item">
+                                        <strong>Reservation Duration:</strong> 24 hours from confirmation
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Payment:</strong> Cash payment on collection
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Contact:</strong> The charity will contact you to arrange collection
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="terms-section">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="agreeTerms" required>
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-text">
+                                        I agree to the <a href="#" onclick="showTerms()">Terms and Conditions</a> 
+                                        and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                                    </span>
+                                </label>
+                                <div class="form-error" id="termsError"></div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" onclick="validateAndProceed()" class="btn-primary">
+                                    Review Reservation
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Confirmation Step -->
+                        <div class="form-step" data-step="2">
+                            <div class="confirmation-content">
+                                <h3>Review Your Reservation</h3>
+                                
+                                <div class="review-section">
+                                    <h4>Your Details</h4>
+                                    <div class="review-grid">
+                                        <div class="review-item">
+                                            <span class="review-label">Name:</span>
+                                            <span class="review-value" id="reviewName"></span>
+                                        </div>
+                                        <div class="review-item">
+                                            <span class="review-label">Email:</span>
+                                            <span class="review-value" id="reviewEmail"></span>
+                                        </div>
+                                        <div class="review-item">
+                                            <span class="review-label">Phone:</span>
+                                            <span class="review-value" id="reviewPhone"></span>
+                                        </div>
+                                        <div class="review-item full-width" id="reviewMessageContainer" style="display: none;">
+                                            <span class="review-label">Message:</span>
+                                            <span class="review-value" id="reviewMessage"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="reservation-summary">
+                                    <h4>Reservation Summary</h4>
+                                    <div class="summary-card">
+                                        <div class="summary-item">
+                                            <span>Reservation expires:</span>
+                                            <strong id="expiryTime"></strong>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span>Collection method:</span>
+                                            <strong>In-person from charity</strong>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span>Payment method:</span>
+                                            <strong>Cash on collection</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" onclick="goToStep(1)" class="btn-secondary">
+                                    Back to Edit
+                                </button>
+                                <button type="button" onclick="submitReservation()" class="btn-primary" id="submitBtn">
+                                    Confirm Reservation
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Success Message -->
+                    <div class="success-message" id="successMessage" style="display: none;">
+                        <div class="success-content">
+                            <div class="success-icon">✅</div>
+                            <h2>Reservation Confirmed!</h2>
+                            <p>Your item has been reserved successfully. Here's what happens next:</p>
+                            
+                            <div class="next-steps">
+                                <div class="step-item">
+                                    <span class="step-num">1</span>
+                                    <div class="step-text">
+                                        <strong>Email Confirmation</strong>
+                                        <p>Check your email for reservation details</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-num">2</span>
+                                    <div class="step-text">
+                                        <strong>Charity Contact</strong>
+                                        <p>The charity will contact you within 2 hours</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-num">3</span>
+                                    <div class="step-text">
+                                        <strong>Collection</strong>
+                                        <p>Visit the charity to collect and pay</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="reservation-details" id="confirmationDetails"></div>
+
+                            <div class="success-actions">
+                                <button onclick="window.location.href='browse.html'" class="btn-primary">
+                                    Browse More Items
+                                </button>
+                                <button onclick="window.location.href='index.html'" class="btn-secondary">
+                                    Back to Home
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Terms and Conditions</h3>
+                <button onclick="closeModal('termsModal')" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <h4>Item Reservation Terms</h4>
+                <ul>
+                    <li>Items are reserved for 24 hours from confirmation</li>
+                    <li>Payment must be made in cash upon collection</li>
+                    <li>Items must be collected from the charity location</li>
+                    <li>Reservations cannot be transferred to other customers</li>
+                    <li>GiveSpot acts as a platform only and is not responsible for item quality</li>
+                    <li>Charities reserve the right to refuse collection if items are damaged</li>
+                </ul>
+                <h4>Customer Responsibilities</h4>
+                <ul>
+                    <li>Provide accurate contact information</li>
+                    <li>Respond to charity contact within reasonable time</li>
+                    <li>Arrive at agreed collection time</li>
+                    <li>Inspect items before payment</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('termsModal')" class="btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Privacy Policy</h3>
+                <button onclick="closeModal('privacyModal')" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <h4>Data Collection</h4>
+                <p>We collect your name, email, and phone number solely for item reservation purposes.</p>
+                <h4>Data Usage</h4>
+                <ul>
+                    <li>Contact information is shared with the relevant charity for collection coordination</li>
+                    <li>Email is used for reservation confirmations and updates</li>
+                    <li>Phone number is used by charities to arrange collection</li>
+                </ul>
+                <h4>Data Protection</h4>
+                <ul>
+                    <li>Your data is stored securely and not shared with third parties</li>
+                    <li>You can request data deletion by contacting us</li>
+                    <li>Data is automatically deleted after 30 days if no collection occurs</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('privacyModal')" class="btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        let currentItem = null;
+        let currentStep = 1;
+
+        // Load item details when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadItemDetails();
+        });
+
+        // Load item details from URL or localStorage
+        async function loadItemDetails() {
+            try {
+                // Get item ID from URL parameters or localStorage
+                const urlParams = new URLSearchParams(window.location.search);
+                const itemId = urlParams.get('item') || localStorage.getItem('reserveItemId');
+                
+                if (!itemId) {
+                    showError('No item selected for reservation');
+                    return;
+                }
+
+                // Fetch item details from database
+                const { data: item, error } = await supabase
+                    .from('items')
+                    .select(`
+                        *,
+                        charities (name, postcode, address, phone, email)
+                    `)
+                    .eq('id', itemId)
+                    .eq('status', 'active')
+                    .single();
+
+                if (error || !item) {
+                    showError('Item not found or no longer available');
+                    return;
+                }
+
+                currentItem = item;
+                displayItemPreview(item);
+                
+            } catch (err) {
+                showError('Failed to load item details');
+                console.error('Error loading item:', err);
+            }
+        }
+
+        // Display item preview
+        function displayItemPreview(item) {
+            const previewContainer = document.getElementById('itemPreview');
+            const imageUrl = item.image_urls && item.image_urls.length > 0 
+                ? item.image_urls[0] 
+                : 'https://via.placeholder.com/300x200/e5e7eb/6b7280?text=No+Image';
+
+            previewContainer.innerHTML = `
+                <div class="item-preview-card">
+                    <div class="item-preview-image">
+                        <img src="${imageUrl}" alt="Item ${item.item_code}">
+                    </div>
+                    <div class="item-preview-details">
+                        <h2>${item.item_code}</h2>
+                        <div class="item-price-large">${formatPrice(item.price)}</div>
+                        <div class="charity-details">
+                            <h3>${item.charities.name}</h3>
+                            <p class="charity-location">${item.charities.postcode}</p>
+                            <p class="charity-address">${item.charities.address || 'Address will be provided after reservation'}</p>
+                        </div>
+                        <div class="availability-status">
+                            <span class="status-indicator active"></span>
+                            Available for reservation
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Validate form and proceed to confirmation
+        function validateAndProceed() {
+            if (validateForm()) {
+                updateReviewSection();
+                goToStep(2);
+            }
+        }
+
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+            
+            // Clear previous errors
+            document.querySelectorAll('.form-error').forEach(error => error.textContent = '');
+            
+            // Validate name
+            const name = document.getElementById('customerName').value.trim();
+            if (!name || name.length < 2) {
+                document.getElementById('nameError').textContent = 'Please enter your full name';
+                isValid = false;
+            }
+            
+            // Validate email
+            const email = document.getElementById('customerEmail').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email address';
+                isValid = false;
+            }
+            
+            // Validate phone
+            const phone = document.getElementById('customerPhone').value.trim();
+            const phoneRegex = /^[\+]?[0-9\s\-\(\)]{8,}$/;
+            if (!phone || !phoneRegex.test(phone)) {
+                document.getElementById('phoneError').textContent = 'Please enter a valid phone number';
+                isValid = false;
+            }
+            
+            // Validate terms acceptance
+            const termsAccepted = document.getElementById('agreeTerms').checked;
+            if (!termsAccepted) {
+                document.getElementById('termsError').textContent = 'Please accept the terms and conditions';
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // Update review section with form data
+        function updateReviewSection() {
+            document.getElementById('reviewName').textContent = document.getElementById('customerName').value;
+            document.getElementById('reviewEmail').textContent = document.getElementById('customerEmail').value;
+            document.getElementById('reviewPhone').textContent = document.getElementById('customerPhone').value;
+            
+            const message = document.getElementById('customerMessage').value.trim();
+            if (message) {
+                document.getElementById('reviewMessage').textContent = message;
+                document.getElementById('reviewMessageContainer').style.display = 'block';
+            } else {
+                document.getElementById('reviewMessageContainer').style.display = 'none';
+            }
+            
+            // Set expiry time (24 hours from now)
+            const expiryDate = new Date();
+            expiryDate.setHours(expiryDate.getHours() + 24);
+            document.getElementById('expiryTime').textContent = expiryDate.toLocaleString('en-GB');
+        }
+
+        // Submit reservation
+        async function submitReservation() {
+            try {
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Processing...';
+                
+                // Create user record
+                const userData = {
+                    name: document.getElementById('customerName').value.trim(),
+                    email: document.getElementById('customerEmail').value.trim(),
+                    phone: document.getElementById('customerPhone').value.trim()
+                };
+
+                // Check if user exists or create new one
+                let userId;
+                const { data: existingUser } = await supabase
+                    .from('users')
+                    .select('id')
+                    .eq('email', userData.email)
+                    .single();
+
+                if (existingUser) {
+                    userId = existingUser.id;
+                    // Update user details
+                    await supabase
+                        .from('users')
+                        .update(userData)
+                        .eq('id', userId);
+                } else {
+                    // Create new user
+                    const { data: newUser, error: userError } = await supabase
+                        .from('users')
+                        .insert(userData)
+                        .select('id')
+                        .single();
+                    
+                    if (userError) throw userError;
+                    userId = newUser.id;
+                }
+
+                // Create reservation
+                const expiryDate = new Date();
+                expiryDate.setHours(expiryDate.getHours() + 24);
+
+                const reservationData = {
+                    item_id: currentItem.id,
+                    user_id: userId,
+                    expires_at: expiryDate.toISOString(),
+                    status: 'active'
+                };
+
+                const { data: reservation, error: reservationError } = await supabase
+                    .from('reservations')
+                    .insert(reservationData)
+                    .select()
+                    .single();
+
+                if (reservationError) throw reservationError;
+
+                // Update item status to reserved
+                await supabase
+                    .from('items')
+                    .update({ status: 'reserved' })
+                    .eq('id', currentItem.id);
+
+                // Send email notifications (mock implementation)
+                await sendEmailNotifications(reservation, userData);
+
+                // Show success message
+                showSuccessMessage(reservation);
+                
+            } catch (error) {
+                console.error('Reservation error:', error);
+                showError('Failed to create reservation. Please try again.');
+                
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Confirm Reservation';
+            }
+        }
+
+        // Send email notifications (mock implementation)
+        async function sendEmailNotifications(reservation, userData) {
+            // In a real implementation, this would trigger server-side email sending
+            console.log('Sending email notifications...');
+            
+            // Mock charity notification email
+            const charityEmail = {
+                to: currentItem.charities.email,
+                subject: `NEW RESERVATION - Item ${currentItem.item_code}`,
+                content: `
+                    New item reservation:
+                    - Item: ${currentItem.item_code} (£${currentItem.price})
+                    - Customer: ${userData.name}
+                    - Phone: ${userData.phone}
+                    - Email: ${userData.email}
+                    - Expires: ${new Date(reservation.expires_at).toLocaleString()}
+                    
+                    Please contact the customer to arrange collection.
+                `
+            };
+            
+            // Mock customer confirmation email
+            const customerEmail = {
+                to: userData.email,
+                subject: `Reservation Confirmed - ${currentItem.item_code}`,
+                content: `
+                    Your reservation is confirmed:
+                    - Item: ${currentItem.item_code}
+                    - Price: £${currentItem.price}
+                    - Charity: ${currentItem.charities.name}
+                    - Valid until: ${new Date(reservation.expires_at).toLocaleString()}
+                    
+                    The charity will contact you to arrange collection.
+                `
+            };
+            
+            // Log emails (in real implementation, send via email service)
+            console.log('Charity notification:', charityEmail);
+            console.log('Customer confirmation:', customerEmail);
+        }
+
+        // Show success message
+        function showSuccessMessage(reservation) {
+            // Hide form and show success message
+            document.querySelector('.reservation-form-section .form-header').style.display = 'none';
+            document.querySelector('.step-indicator').style.display = 'none';
+            document.querySelector('.reservation-form').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Update confirmation details
+            const detailsHtml = `
+                <div class="confirmation-card">
+                    <h4>Reservation Details</h4>
+                    <div class="detail-item">
+                        <span>Reservation ID:</span>
+                        <strong>${reservation.id.substr(0, 8)}</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Item:</span>
+                        <strong>${currentItem.item_code}</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Price:</span>
+                        <strong>${formatPrice(currentItem.price)}</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Charity:</span>
+                        <strong>${currentItem.charities.name}</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Valid until:</span>
+                        <strong>${new Date(reservation.expires_at).toLocaleString('en-GB')}</strong>
+                    </div>
+                </div>
+            `;
+            document.getElementById('confirmationDetails').innerHTML = detailsHtml;
+        }
+
+        // Navigation functions
+        function goToStep(step) {
+            currentStep = step;
+            
+            // Update step indicator
+            document.querySelectorAll('.step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+                if (parseInt(stepEl.dataset.step) <= step) {
+                    stepEl.classList.add('active');
+                }
+            });
+            
+            // Show correct form step
+            document.querySelectorAll('.form-step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+                if (stepEl.dataset.step == step) {
+                    stepEl.classList.add('active');
+                }
+            });
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        // Modal functions
+        function showTerms() {
+            document.getElementById('termsModal').style.display = 'flex';
+        }
+
+        function showPrivacy() {
+            document.getElementById('privacyModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Error handling
+        function showError(message) {
+            document.getElementById('itemPreview').innerHTML = `
+                <div class="error-state">
+                    <div class="error-content">
+                        <span class="error-icon">⚠️</span>
+                        <h3>Unable to Load Item</h3>
+                        <p>${message}</p>
+                        <button onclick="window.location.href='browse.html'" class="btn-primary">
+                            Back to Browse
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

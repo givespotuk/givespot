@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Items - GiveSpot</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <span class="heart-icon">❤</span>
+                    <span class="logo-text">GiveSpot</span>
+                </a>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="browse.html" class="nav-link active">Browse</a>
+                    <a href="charity/register.html" class="nav-link">For Charities</a>
+                    <a href="charity/login.html" class="nav-link">Login</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-header">
+                <h1>Find Charity Items Near You</h1>
+                <p>Discover amazing items from local charities and support your community</p>
+            </div>
+            
+            <!-- Main Search Bar -->
+            <div class="search-main">
+                <div class="search-input-container">
+                    <span class="search-icon">📍</span>
+                    <input type="text" id="postcodeSearch" placeholder="Enter your postcode (e.g., M1 1AA)" class="search-input">
+                    <button onclick="searchByPostcode()" class="search-btn">Search</button>
+                </div>
+            </div>
+
+            <!-- Quick Distance Filters -->
+            <div class="distance-filters">
+                <span class="filter-label">Quick search:</span>
+                <button onclick="setDistance(1)" class="distance-btn" data-distance="1">1 mile</button>
+                <button onclick="setDistance(5)" class="distance-btn active" data-distance="5">5 miles</button>
+                <button onclick="setDistance(10)" class="distance-btn" data-distance="10">10 miles</button>
+                <button onclick="setDistance(20)" class="distance-btn" data-distance="20">20 miles</button>
+            </div>
+
+            <!-- Advanced Filters -->
+            <div class="filters-section">
+                <button onclick="toggleFilters()" class="filters-toggle" id="filtersToggle">
+                    🔧 More Filters
+                </button>
+                
+                <div class="filters-content" id="filtersContent" style="display: none;">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label class="filter-label">Price Range</label>
+                            <div class="price-range">
+                                <input type="number" id="minPrice" placeholder="Min £" class="price-input">
+                                <span>to</span>
+                                <input type="number" id="maxPrice" placeholder="Max £" class="price-input">
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Charity Type</label>
+                            <select id="charityType" class="filter-select">
+                                <option value="">All Charities</option>
+                                <option value="age">Age UK</option>
+                                <option value="heart">British Heart Foundation</option>
+                                <option value="cancer">Cancer Research</option>
+                                <option value="mind">Mind</option>
+                                <option value="oxfam">Oxfam</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Sort By</label>
+                            <select id="sortBy" class="filter-select">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="distance">Nearest First</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-actions">
+                        <button onclick="applyFilters()" class="apply-filters-btn">Apply Filters</button>
+                        <button onclick="clearFilters()" class="clear-filters-btn">Clear All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section">
+        <div class="container">
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="results-info">
+                    <h2 id="resultsTitle">Available Items</h2>
+                    <p id="resultsCount">Loading items...</p>
+                    <p id="searchLocation" class="search-location"></p>
+                </div>
+                
+                <!-- View Toggle -->
+                <div class="view-toggle">
+                    <button onclick="setView('grid')" class="view-btn active" data-view="grid">
+                        ⊞ Grid
+                    </button>
+                    <button onclick="setView('list')" class="view-btn" data-view="list">
+                        ☰ List
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Finding amazing charity items near you...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state" style="display: none;">
+                <div class="error-content">
+                    <span class="error-icon">⚠️</span>
+                    <h3>Oops! Something went wrong</h3>
+                    <p id="errorMessage">Unable to load items. Please try again.</p>
+                    <button onclick="loadItems()" class="retry-btn">Try Again</button>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-content">
+                    <span class="empty-icon">🔍</span>
+                    <h3>No items found</h3>
+                    <p>Try adjusting your search criteria or check back later for new items.</p>
+                    <button onclick="clearFilters()" class="clear-search-btn">Clear Search</button>
+                </div>
+            </div>
+
+            <!-- Items Grid -->
+            <div id="itemsContainer" class="items-grid">
+                <!-- Items will be loaded here -->
+            </div>
+
+            <!-- Load More -->
+            <div id="loadMoreContainer" class="load-more-container" style="display: none;">
+                <button onclick="loadMoreItems()" class="load-more-btn" id="loadMoreBtn">
+                    Load More Items
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Enhanced browsing functionality
+        let currentFilters = {
+            postcode: '',
+            distance: 5,
+            minPrice: null,
+            maxPrice: null,
+            charityType: '',
+            sortBy: 'newest'
+        };
+        
+        let currentView = 'grid';
+        let currentPage = 0;
+        const itemsPerPage = 12;
+        let allItems = [];
+        let filteredItems = [];
+
+        // Load items with enhanced filtering
+        async function loadItems(showLoading = true) {
+            try {
+                if (showLoading) {
+                    showLoadingState();
+                }
+                
+                const { data: items, error } = await supabase
+                    .from('items')
+                    .select(`
+                        *,
+                        charities (name, postcode, address)
+                    `)
+                    .eq('status', 'active')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    throw error;
+                }
+
+                allItems = items || [];
+                applyFilters();
+                
+            } catch (err) {
+                showErrorState(err.message);
+            }
+        }
+
+        // Apply current filters to items
+        function applyFilters() {
+            filteredItems = allItems.filter(item => {
+                // Price filter
+                if (currentFilters.minPrice && item.price < currentFilters.minPrice) return false;
+                if (currentFilters.maxPrice && item.price > currentFilters.maxPrice) return false;
+                
+                // Charity type filter
+                if (currentFilters.charityType) {
+                    const charityName = item.charities?.name?.toLowerCase() || '';
+                    if (!charityName.includes(currentFilters.charityType)) return false;
+                }
+                
+                return true;
+            });
+
+            // Sort items
+            sortItems();
+            
+            // Display results
+            displayItems();
+            updateResultsInfo();
+        }
+
+        // Sort items based on selected criteria
+        function sortItems() {
+            switch (currentFilters.sortBy) {
+                case 'newest':
+                    filteredItems.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+                case 'oldest':
+                    filteredItems.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    break;
+                case 'price-low':
+                    filteredItems.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredItems.sort((a, b) => b.price - a.price);
+                    break;
+            }
+        }
+
+        // Display items in grid or list view
+        function displayItems() {
+            const container = document.getElementById('itemsContainer');
+            
+            if (filteredItems.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            hideAllStates();
+            
+            // Pagination
+            const startIndex = 0;
+            const endIndex = Math.min(itemsPerPage, filteredItems.length);
+            const itemsToShow = filteredItems.slice(startIndex, endIndex);
+            
+            let html = '';
+            
+            itemsToShow.forEach(item => {
+                if (currentView === 'grid') {
+                    html += createItemCard(item);
+                } else {
+                    html += createItemListRow(item);
+                }
+            });
+            
+            container.innerHTML = html;
+            container.className = currentView === 'grid' ? 'items-grid' : 'items-list';
+            
+            // Show load more if needed
+            updateLoadMore();
+        }
+
+        // Create item card for grid view
+        function createItemCard(item) {
+            const imageUrl = item.image_urls && item.image_urls.length > 0 
+                ? item.image_urls[0] 
+                : 'https://via.placeholder.com/300x200/e5e7eb/6b7280?text=No+Image';
+                
+            return `
+                <div class="item-card" onclick="viewItem('${item.id}')">
+                    <div class="item-image">
+                        <img src="${imageUrl}" alt="Item ${item.item_code}" loading="lazy">
+                        <div class="item-status ${item.status}">${item.status}</div>
+                    </div>
+                    <div class="item-details">
+                        <div class="item-header">
+                            <h3 class="item-code">${item.item_code}</h3>
+                            <span class="item-price">${formatPrice(item.price)}</span>
+                        </div>
+                        <div class="charity-info">
+                            <span class="charity-icon">🏠</span>
+                            <span class="charity-name">${item.charities?.name || 'Unknown'}</span>
+                        </div>
+                        <div class="location-info">
+                            <span class="location-icon">📍</span>
+                            <span class="location-text">${item.charities?.postcode || ''}</span>
+                        </div>
+                        <button onclick="event.stopPropagation(); reserveItem('${item.id}', '${item.item_code}')" 
+                                class="reserve-btn">
+                            Reserve Item
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create item row for list view
+        function createItemListRow(item) {
+            const imageUrl = item.image_urls && item.image_urls.length > 0 
+                ? item.image_urls[0] 
+                : 'https://via.placeholder.com/80x80/e5e7eb/6b7280?text=No+Image';
+                
+            return `
+                <div class="item-list-row" onclick="viewItem('${item.id}')">
+                    <div class="item-list-image">
+                        <img src="${imageUrl}" alt="Item ${item.item_code}">
+                    </div>
+                    <div class="item-list-details">
+                        <div class="item-list-main">
+                            <h3 class="item-code">${item.item_code}</h3>
+                            <span class="item-price">${formatPrice(item.price)}</span>
+                        </div>
+                        <div class="item-list-meta">
+                            <span class="charity-name">${item.charities?.name || 'Unknown'}</span>
+                            <span class="location-text">${item.charities?.postcode || ''}</span>
+                            <span class="item-date">${formatDate(item.created_at)}</span>
+                        </div>
+                    </div>
+                    <button onclick="event.stopPropagation(); reserveItem('${item.id}', '${item.item_code}')" 
+                            class="reserve-btn-small">
+                        Reserve
+                    </button>
+                </div>
+            `;
+        }
+
+        // View item details
+        function viewItem(itemId) {
+            // TODO: Implement item detail modal or page
+            console.log('View item:', itemId);
+            alert('Item details page will be implemented in the next step!');
+        }
+
+        // Reserve item
+        function reserveItem(itemId, itemCode) {
+            localStorage.setItem('reserveItemId', itemId);
+            localStorage.setItem('reserveItemCode', itemCode);
+            window.location.href = 'reserve.html';
+        }
+
+        // Search by postcode
+        function searchByPostcode() {
+            const postcode = document.getElementById('postcodeSearch').value.trim();
+            if (!postcode) {
+                alert('Please enter a postcode');
+                return;
+            }
+            
+            currentFilters.postcode = postcode;
+            document.getElementById('searchLocation').textContent = `Near ${postcode}`;
+            applyFilters();
+        }
+
+        // Set distance filter
+        function setDistance(miles) {
+            currentFilters.distance = miles;
+            
+            // Update button states
+            document.querySelectorAll('.distance-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-distance="${miles}"]`).classList.add('active');
+            
+            applyFilters();
+        }
+
+        // Toggle filters panel
+        function toggleFilters() {
+            const content = document.getElementById('filtersContent');
+            const toggle = document.getElementById('filtersToggle');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggle.textContent = '🔧 Hide Filters';
+            } else {
+                content.style.display = 'none';
+                toggle.textContent = '🔧 More Filters';
+            }
+        }
+
+        // Apply advanced filters
+        function applyFilters() {
+            // Get filter values
+            currentFilters.minPrice = parseFloat(document.getElementById('minPrice').value) || null;
+            currentFilters.maxPrice = parseFloat(document.getElementById('maxPrice').value) || null;
+            currentFilters.charityType = document.getElementById('charityType').value;
+            currentFilters.sortBy = document.getElementById('sortBy').value;
+            
+            // Apply filters
+            applyFilters();
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            currentFilters = {
+                postcode: '',
+                distance: 5,
+                minPrice: null,
+                maxPrice: null,
+                charityType: '',
+                sortBy: 'newest'
+            };
+            
+            // Reset form inputs
+            document.getElementById('postcodeSearch').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('charityType').value = '';
+            document.getElementById('sortBy').value = 'newest';
+            document.getElementById('searchLocation').textContent = '';
+            
+            // Reset distance buttons
+            document.querySelectorAll('.distance-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('[data-distance="5"]').classList.add('active');
+            
+            applyFilters();
+        }
+
+        // Set view mode
+        function setView(view) {
+            currentView = view;
+            
+            // Update button states
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-view="${view}"]`).classList.add('active');
+            
+            displayItems();
+        }
+
+        // Update results info
+        function updateResultsInfo() {
+            const count = filteredItems.length;
+            const total = allItems.length;
+            
+            document.getElementById('resultsTitle').textContent = 
+                count === total ? 'Available Items' : 'Filtered Results';
+            
+            document.getElementById('resultsCount').textContent = 
+                `Showing ${count} of ${total} items`;
+        }
+
+        // Update load more button
+        function updateLoadMore() {
+            const container = document.getElementById('loadMoreContainer');
+            if (filteredItems.length > itemsPerPage) {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // Show loading state
+        function showLoadingState() {
+            hideAllStates();
+            document.getElementById('loadingState').style.display = 'flex';
+        }
+
+        // Show error state
+        function showErrorState(message) {
+            hideAllStates();
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorState').style.display = 'flex';
+        }
+
+        // Show empty state
+        function showEmptyState() {
+            hideAllStates();
+            document.getElementById('emptyState').style.display = 'flex';
+        }
+
+        // Hide all states
+        function hideAllStates() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('itemsContainer').style.display = 'block';
+        }
+
+        // Load items when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Enhanced browse page loaded');
+            loadItems();
+            
+            // Set up enter key for search
+            document.getElementById('postcodeSearch').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchByPostcode();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

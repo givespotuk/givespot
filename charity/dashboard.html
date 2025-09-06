@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charity Dashboard - GiveSpot</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="../index.html" class="logo-link">
+                        <span class="logo-icon">❤️</span>
+                        <h1 class="logo-text">GiveSpot</h1>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <span id="charityName" class="charity-welcome">Loading...</span>
+                    <button id="logoutBtn" class="nav-link btn-outline">Logout</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="dashboard-section">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <h2>Charity Dashboard</h2>
+                    <a href="add-item.html" class="btn-primary">
+                        📦 Add New Item
+                    </a>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <h3>Account Balance</h3>
+                            <p id="accountBalance" class="stat-value">Loading...</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-content">
+                            <h3>Total Items</h3>
+                            <p id="itemCount" class="stat-value">Loading...</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🔖</div>
+                        <div class="stat-content">
+                            <h3>Active Reservations</h3>
+                            <p id="reservationCount" class="stat-value">0</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">💷</div>
+                        <div class="stat-content">
+                            <h3>This Month</h3>
+                            <p id="monthlyRevenue" class="stat-value">£0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Items -->
+                <div class="dashboard-section-content">
+                    <div class="section-header">
+                        <h3>Recent Items</h3>
+                        <a href="add-item.html" class="btn-secondary">Add Item</a>
+                    </div>
+                    
+                    <div id="charityItemsList" class="items-table">
+                        <div class="loading-placeholder">
+                            <p>Loading your items...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Reservations -->
+                <div class="dashboard-section-content">
+                    <div class="section-header">
+                        <h3>Active Reservations</h3>
+                        <span class="section-subtitle">Items that customers have reserved</span>
+                    </div>
+                    
+                    <div id="activeReservations" class="reservations-section">
+                        <div class="no-reservations">
+                            <p>No active reservations at the moment</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <a href="add-item.html" class="action-btn">
+                            <span class="action-icon">📦</span>
+                            <span>Add New Item</span>
+                        </a>
+                        <button onclick="refreshDashboard()" class="action-btn">
+                            <span class="action-icon">🔄</span>
+                            <span>Refresh Data</span>
+                        </button>
+                        <a href="../browse.html" class="action-btn">
+                            <span class="action-icon">👁️</span>
+                            <span>View Marketplace</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon">❤️</span>
+                    <span class="logo-text">GiveSpot</span>
+                </div>
+                <p class="footer-text">
+                    Connecting communities with local charities
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/charity.js"></script>
+    
+    <script>
+        // Dashboard-specific functionality
+        async function refreshDashboard() {
+            showLoading('Refreshing dashboard...');
+            await loadCharityDashboard();
+        }
+
+        // Load and display charity items in table format
+        async function displayCharityItems(items) {
+            const container = document.getElementById('charityItemsList');
+            
+            if (!items || items.length === 0) {
+                container.innerHTML = `
+                    <div class="no-items">
+                        <p>No items posted yet</p>
+                        <a href="add-item.html" class="btn-primary">Add Your First Item</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="items-table-header">
+                    <span>Item Code</span>
+                    <span>Price</span>
+                    <span>Status</span>
+                    <span>Date Added</span>
+                </div>
+            `;
+
+            items.forEach(item => {
+                const statusClass = `status-${item.status}`;
+                html += `
+                    <div class="items-table-row">
+                        <span class="item-code">${item.item_code}</span>
+                        <span class="item-price">${formatPrice(item.price)}</span>
+                        <span class="item-status ${statusClass}">${item.status}</span>
+                        <span class="item-date">${formatDate(item.created_at)}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Enhanced dashboard loading
+        async function loadCharityDashboard() {
+            try {
+                const charity = getCurrentCharity();
+                if (!charity) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                showLoading('Loading dashboard...');
+                
+                // Load charity details and items
+                const [charityResult, itemsResult, reservationsResult] = await Promise.all([
+                    supabase
+                        .from('charities')
+                        .select('*')
+                        .eq('id', charity.id)
+                        .single(),
+                    supabase
+                        .from('items')
+                        .select('*')
+                        .eq('charity_id', charity.id)
+                        .order('created_at', { ascending: false }),
+                    supabase
+                        .from('reservations')
+                        .select(`
+                            *,
+                            items (item_code, price),
+                            users (name, phone, email)
+                        `)
+                        .eq('status', 'active')
+                        .gte('expires_at', new Date().toISOString())
+                ]);
+
+                if (charityResult.error) throw charityResult.error;
+
+                const charityData = charityResult.data;
+                const items = itemsResult.data || [];
+                const reservations = reservationsResult.data || [];
+
+                // Update dashboard display
+                displayCharityDashboard(charityData, items);
+                displayCharityItems(items);
+                displayActiveReservations(reservations);
+                
+                hideLoading();
+                
+            } catch (err) {
+                console.error('Dashboard loading error:', err);
+                showError('Failed to load dashboard: ' + err.message);
+                hideLoading();
+            }
+        }
+
+        // Display active reservations
+        function displayActiveReservations(reservations) {
+            const container = document.getElementById('activeReservations');
+            
+            if (!reservations || reservations.length === 0) {
+                container.innerHTML = `
+                    <div class="no-reservations">
+                        <p>No active reservations at the moment</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="reservations-list">';
+            
+            reservations.forEach(reservation => {
+                const item = reservation.items || {};
+                const user = reservation.users || {};
+                const expiresAt = new Date(reservation.expires_at);
+                const hoursLeft = Math.max(0, Math.floor((expiresAt - new Date()) / (1000 * 60 * 60)));
+                
+                html += `
+                    <div class="reservation-card">
+                        <div class="reservation-header">
+                            <h4>${item.item_code || 'Unknown Item'}</h4>
+                            <span class="reservation-price">${formatPrice(item.price || 0)}</span>
+                        </div>
+                        <div class="reservation-details">
+                            <p><strong>Customer:</strong> ${user.name || 'Unknown'}</p>
+                            <p><strong>Phone:</strong> ${user.phone || 'Not provided'}</p>
+                            <p><strong>Email:</strong> ${user.email || 'Not provided'}</p>
+                            <p><strong>Expires:</strong> ${hoursLeft}h remaining</p>
+                        </div>
+                        <div class="reservation-actions">
+                            <button onclick="markAsSold('${reservation.id}')" class="btn-success">
+                                ✅ Mark as Sold
+                            </button>
+                            <button onclick="markAsNoShow('${reservation.id}')" class="btn-warning">
+                                ❌ No Show
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+
+            // Update reservation count
+            document.getElementById('reservationCount').textContent = reservations.length;
+        }
+
+        // Placeholder functions for reservation management (will be implemented in Step 10)
+        function markAsSold(reservationId) {
+            showSuccess('Mark as sold functionality will be implemented in Step 10!');
+        }
+
+        function markAsNoShow(reservationId) {
+            showSuccess('Mark as no-show functionality will be implemented in Step 10!');
+        }
+    </script>
+</body>
+</html>
