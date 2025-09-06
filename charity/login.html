@@ -4,100 +4,420 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Login - GiveSpot</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <meta name="description" content="Login to your GiveSpot charity account to manage items and reservations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .login-header p {
+            color: #6b7280;
+            margin-bottom: 32px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 24px;
+        }
+
+        .forgot-password a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 24px;
+        }
+
+        .login-btn:hover {
+            background: #2563eb;
+        }
+
+        .login-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider span {
+            padding: 0 16px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .register-link {
+            text-align: center;
+        }
+
+        .register-link p {
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .register-btn {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid #3b82f6;
+            padding: 12px 24px;
+            border-radius: 8px;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .register-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .back-home a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-home a:hover {
+            color: #3b82f6;
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .error-message p {
+            color: #dc2626;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-message p {
+            color: #047857;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 24px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <a href="../index.html" class="logo-link">
-                        <span class="logo-icon">❤️</span>
-                        <h1 class="logo-text">GiveSpot</h1>
-                    </a>
+    <div class="container">
+        <div class="login-card">
+            <div class="logo">
+                <div class="logo-icon">💝</div>
+                <span class="logo-text">GiveSpot</span>
+            </div>
+
+            <div class="login-header">
+                <h1>Welcome back</h1>
+                <p>Sign in to your charity account</p>
+            </div>
+
+            <div id="errorMessage" class="error-message">
+                <p>Invalid email or password. Please try again.</p>
+            </div>
+
+            <div id="successMessage" class="success-message">
+                <p>Login successful! Redirecting to your dashboard...</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="charity@example.org" required>
                 </div>
-                <nav class="nav">
-                    <a href="../browse.html" class="nav-link">Browse Items</a>
-                    <a href="register.html" class="nav-link">Register Charity</a>
-                </nav>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="forgot-password.html">Forgot your password?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+            </form>
+
+            <div class="divider">
+                <span>New to GiveSpot?</span>
+            </div>
+
+            <div class="register-link">
+                <p>Join hundreds of UK charities already using our platform</p>
+                <a href="register.html" class="register-btn">Register Your Charity</a>
+            </div>
+
+            <div class="back-home">
+                <a href="../index.html">← Back to GiveSpot</a>
             </div>
         </div>
-    </header>
+    </div>
 
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <div class="auth-section">
-                <div class="auth-container">
-                    <div class="auth-header">
-                        <h2>Charity Login</h2>
-                        <p>Sign in to manage your charity items</p>
-                    </div>
-
-                    <form id="charityLoginForm" class="auth-form">
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                class="form-input" 
-                                required
-                                placeholder="Enter your charity email"
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password" class="form-label">Password</label>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                class="form-input" 
-                                required
-                                placeholder="Enter your password"
-                            >
-                        </div>
-
-                        <button type="submit" class="btn-primary auth-btn">
-                            Sign In
-                        </button>
-                    </form>
-
-                    <div class="auth-footer">
-                        <p>New charity? <a href="register.html">Register here</a></p>
-                        <p><a href="../index.html">Back to Homepage</a></p>
-                    </div>
-
-                    <div class="auth-info">
-                        <h4>For Testing:</h4>
-                        <p>Use any email from an approved charity in the system. Password functionality will be implemented in later steps.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <span class="logo-icon">❤️</span>
-                    <span class="logo-text">GiveSpot</span>
-                </div>
-                <p class="footer-text">
-                    Connecting communities with local charities
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/config.js"></script>
     <script src="../js/main.js"></script>
-    <script src="../js/charity.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            // Check if user is already logged in
+            const currentUser = localStorage.getItem('givespot_charity_user');
+            if (currentUser) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Disable submit button
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Signing in...';
+                
+                // Hide previous messages
+                errorMessage.classList.remove('show');
+                successMessage.classList.remove('show');
+
+                try {
+                    const formData = new FormData(form);
+                    const email = formData.get('email');
+                    const password = formData.get('password');
+
+                    // For now, we'll use a simple check against the charities table
+                    // In production, you'd want proper password hashing and authentication
+                    const { data: charity, error } = await supabase
+                        .from('charities')
+                        .select('*')
+                        .eq('email', email)
+                        .eq('status', 'active')
+                        .single();
+
+                    if (error || !charity) {
+                        throw new Error('Invalid credentials');
+                    }
+
+                    // Simple password check (in production, use proper hashing)
+                    // For demo purposes, we'll accept any password for active charities
+                    console.log('Login successful for charity:', charity.name);
+                    
+                    // Store user session
+                    localStorage.setItem('givespot_charity_user', JSON.stringify({
+                        id: charity.id,
+                        name: charity.name,
+                        email: charity.email,
+                        loginTime: new Date().toISOString()
+                    }));
+
+                    // Show success message
+                    successMessage.classList.add('show');
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+
+                } catch (error) {
+                    console.error('Login error:', error);
+                    
+                    // Show error message
+                    errorMessage.classList.add('show');
+                }
+
+                // Re-enable submit button
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
+            });
+
+            // Demo login helper (remove in production)
+            window.demoLogin = async function() {
+                try {
+                    const { data: charity, error } = await supabase
+                        .from('charities')
+                        .select('*')
+                        .eq('status', 'active')
+                        .limit(1)
+                        .single();
+
+                    if (charity) {
+                        document.getElementById('email').value = charity.email;
+                        document.getElementById('password').value = 'demo123';
+                        console.log('Demo login filled for:', charity.name);
+                    }
+                } catch (error) {
+                    console.error('Demo login error:', error);
+                }
+            };
+        });
+    </script>
 </body>
 </html>
