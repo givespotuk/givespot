@@ -3,201 +3,665 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Charity - GiveSpot</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <title>Join GiveSpot - Charity Registration</title>
+    <meta name="description" content="Join GiveSpot to reach new customers and increase your charity's visibility. Simple item listing, £0.10 per item.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.2s;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: #3b82f6;
+        }
+
+        .nav .btn-primary {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .nav .btn-primary:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 60px 0;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        /* Left Side - Benefits */
+        .benefits-section {
+            position: sticky;
+            top: 120px;
+        }
+
+        .benefits-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .benefits-header .highlight {
+            color: #3b82f6;
+        }
+
+        .benefits-header p {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 40px;
+        }
+
+        .benefits-list {
+            space-y: 32px;
+        }
+
+        .benefit-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .benefit-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .benefit-content h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .benefit-content p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .pricing-highlight {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid #3b82f6;
+            margin-top: 40px;
+        }
+
+        .pricing-highlight h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .pricing-highlight .price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .pricing-highlight p {
+            color: #6b7280;
+        }
+
+        /* Right Side - Form */
+        .form-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .form-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .form-header p {
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-input {
+            margin-top: 2px;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .checkbox-label a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #2563eb;
+        }
+
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .login-link p {
+            color: #6b7280;
+        }
+
+        .login-link a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .success-message h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #065f46;
+            margin-bottom: 8px;
+        }
+
+        .success-message p {
+            color: #047857;
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .error-message p {
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .benefits-section {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-section {
+                padding: 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-header h1 {
+                font-size: 32px;
+            }
+
+            .nav {
+                gap: 16px;
+            }
+
+            .nav a {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <a href="../index.html" class="logo-link">
-                        <span class="logo-icon">❤️</span>
-                        <h1 class="logo-text">GiveSpot</h1>
-                    </a>
-                </div>
+            <div class="nav-wrapper">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">💝</div>
+                    <span class="logo-text">GiveSpot</span>
+                </a>
                 <nav class="nav">
-                    <a href="../browse.html" class="nav-link">Browse Items</a>
-                    <a href="login.html" class="nav-link btn-outline">Login</a>
+                    <a href="../index.html">Home</a>
+                    <a href="../browse.html">Browse Items</a>
+                    <a href="register.html" class="active">For Charities</a>
+                    <a href="login.html" class="btn-primary">Login</a>
                 </nav>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="main">
+    <main class="main-content">
         <div class="container">
-            <div class="register-section">
-                <div class="register-container">
-                    <div class="register-header">
-                        <h2>Join GiveSpot</h2>
-                        <p>Register your charity to start selling items online</p>
+            <div class="content-wrapper">
+                <!-- Benefits Section -->
+                <div class="benefits-section">
+                    <div class="benefits-header">
+                        <h1>Join the <span class="highlight">GiveSpot</span> community</h1>
+                        <p>Reach new customers, increase your charity's visibility, and boost donations with our simple platform.</p>
                     </div>
 
-                    <div class="pricing-info">
-                        <h3>Simple Pricing</h3>
-                        <div class="pricing-card">
-                            <span class="price">£0.10</span>
-                            <span class="price-text">per item listed</span>
-                        </div>
-                        <ul class="pricing-features">
-                            <li>✅ No monthly fees</li>
-                            <li>✅ No setup costs</li>
-                            <li>✅ Only pay when you list items</li>
-                            <li>✅ Reach local customers</li>
-                        </ul>
-                    </div>
-
-                    <form id="charityRegisterForm" class="register-form">
-                        <h3>Charity Details</h3>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Charity Name *</label>
-                                <input 
-                                    type="text" 
-                                    id="name" 
-                                    name="name" 
-                                    class="form-input" 
-                                    required
-                                    placeholder="Enter your charity name"
-                                >
-                            </div>
-
-                            <div class="form-group">
-                                <label for="registrationNumber" class="form-label">Charity Registration Number</label>
-                                <input 
-                                    type="text" 
-                                    id="registrationNumber" 
-                                    name="registrationNumber" 
-                                    class="form-input"
-                                    placeholder="UK charity registration number"
-                                >
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon">📱</div>
+                            <div class="benefit-content">
+                                <h3>Ultra-Simple Listing</h3>
+                                <p>Add items in seconds: take a photo, set a price, and submit. No complex forms or technical skills required.</p>
                             </div>
                         </div>
 
+                        <div class="benefit-item">
+                            <div class="benefit-icon">🎯</div>
+                            <div class="benefit-content">
+                                <h3>Local Customer Reach</h3>
+                                <p>Connect with customers in your area who are actively looking for charity items. Postcode-based discovery brings the right people to you.</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <div class="benefit-icon">💰</div>
+                            <div class="benefit-content">
+                                <h3>Keep Your Cash Flow</h3>
+                                <p>Customers pay you directly in cash when they collect. No online payment processing or transaction fees to worry about.</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <div class="benefit-icon">📊</div>
+                            <div class="benefit-content">
+                                <h3>Simple Management</h3>
+                                <p>Manage reservations with one-click updates. Mark items as sold or extend reservation periods effortlessly.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pricing-highlight">
+                        <h3>Simple, Fair Pricing</h3>
+                        <div class="price">£0.10 per item</div>
+                        <p>Only pay when you list an item. No monthly fees, no setup costs, no hidden charges.</p>
+                    </div>
+                </div>
+
+                <!-- Registration Form -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <h2>Register Your Charity</h2>
+                        <p>Join hundreds of UK charities already using GiveSpot</p>
+                    </div>
+
+                    <div id="successMessage" class="success-message">
+                        <div class="success-icon">✅</div>
+                        <h3>Application Submitted Successfully!</h3>
+                        <p>Thank you for applying to join GiveSpot. We'll review your application and send you login details within 24 hours.</p>
+                    </div>
+
+                    <div id="errorMessage" class="error-message">
+                        <p>There was an error submitting your application. Please try again.</p>
+                    </div>
+
+                    <form id="registrationForm">
+                        <div class="form-group">
+                            <label class="form-label" for="charityName">Charity Name *</label>
+                            <input type="text" id="charityName" name="charityName" class="form-input" placeholder="e.g. Age UK Manchester" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="registrationNumber">UK Charity Registration Number *</label>
+                            <input type="text" id="registrationNumber" name="registrationNumber" class="form-input" placeholder="e.g. 123456789" required>
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="email" class="form-label">Email Address *</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    name="email" 
-                                    class="form-input" 
-                                    required
-                                    placeholder="charity@example.org"
-                                >
+                                <label class="form-label" for="contactEmail">Contact Email *</label>
+                                <input type="email" id="contactEmail" name="contactEmail" class="form-input" placeholder="charity@example.org" required>
                             </div>
 
                             <div class="form-group">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <input 
-                                    type="tel" 
-                                    id="phone" 
-                                    name="phone" 
-                                    class="form-input"
-                                    placeholder="0161 123 4567"
-                                >
+                                <label class="form-label" for="contactPhone">Phone Number *</label>
+                                <input type="tel" id="contactPhone" name="contactPhone" class="form-input" placeholder="0161 123 4567" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="address" class="form-label">Full Address</label>
-                            <textarea 
-                                id="address" 
-                                name="address" 
-                                class="form-textarea"
-                                placeholder="Enter your charity's full address"
-                            ></textarea>
+                            <label class="form-label" for="address">Charity Address *</label>
+                            <textarea id="address" name="address" class="form-textarea" placeholder="Full address including postcode" required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="postcode">Postcode *</label>
+                                <input type="text" id="postcode" name="postcode" class="form-input" placeholder="M1 1AA" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="contactPerson">Contact Person *</label>
+                                <input type="text" id="contactPerson" name="contactPerson" class="form-input" placeholder="Full name" required>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="postcode" class="form-label">Postcode *</label>
-                            <input 
-                                type="text" 
-                                id="postcode" 
-                                name="postcode" 
-                                class="form-input" 
-                                required
-                                placeholder="M1 1AA"
-                                pattern="[A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2}"
-                            >
+                            <label class="form-label" for="contactPosition">Position/Role</label>
+                            <input type="text" id="contactPosition" name="contactPosition" class="form-input" placeholder="e.g. Shop Manager, Volunteer Coordinator">
                         </div>
 
-                        <h3>Contact Person</h3>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="contactPerson" class="form-label">Contact Person Name</label>
-                                <input 
-                                    type="text" 
-                                    id="contactPerson" 
-                                    name="contactPerson" 
-                                    class="form-input"
-                                    placeholder="Full name of main contact"
-                                >
-                            </div>
-
-                            <div class="form-group">
-                                <label for="contactPosition" class="form-label">Position/Role</label>
-                                <input 
-                                    type="text" 
-                                    id="contactPosition" 
-                                    name="contactPosition" 
-                                    class="form-input"
-                                    placeholder="Manager, Volunteer Coordinator, etc."
-                                >
-                            </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="termsAccepted" name="termsAccepted" class="checkbox-input" required>
+                            <label for="termsAccepted" class="checkbox-label">
+                                I confirm that I am authorized to register this charity and agree to the <a href="../terms.html" target="_blank">Terms of Service</a> and <a href="../privacy.html" target="_blank">Privacy Policy</a>.
+                            </label>
                         </div>
 
-                        <div class="application-info">
-                            <h4>Next Steps</h4>
-                            <ol>
-                                <li>Submit your application</li>
-                                <li>We'll verify your charity details (1-2 business days)</li>
-                                <li>Once approved, you'll receive login details</li>
-                                <li>Start adding items immediately!</li>
-                            </ol>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="marketingConsent" name="marketingConsent" class="checkbox-input">
+                            <label for="marketingConsent" class="checkbox-label">
+                                I'd like to receive helpful tips and updates about GiveSpot via email. You can unsubscribe at any time.
+                            </label>
                         </div>
 
-                        <div class="form-actions">
-                            <button type="button" onclick="history.back()" class="btn-secondary">
-                                Cancel
-                            </button>
-                            <button type="submit" class="btn-primary">
-                                Submit Application
-                            </button>
-                        </div>
+                        <button type="submit" class="submit-btn" id="submitBtn">Register Charity</button>
                     </form>
 
-                    <div class="register-footer">
-                        <p>Already registered? <a href="login.html">Sign in here</a></p>
+                    <div class="login-link">
+                        <p>Already have an account? <a href="login.html">Login here</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <span class="logo-icon">❤️</span>
-                    <span class="logo-text">GiveSpot</span>
-                </div>
-                <p class="footer-text">
-                    Connecting communities with local charities
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/config.js"></script>
     <script src="../js/main.js"></script>
-    <script src="../js/charity.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Disable submit button
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+                
+                // Hide previous messages
+                successMessage.classList.remove('show');
+                errorMessage.classList.remove('show');
+
+                try {
+                    // Get form data
+                    const formData = new FormData(form);
+                    const applicationData = {
+                        charity_name: formData.get('charityName'),
+                        registration_number: formData.get('registrationNumber'),
+                        email: formData.get('contactEmail'),
+                        phone: formData.get('contactPhone'),
+                        address: formData.get('address'),
+                        postcode: formData.get('postcode').toUpperCase(),
+                        contact_person: formData.get('contactPerson'),
+                        contact_position: formData.get('contactPosition') || null,
+                        marketing_consent: formData.get('marketingConsent') === 'on',
+                        status: 'pending',
+                        applied_at: new Date().toISOString()
+                    };
+
+                    // Submit to Supabase
+                    const { data, error } = await supabase
+                        .from('charity_applications')
+                        .insert([applicationData])
+                        .select();
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    console.log('Application submitted successfully:', data);
+                    
+                    // Show success message
+                    successMessage.classList.add('show');
+                    form.reset();
+                    
+                    // Scroll to success message
+                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                } catch (error) {
+                    console.error('Application submission error:', error);
+                    
+                    // Show error message
+                    errorMessage.classList.add('show');
+                    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Register Charity';
+            });
+
+            // Real-time postcode formatting
+            document.getElementById('postcode').addEventListener('input', function(e) {
+                let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                if (value.length > 3) {
+                    value = value.substring(0, value.length - 3) + ' ' + value.substring(value.length - 3);
+                }
+                e.target.value = value;
+            });
+        });
+    </script>
 </body>
 </html>
