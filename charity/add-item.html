@@ -4,359 +4,1023 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Item - GiveSpot</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <meta name="description" content="Add a new item to your charity's listing on GiveSpot.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 2px solid #3b82f6;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .charity-info {
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-outline:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .page-header p {
+            font-size: 18px;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-navigation {
+            margin-bottom: 32px;
+        }
+
+        .back-btn {
+            background: white;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #f3f4f6;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.4;
+            transition: opacity 0.3s;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        .step.completed {
+            opacity: 1;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-number {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .step.active .step-label {
+            color: #3b82f6;
+        }
+
+        .step.completed .step-label {
+            color: #10b981;
+        }
+
+        .step-connector {
+            width: 40px;
+            height: 2px;
+            background: #e5e7eb;
+            transition: background 0.3s;
+        }
+
+        .step-connector.completed {
+            background: #10b981;
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            color: #6b7280;
+            margin-bottom: 32px;
+        }
+
+        /* Photo Upload Section */
+        .photo-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+
+        .photo-upload-area:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+
+        .photo-upload-area.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            background: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+            color: #6b7280;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .photo-input {
+            display: none;
+        }
+
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #ef4444;
+        }
+
+        .price-input-container {
+            position: relative;
+        }
+
+        .price-symbol {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .price-input {
+            padding-left: 36px;
+        }
+
+        .form-error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 4px;
+            min-height: 20px;
+        }
+
+        .form-hint {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* Pricing Info */
+        .pricing-info {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .pricing-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .pricing-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .pricing-item:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            padding: 12px 32px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .btn-secondary:hover {
+            background: #f3f4f6;
+        }
+
+        /* Success State */
+        .success-section {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: white;
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .success-text {
+            color: #6b7280;
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+
+        .item-summary {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 32px 0;
+            text-align: left;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 16px;
+            color: #3b82f6;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 20px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 24px;
+                margin: 0 16px;
+            }
+
+            .step-indicator {
+                gap: 16px;
+            }
+
+            .step-connector {
+                width: 20px;
+            }
+
+            .photo-preview {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <div class="logo">
-                    <a href="../index.html" class="logo-link">
-                        <span class="logo-icon">❤️</span>
-                        <h1 class="logo-text">GiveSpot</h1>
-                    </a>
-                </div>
+                <a href="../index.html" class="logo-link">
+                    <div class="logo-icon">💖</div>
+                    <h1 class="logo-text">GiveSpot</h1>
+                </a>
                 <nav class="nav">
-                    <a href="dashboard.html" class="nav-link">Dashboard</a>
-                    <button id="logoutBtn" class="nav-link btn-outline">Logout</button>
+                    <span id="charityName" class="charity-info">Loading...</span>
+                    <a href="dashboard.html" class="btn-outline">Back to Dashboard</a>
                 </nav>
             </div>
         </div>
     </header>
 
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing your item...</p>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <main class="main">
         <div class="container">
-            <div class="add-item-section">
-                <div class="add-item-container">
-                    <div class="add-item-header">
-                        <h2>Add New Item</h2>
-                        <p>Simple as: Photo + Price + Submit</p>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Add New Item</h1>
+                <p>Upload photos and set a price to list your item on the marketplace</p>
+            </div>
+
+            <!-- Back Navigation -->
+            <div class="back-navigation">
+                <button onclick="window.history.back()" class="back-btn">
+                    ← Back to Dashboard
+                </button>
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-container">
+                <!-- Step Indicator -->
+                <div class="form-steps">
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Photos</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Price</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="step" data-step="3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Review</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Sections -->
+                <form id="addItemForm">
+                    <!-- Step 1: Photos -->
+                    <div class="form-section active" data-step="1">
+                        <h2 class="section-title">Upload Photos</h2>
+                        <p class="section-subtitle">Add up to 5 clear photos of your item</p>
+
+                        <div class="photo-upload-area" onclick="document.getElementById('photoInput').click()">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">Click to upload photos</div>
+                            <div class="upload-hint">Or drag and drop up to 5 images (JPG, PNG)</div>
+                        </div>
+
+                        <input type="file" id="photoInput" class="photo-input" multiple accept="image/*" onchange="handlePhotoUpload(event)">
+                        
+                        <div id="photoPreview" class="photo-preview"></div>
+
+                        <div class="form-actions">
+                            <button type="button" onclick="nextStep()" class="btn-primary" id="photosNextBtn" disabled>
+                                Continue to Pricing
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="pricing-reminder">
-                        <div class="pricing-card">
-                            <span class="cost-label">Cost per item:</span>
-                            <span class="cost-amount">£0.10</span>
+                    <!-- Step 2: Price -->
+                    <div class="form-section" data-step="2">
+                        <h2 class="section-title">Set Your Price</h2>
+                        <p class="section-subtitle">Choose a fair price for your item</p>
+
+                        <div class="form-group">
+                            <label class="form-label" for="itemPrice">Item Price *</label>
+                            <div class="price-input-container">
+                                <span class="price-symbol">£</span>
+                                <input type="number" id="itemPrice" class="form-input price-input" 
+                                       min="0.50" max="500" step="0.50" placeholder="0.00" required>
+                            </div>
+                            <div class="form-error" id="priceError"></div>
+                            <div class="form-hint">Minimum price: £0.50 | Maximum price: £500.00</div>
                         </div>
-                        <p>This will be automatically deducted from your account balance</p>
+
+                        <div class="pricing-info">
+                            <h4>Pricing Summary</h4>
+                            <div class="pricing-item">
+                                <span>Your asking price:</span>
+                                <span id="askingPrice">£0.00</span>
+                            </div>
+                            <div class="pricing-item">
+                                <span>GiveSpot listing fee:</span>
+                                <span>£0.10</span>
+                            </div>
+                            <div class="pricing-item">
+                                <span>You receive when sold:</span>
+                                <span id="youReceive">£0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" onclick="previousStep()" class="btn-secondary">Back</button>
+                            <button type="button" onclick="nextStep()" class="btn-primary" id="priceNextBtn" disabled>
+                                Review Item
+                            </button>
+                        </div>
                     </div>
 
-                    <form id="addItemForm" class="add-item-form">
-                        <!-- Photo Upload -->
-                        <div class="form-group">
-                            <label class="form-label">Item Photos (up to 5)</label>
-                            <div class="photo-upload-area">
-                                <div class="photo-slots">
-                                    <div class="photo-slot" id="photoSlot0">
-                                        <input type="file" id="photoInput0" accept="image/*" capture="camera" style="display: none;">
-                                        <div class="photo-slot-content" onclick="triggerPhotoUpload(0)">
-                                            <span class="photo-icon">📷</span>
-                                            <span class="photo-text">Add Photo</span>
-                                        </div>
-                                    </div>
-                                    <div class="photo-slot" id="photoSlot1">
-                                        <input type="file" id="photoInput1" accept="image/*" style="display: none;">
-                                        <div class="photo-slot-content" onclick="triggerPhotoUpload(1)">
-                                            <span class="photo-icon">+</span>
-                                        </div>
-                                    </div>
-                                    <div class="photo-slot" id="photoSlot2">
-                                        <input type="file" id="photoInput2" accept="image/*" style="display: none;">
-                                        <div class="photo-slot-content" onclick="triggerPhotoUpload(2)">
-                                            <span class="photo-icon">+</span>
-                                        </div>
-                                    </div>
-                                    <div class="photo-slot" id="photoSlot3">
-                                        <input type="file" id="photoInput3" accept="image/*" style="display: none;">
-                                        <div class="photo-slot-content" onclick="triggerPhotoUpload(3)">
-                                            <span class="photo-icon">+</span>
-                                        </div>
-                                    </div>
-                                    <div class="photo-slot" id="photoSlot4">
-                                        <input type="file" id="photoInput4" accept="image/*" style="display: none;">
-                                        <div class="photo-slot-content" onclick="triggerPhotoUpload(4)">
-                                            <span class="photo-icon">+</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="photo-help">Tap camera icon to take photo, or + to add more</p>
-                            </div>
+                    <!-- Step 3: Review -->
+                    <div class="form-section" data-step="3">
+                        <h2 class="section-title">Review Your Item</h2>
+                        <p class="section-subtitle">Check everything looks correct before publishing</p>
+
+                        <div id="reviewPreview">
+                            <!-- Review content will be populated here -->
                         </div>
 
-                        <!-- Price Input -->
-                        <div class="form-group">
-                            <label for="itemPrice" class="form-label">Price (£) *</label>
-                            <div class="price-input-wrapper">
-                                <span class="currency-symbol">£</span>
-                                <input 
-                                    type="number" 
-                                    id="itemPrice" 
-                                    name="itemPrice" 
-                                    class="form-input price-input" 
-                                    step="0.01"
-                                    min="0.01"
-                                    required
-                                    placeholder="0.00"
-                                >
-                            </div>
-                            <p class="form-help">Enter the price you want to charge for this item</p>
+                        <div class="form-actions">
+                            <button type="button" onclick="previousStep()" class="btn-secondary">Back</button>
+                            <button type="button" onclick="submitItem()" class="btn-primary" id="submitBtn">
+                                Publish Item (£0.10)
+                            </button>
                         </div>
+                    </div>
+                </form>
 
-                        <!-- Item Preview -->
-                        <div id="itemPreview" class="item-preview" style="display: none;">
-                            <h3>Item Preview</h3>
-                            <div class="preview-card">
-                                <div class="preview-images"></div>
-                                <div class="preview-details">
-                                    <p class="preview-code">Item Code: Will be auto-generated</p>
-                                    <p class="preview-price">Price: £0.00</p>
-                                    <p class="preview-charity">Your Charity Name</p>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Success Section -->
+                <div class="success-section" id="successSection">
+                    <div class="success-icon">✓</div>
+                    <h2 class="success-title">Item Published Successfully!</h2>
+                    <p class="success-text">Your item is now live on the GiveSpot marketplace</p>
+                    
+                    <div class="item-summary" id="itemSummary">
+                        <!-- Item summary will be populated here -->
+                    </div>
 
-                        <!-- Submit Section -->
-                        <div class="submit-section">
-                            <div class="submit-info">
-                                <h4>What happens next:</h4>
-                                <ul>
-                                    <li>✅ Item gets a unique code (e.g., IT001)</li>
-                                    <li>✅ Goes live on marketplace immediately</li>
-                                    <li>✅ £0.10 charged to your account</li>
-                                    <li>✅ Customers can reserve and contact you</li>
-                                </ul>
-                            </div>
-
-                            <div class="form-actions">
-                                <a href="dashboard.html" class="btn-secondary">Cancel</a>
-                                <button type="submit" class="btn-primary">
-                                    📦 Add Item (£0.10)
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    <div class="form-actions">
+                        <button onclick="window.location.href='dashboard.html'" class="btn-primary">
+                            Back to Dashboard
+                        </button>
+                        <button onclick="resetForm()" class="btn-secondary">
+                            Add Another Item
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <span class="logo-icon">❤️</span>
-                    <span class="logo-text">GiveSpot</span>
-                </div>
-                <p class="footer-text">
-                    Connecting communities with local charities
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Scripts -->
     <script src="../js/config.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/charity.js"></script>
-    
     <script>
+        let currentStep = 1;
         let uploadedPhotos = [];
         let currentCharity = null;
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if charity is logged in
+            // Check authentication
             currentCharity = getCurrentCharity();
             if (!currentCharity) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            // Set up form handlers
-            setupPhotoUpload();
-            setupPriceInput();
-            setupFormSubmission();
+            // Update charity name
+            document.getElementById('charityName').textContent = currentCharity.name;
+
+            // Set up price input validation
+            document.getElementById('itemPrice').addEventListener('input', validatePrice);
         });
 
-        // Photo upload functionality
-        function triggerPhotoUpload(slotIndex) {
-            const input = document.getElementById(`photoInput${slotIndex}`);
-            input.click();
-        }
-
-        function setupPhotoUpload() {
-            for (let i = 0; i < 5; i++) {
-                const input = document.getElementById(`photoInput${i}`);
-                input.addEventListener('change', function(e) {
-                    handlePhotoUpload(e, i);
-                });
-            }
-        }
-
-        function handlePhotoUpload(event, slotIndex) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                showError('Please select an image file');
-                return;
-            }
-
-            // Validate file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                showError('Image must be smaller than 5MB');
-                return;
-            }
-
-            // Create preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const slot = document.getElementById(`photoSlot${slotIndex}`);
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.className = 'photo-preview';
-                
-                // Add remove button
-                const removeBtn = document.createElement('button');
-                removeBtn.innerHTML = '×';
-                removeBtn.className = 'photo-remove';
-                removeBtn.onclick = function(event) {
-                    event.stopPropagation();
-                    removePhoto(slotIndex);
-                };
-
-                slot.innerHTML = '';
-                slot.appendChild(img);
-                slot.appendChild(removeBtn);
-                slot.classList.add('has-photo');
-
-                // Store the file
-                uploadedPhotos[slotIndex] = file;
-                updateItemPreview();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function removePhoto(slotIndex) {
-            const slot = document.getElementById(`photoSlot${slotIndex}`);
-            slot.innerHTML = `
-                <div class="photo-slot-content" onclick="triggerPhotoUpload(${slotIndex})">
-                    <span class="photo-icon">${slotIndex === 0 ? '📷' : '+'}</span>
-                    ${slotIndex === 0 ? '<span class="photo-text">Add Photo</span>' : ''}
-                </div>
-            `;
-            slot.classList.remove('has-photo');
-            uploadedPhotos[slotIndex] = null;
-            updateItemPreview();
-        }
-
-        // Price input handling
-        function setupPriceInput() {
-            const priceInput = document.getElementById('itemPrice');
-            priceInput.addEventListener('input', updateItemPreview);
-        }
-
-        // Update item preview
-        function updateItemPreview() {
-            const price = parseFloat(document.getElementById('itemPrice').value) || 0;
-            const preview = document.getElementById('itemPreview');
+        // Photo upload handling
+        function handlePhotoUpload(event) {
+            const files = Array.from(event.target.files);
             
-            if (price > 0 || uploadedPhotos.some(photo => photo)) {
-                preview.style.display = 'block';
-                
-                // Update preview images
-                const previewImages = preview.querySelector('.preview-images');
-                const validPhotos = uploadedPhotos.filter(photo => photo);
-                
-                if (validPhotos.length > 0) {
-                    previewImages.innerHTML = `<img src="${URL.createObjectURL(validPhotos[0])}" alt="Preview">`;
-                } else {
-                    previewImages.innerHTML = '<div class="no-image">📦 No Image</div>';
-                }
-                
-                // Update preview price
-                preview.querySelector('.preview-price').textContent = `Price: ${formatPrice(price)}`;
-            } else {
-                preview.style.display = 'none';
+            if (files.length + uploadedPhotos.length > 5) {
+                showError('Maximum 5 photos allowed');
+                return;
             }
-        }
 
-        // Form submission
-        function setupFormSubmission() {
-            document.getElementById('addItemForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                submitItem();
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedPhotos.push({
+                            file: file,
+                            dataUrl: e.target.result
+                        });
+                        updatePhotoPreview();
+                        updatePhotosNextButton();
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
         }
 
+        // Update photo preview
+        function updatePhotoPreview() {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = uploadedPhotos.map((photo, index) => `
+                <div class="photo-item">
+                    <img src="${photo.dataUrl}" alt="Photo ${index + 1}">
+                    <button type="button" class="photo-remove" onclick="removePhoto(${index})">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Remove photo
+        function removePhoto(index) {
+            uploadedPhotos.splice(index, 1);
+            updatePhotoPreview();
+            updatePhotosNextButton();
+        }
+
+        // Update photos next button
+        function updatePhotosNextButton() {
+            const btn = document.getElementById('photosNextBtn');
+            btn.disabled = uploadedPhotos.length === 0;
+        }
+
+        // Validate price
+        function validatePrice() {
+            const price = parseFloat(document.getElementById('itemPrice').value);
+            const priceNextBtn = document.getElementById('priceNextBtn');
+            const priceError = document.getElementById('priceError');
+            
+            if (isNaN(price) || price < 0.50) {
+                priceError.textContent = 'Minimum price is £0.50';
+                priceNextBtn.disabled = true;
+                return false;
+            }
+            
+            if (price > 500) {
+                priceError.textContent = 'Maximum price is £500.00';
+                priceNextBtn.disabled = true;
+                return false;
+            }
+            
+            priceError.textContent = '';
+            priceNextBtn.disabled = false;
+            
+            // Update pricing summary
+            document.getElementById('askingPrice').textContent = formatPrice(price);
+            document.getElementById('youReceive').textContent = formatPrice(price);
+            
+            return true;
+        }
+
+        // Navigation
+        function nextStep() {
+            if (currentStep < 3) {
+                currentStep++;
+                updateStepDisplay();
+                
+                if (currentStep === 3) {
+                    updateReviewPreview();
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepDisplay();
+            }
+        }
+
+        function updateStepDisplay() {
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+
+            // Update connectors
+            document.querySelectorAll('.step-connector').forEach((connector, index) => {
+                connector.classList.toggle('completed', index + 1 < currentStep);
+            });
+
+            // Show correct form section
+            document.querySelectorAll('.form-section').forEach((section, index) => {
+                section.classList.toggle('active', index + 1 === currentStep);
+            });
+        }
+
+        // Update review preview
+        function updateReviewPreview() {
+            const price = parseFloat(document.getElementById('itemPrice').value);
+            const reviewPreview = document.getElementById('reviewPreview');
+            
+            reviewPreview.innerHTML = `
+                <div class="item-summary">
+                    <div class="summary-item">
+                        <span>Photos uploaded:</span>
+                        <span>${uploadedPhotos.length} image${uploadedPhotos.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Item price:</span>
+                        <span>${formatPrice(price)}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Listing fee:</span>
+                        <span>£0.10</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Item code:</span>
+                        <span>Will be generated automatically</span>
+                    </div>
+                </div>
+                
+                <div class="photo-preview">
+                    ${uploadedPhotos.map(photo => `
+                        <div class="photo-item">
+                            <img src="${photo.dataUrl}" alt="Item photo">
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Submit item
         async function submitItem() {
             try {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                
                 const price = parseFloat(document.getElementById('itemPrice').value);
                 
-                if (!price || price <= 0) {
-                    showError('Please enter a valid price');
-                    return;
-                }
-
-                showLoading('Adding item to marketplace...');
-
-                // For now, we'll create the item without actual image upload
-                // Image upload will be implemented in Step 8
+                // Create item record
                 const { data: item, error } = await supabase
                     .from('items')
-                    .insert([{
+                    .insert({
                         charity_id: currentCharity.id,
                         price: price,
-                        image_urls: uploadedPhotos.length > 0 ? ['https://via.placeholder.com/400x300/4F46E5/FFFFFF?text=Charity+Item'] : [],
+                        image_urls: [], // For now, no actual image upload
                         status: 'active'
-                    }])
+                    })
                     .select()
                     .single();
 
                 if (error) throw error;
 
-                // Charge £0.10 to charity account
-                const { error: chargeError } = await supabase
+                // Deduct £0.10 from charity balance
+                await supabase
+                    .from('charities')
+                    .update({ 
+                        balance: (parseFloat(currentCharity.balance) || 0) - 0.10 
+                    })
+                    .eq('id', currentCharity.id);
+
+                // Record transaction
+                await supabase
                     .from('transactions')
-                    .insert([{
+                    .insert({
                         charity_id: currentCharity.id,
                         item_id: item.id,
                         amount: 0.10,
                         type: 'item_listing',
                         status: 'charged'
-                    }]);
+                    });
 
-                if (chargeError) {
-                    console.error('Billing error:', chargeError);
-                    // Continue anyway - billing can be reconciled later
-                }
-
-                hideLoading();
-                showSuccess(`Item ${item.item_code} added successfully! £0.10 has been charged to your account.`);
+                showSuccess(item);
                 
-                // Reset form
-                document.getElementById('addItemForm').reset();
-                uploadedPhotos = [];
-                for (let i = 0; i < 5; i++) {
-                    removePhoto(i);
-                }
-                document.getElementById('itemPreview').style.display = 'none';
-
-                // Redirect to dashboard after delay
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 2000);
-
-            } catch (err) {
-                console.error('Add item error:', err);
-                showError('Failed to add item: ' + err.message);
-                hideLoading();
+            } catch (error) {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                console.error('Submit error:', error);
+                showError('Failed to publish item: ' + error.message);
             }
+        }
+
+        // Show success
+        function showSuccess(item) {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.querySelector('.form-container form').style.display = 'none';
+            document.getElementById('successSection').style.display = 'block';
+            
+            const price = parseFloat(document.getElementById('itemPrice').value);
+            document.getElementById('itemSummary').innerHTML = `
+                <div class="summary-item">
+                    <span>Item Code:</span>
+                    <span>${item.item_code}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Price:</span>
+                    <span>${formatPrice(price)}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Status:</span>
+                    <span>Live on marketplace</span>
+                </div>
+                <div class="summary-item">
+                    <span>Listing fee charged:</span>
+                    <span>£0.10</span>
+                </div>
+            `;
+        }
+
+        // Reset form
+        function resetForm() {
+            window.location.reload();
         }
     </script>
 </body>
