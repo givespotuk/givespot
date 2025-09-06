@@ -4,23 +4,495 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Items - GiveSpot</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="Browse charity items available near you. Reserve online, collect in person.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.2s;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: #3b82f6;
+        }
+
+        .nav .btn-primary {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .nav .btn-primary:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            padding: 32px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .search-container {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 16px 20px;
+            font-size: 16px;
+            border-radius: 12px;
+            outline: none;
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: white;
+            padding: 24px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .filters-container {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filter-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 40px 0;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .results-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .results-count {
+            color: #6b7280;
+            font-size: 16px;
+            margin-top: 4px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 20px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .error-state h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #ef4444;
+        }
+
+        .error-state p {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .retry-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        /* Items Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .item-image {
+            position: relative;
+            height: 200px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-image {
+            color: #9ca3af;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .item-status {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .item-details {
+            padding: 20px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .item-code {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .charity-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .charity-name {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .item-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .item-location span {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .reserve-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reserve-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav {
+                gap: 16px;
+            }
+
+            .nav a {
+                font-size: 14px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: start;
+                gap: 16px;
+            }
+
+            .filters-container {
+                flex-direction: column;
+                align-items: start;
+                gap: 16px;
+            }
+
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="nav-wrapper">
-                <div class="logo">
-                    <span class="heart">❤️</span>
-                    <a href="index.html" class="logo-text">GiveSpot</a>
-                </div>
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">💝</div>
+                    <span class="logo-text">GiveSpot</span>
+                </a>
                 <nav class="nav">
                     <a href="index.html">Home</a>
-                    <a href="browse.html" class="active">Browse</a>
+                    <a href="browse.html" class="active">Browse Items</a>
                     <a href="charity/register.html">For Charities</a>
-                    <a href="charity/login.html">Login</a>
+                    <a href="charity/login.html" class="btn-primary">Login</a>
                 </nav>
             </div>
         </div>
@@ -29,18 +501,39 @@
     <!-- Search Section -->
     <section class="search-section">
         <div class="container">
-            <div class="search-box">
-                <div class="search-input-group">
-                    <span class="search-icon">📍</span>
-                    <input type="text" id="postcodeSearch" placeholder="Enter your postcode (e.g. M1 1AA)" value="">
-                </div>
-                <button onclick="searchItems()" class="search-btn">Search</button>
+            <div class="search-container">
+                <input type="text" class="search-input" id="postcodeSearch" placeholder="Enter your postcode to find items nearby">
+                <button class="search-btn" onclick="searchItems()">Search</button>
             </div>
-            <div class="distance-filters">
-                <button onclick="setDistance(1)" class="distance-btn">1 mile</button>
-                <button onclick="setDistance(5)" class="distance-btn">5 miles</button>
-                <button onclick="setDistance(10)" class="distance-btn">10 miles</button>
-                <button onclick="setDistance(20)" class="distance-btn active">20 miles</button>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters-container">
+
+
+                <div class="filter-group">
+                    <label class="filter-label">Sort By</label>
+                    <select class="filter-select" id="sortBy" onchange="sortItems()">
+                        <option value="newest">Newest First</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="distance">Distance</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Price Range</label>
+                    <select class="filter-select" id="priceRange" onchange="filterByPrice()">
+                        <option value="">All Prices</option>
+                        <option value="0-5">Under £5</option>
+                        <option value="5-15">£5 - £15</option>
+                        <option value="15-30">£15 - £30</option>
+                        <option value="30+">Over £30</option>
+                    </select>
+                </div>
             </div>
         </div>
     </section>
@@ -49,10 +542,13 @@
     <section class="results-section">
         <div class="container">
             <div class="results-header">
-                <h2>Available Items (<span id="itemCount">0</span>)</h2>
+                <div class="results-info">
+                    <h1 class="results-title">Available Items</h1>
+                    <p class="results-count" id="resultsCount">Loading items...</p>
+                </div>
                 <div class="view-toggle">
-                    <button onclick="setView('grid')" class="view-btn active">Grid</button>
-                    <button onclick="setView('list')" class="view-btn">List</button>
+                    <button class="view-btn active" onclick="setView('grid')">Grid</button>
+                    <button class="view-btn" onclick="setView('list')">List</button>
                 </div>
             </div>
 
@@ -65,8 +561,8 @@
             <!-- Error State -->
             <div id="errorState" class="error-state" style="display: none;">
                 <div class="error-icon">⚠️</div>
-                <h3>Oops! Something went wrong</h3>
-                <p>We couldn't load the charity items. Please try again.</p>
+                <h3>Unable to load items</h3>
+                <p>There was a problem connecting to our database. Please try again.</p>
                 <button onclick="loadItems()" class="retry-btn">Try Again</button>
             </div>
 
@@ -75,7 +571,7 @@
                 <div class="empty-icon">📦</div>
                 <h3>No items found</h3>
                 <p>There are no charity items available in this area at the moment.</p>
-                <p>Try expanding your search radius or check back later.</p>
+                <p>Try expanding your search radius or check back later for new items.</p>
             </div>
 
             <!-- Items Grid -->
@@ -88,8 +584,10 @@
     <script src="js/config.js"></script>
     <script src="js/main.js"></script>
     <script>
-        let currentItems = [];
-        let currentDistance = 20;
+        let allItems = [];
+        let filteredItems = [];
+        let currentDistance = 10;
+        let currentSort = 'newest';
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
@@ -106,7 +604,7 @@
             
             if (distance) {
                 currentDistance = parseInt(distance);
-                setDistance(currentDistance);
+                setDistanceActive(currentDistance);
             }
             
             loadItems();
@@ -134,8 +632,9 @@
                 }
 
                 console.log('Items loaded:', items);
-                currentItems = items || [];
-                displayItems(currentItems);
+                allItems = items || [];
+                filteredItems = [...allItems];
+                displayItems(filteredItems);
                 
             } catch (err) {
                 console.error('Load items error:', err);
@@ -146,21 +645,22 @@
         // Display items
         function displayItems(items) {
             const itemsGrid = document.getElementById('itemsGrid');
-            const itemCount = document.getElementById('itemCount');
+            const resultsCount = document.getElementById('resultsCount');
             
             if (!items || items.length === 0) {
                 showEmptyState();
                 return;
             }
 
-            itemCount.textContent = items.length;
+            resultsCount.textContent = `${items.length} items found`;
             
             itemsGrid.innerHTML = items.map(item => `
                 <div class="item-card">
                     <div class="item-image">
                         ${item.image_urls && item.image_urls.length > 0 
-                            ? `<img src="${item.image_urls[0]}" alt="Item ${item.item_code}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">` 
-                            : `<div class="no-image">📷<br>No Image</div>`
+                            ? `<img src="${item.image_urls[0]}" alt="Item ${item.item_code}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                               <div class="no-image" style="display: none;">No Image Available</div>` 
+                            : `<div class="no-image">No Image Available</div>`
                         }
                         <div class="item-status">Available</div>
                     </div>
@@ -170,11 +670,11 @@
                             <span class="item-price">${formatPrice(item.price)}</span>
                         </div>
                         <div class="charity-info">
-                            <span class="charity-icon">🏪</span>
+                            <span>🏪</span>
                             <span class="charity-name">${item.charities?.name || 'Unknown Charity'}</span>
                         </div>
                         <div class="item-location">
-                            <span class="location-icon">📍</span>
+                            <span>📍</span>
                             <span>${item.charities?.postcode || 'Unknown Location'}</span>
                         </div>
                         <button onclick="reserveItem('${item.id}', '${item.item_code}')" class="reserve-btn">
@@ -192,31 +692,78 @@
             const postcode = document.getElementById('postcodeSearch').value.trim();
             
             if (!postcode) {
-                alert('Please enter a postcode to search');
+                // If no postcode, show all items
+                filteredItems = [...allItems];
+                displayItems(filteredItems);
                 return;
             }
             
             console.log(`Searching for items near ${postcode} within ${currentDistance} miles`);
             
-            // For now, just show all items (distance filtering can be added later)
-            displayItems(currentItems);
+            // For now, just show all items (distance filtering can be enhanced later)
+            filteredItems = [...allItems];
+            displayItems(filteredItems);
         }
 
         // Set distance filter
         function setDistance(distance) {
             currentDistance = distance;
-            
-            // Update active button
-            document.querySelectorAll('.distance-btn').forEach(btn => {
+            setDistanceActive(distance);
+            searchItems();
+        }
+
+        function setDistanceActive(distance) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            event?.target?.classList.add('active');
+        }
+
+        // Sort items
+        function sortItems() {
+            const sortBy = document.getElementById('sortBy').value;
+            currentSort = sortBy;
             
-            // If we have a postcode, search again
-            const postcode = document.getElementById('postcodeSearch').value.trim();
-            if (postcode) {
-                searchItems();
+            let sortedItems = [...filteredItems];
+            
+            switch(sortBy) {
+                case 'newest':
+                    sortedItems.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+                case 'price-low':
+                    sortedItems.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    sortedItems.sort((a, b) => b.price - a.price);
+                    break;
+                case 'distance':
+                    // Distance sorting would require actual distance calculation
+                    break;
             }
+            
+            displayItems(sortedItems);
+        }
+
+        // Filter by price
+        function filterByPrice() {
+            const priceRange = document.getElementById('priceRange').value;
+            
+            if (!priceRange) {
+                filteredItems = [...allItems];
+            } else {
+                filteredItems = allItems.filter(item => {
+                    const price = item.price;
+                    switch(priceRange) {
+                        case '0-5': return price < 5;
+                        case '5-15': return price >= 5 && price <= 15;
+                        case '15-30': return price >= 15 && price <= 30;
+                        case '30+': return price > 30;
+                        default: return true;
+                    }
+                });
+            }
+            
+            displayItems(filteredItems);
         }
 
         // Set view mode
@@ -256,7 +803,7 @@
             document.getElementById('errorState').style.display = 'none';
             document.getElementById('emptyState').style.display = 'block';
             document.getElementById('itemsGrid').style.display = 'none';
-            document.getElementById('itemCount').textContent = '0';
+            document.getElementById('resultsCount').textContent = '0 items found';
         }
 
         function showItemsGrid() {
