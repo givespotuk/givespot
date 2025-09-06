@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - GiveSpot</title>
-    <meta name="description" content="Secure admin dashboard for GiveSpot platform management.">
+    <meta name="description" content="Admin panel for managing charities and tracking platform performance.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -33,7 +33,7 @@
         .header {
             background: #ffffff;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border-bottom: 2px solid #ef4444;
+            border-bottom: 2px solid #dc2626;
         }
 
         .header-content {
@@ -53,7 +53,7 @@
         .logo-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -67,28 +67,26 @@
             color: #1a1a1a;
         }
 
+        .admin-badge {
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+
         .nav {
             display: flex;
             gap: 24px;
             align-items: center;
         }
 
-        .nav-link {
-            text-decoration: none;
-            color: #4b5563;
-            font-weight: 500;
-            font-size: 16px;
-            transition: color 0.2s;
-        }
-
-        .nav-link:hover {
-            color: #ef4444;
-        }
-
-        .btn-outline {
+        .btn-logout {
             background: transparent;
-            border: 2px solid #ef4444;
-            color: #ef4444;
+            border: 2px solid #dc2626;
+            color: #dc2626;
             padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
@@ -96,8 +94,8 @@
             transition: all 0.2s;
         }
 
-        .btn-outline:hover {
-            background: #ef4444;
+        .btn-logout:hover {
+            background: #dc2626;
             color: white;
         }
 
@@ -106,21 +104,17 @@
             padding: 40px 0;
         }
 
-        .admin-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
         }
 
-        .admin-header h2 {
+        .dashboard-header h1 {
             font-size: 32px;
             font-weight: 700;
-            margin-bottom: 8px;
             color: #1a1a1a;
-        }
-
-        .admin-header p {
-            color: #6b7280;
-            font-size: 16px;
         }
 
         /* Stats Grid */
@@ -137,20 +131,25 @@
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid #e5e7eb;
+        }
+
+        .stat-header {
             display: flex;
+            justify-content: between;
             align-items: center;
-            gap: 16px;
+            margin-bottom: 16px;
         }
 
         .stat-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            color: white;
         }
 
         .stat-content h3 {
@@ -161,13 +160,26 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: #1a1a1a;
         }
 
-        /* Admin Sections */
-        .admin-section-content {
+        .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* Dashboard Sections */
+        .dashboard-section {
             background: white;
             border-radius: 12px;
             padding: 24px;
@@ -185,15 +197,27 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        .section-header h3 {
+        .section-header h2 {
             font-size: 20px;
             font-weight: 600;
             color: #1a1a1a;
         }
 
-        .section-subtitle {
-            font-size: 14px;
-            color: #6b7280;
+        .btn-primary {
+            background: #dc2626;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
         }
 
         .btn-secondary {
@@ -211,149 +235,32 @@
             background: #e5e7eb;
         }
 
-        /* Application Cards */
-        .application-card {
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table th {
             background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .application-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .application-header h4 {
-            font-size: 18px;
             font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .application-date {
+            color: #374151;
             font-size: 14px;
-            color: #6b7280;
         }
 
-        .application-details {
-            margin-bottom: 16px;
-        }
-
-        .application-details p {
-            margin-bottom: 4px;
+        .data-table td {
             font-size: 14px;
-            color: #4b5563;
         }
 
-        .application-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-success {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-        }
-
-        .btn-info {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .btn-info:hover {
-            background: #2563eb;
-        }
-
-        .btn-small {
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-
-        /* Charity Rows */
-        .charity-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid #f3f4f6;
-        }
-
-        .charity-row:last-child {
-            border-bottom: none;
-        }
-
-        .charity-info h4 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-        }
-
-        .charity-info p {
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        .charity-stats {
-            display: flex;
-            gap: 16px;
-            font-size: 14px;
-            color: #4b5563;
-        }
-
-        .charity-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+        .data-table tr:hover {
+            background: #f9fafb;
         }
 
         .status-badge {
@@ -364,264 +271,147 @@
             text-transform: uppercase;
         }
 
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
         .status-active {
             background: #d1fae5;
             color: #065f46;
         }
 
-        .status-suspended {
+        .status-paused {
             background: #fee2e2;
             color: #991b1b;
         }
 
-        .status-paused {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 24px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
+        .action-buttons {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #e5e7eb;
+            gap: 8px;
         }
 
-        .modal-header h3 {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .close {
-            color: #9ca3af;
-            font-size: 28px;
-            font-weight: bold;
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: color 0.2s;
+            border: none;
+            font-weight: 500;
+            transition: all 0.2s;
         }
 
-        .close:hover {
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #059669;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+        .btn-view {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #2563eb;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-card:hover {
+            border-color: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .action-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .action-desc {
+            font-size: 14px;
             color: #6b7280;
         }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #374151;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .password-display {
-            background: #f3f4f6;
-            padding: 12px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            font-weight: bold;
-            color: #ef4444;
+        /* Loading/Empty States */
+        .loading-state,
+        .empty-state {
             text-align: center;
-            margin: 12px 0;
+            padding: 40px;
+            color: #6b7280;
         }
 
-        /* Activity Items */
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 0;
-            border-bottom: 1px solid #f3f4f6;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
+        .spinner {
             width: 32px;
             height: 32px;
-            background: #f3f4f6;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
+            margin: 0 auto 16px;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #dc2626;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .activity-details p {
-            margin-bottom: 2px;
-            font-size: 14px;
-        }
-
-        .activity-meta {
-            color: #6b7280;
-            font-size: 12px;
-        }
-
-        .activity-status {
-            margin-left: auto;
-        }
-
-        .status-reserved {
-            background: #fef3c7;
-            color: #92400e;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .status-sold {
-            background: #e0e7ff;
-            color: #3730a3;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        /* Loading and Messages */
-        .loading-placeholder {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-        }
-
-        .no-items {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-        }
-
-        .message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            z-index: 1000;
-            display: none;
-        }
-
-        .message.success {
-            background: #10b981;
-        }
-
-        .message.error {
-            background: #ef4444;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        /* Footer */
-        .footer {
-            background: #1f2937;
-            color: white;
-            padding: 40px 0;
-            margin-top: 60px;
-        }
-
-        .footer-content {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .footer-text {
-            color: #d1d5db;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header-content {
+            .dashboard-header {
                 flex-direction: column;
                 gap: 16px;
-            }
-
-            .nav {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .charity-row {
-                flex-direction: column;
                 align-items: flex-start;
-                gap: 12px;
-            }
-
-            .charity-actions {
-                width: 100%;
-                justify-content: flex-start;
-            }
-
-            .application-actions {
-                flex-direction: column;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                margin: 10% auto;
-                width: 95%;
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px;
             }
         }
     </style>
@@ -632,725 +422,324 @@
         <div class="container">
             <div class="header-content">
                 <a href="../index.html" class="logo-link">
-                    <div class="logo-icon">🔒</div>
+                    <div class="logo-icon">⚙️</div>
                     <h1 class="logo-text">GiveSpot Admin</h1>
+                    <span class="admin-badge">ADMIN</span>
                 </a>
                 <nav class="nav">
-                    <a href="../browse.html" class="nav-link">View Marketplace</a>
-                    <button id="adminLogout" class="nav-link btn-outline">Logout</button>
+                    <button onclick="logout()" class="btn-logout">Logout</button>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- Messages -->
-    <div id="messageContainer" class="message"></div>
-
     <!-- Main Content -->
     <main class="main">
         <div class="container">
-            <!-- Admin Header -->
-            <div class="admin-header">
-                <h2>Platform Administration</h2>
-                <p>Manage charities and monitor platform activity</p>
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Platform Overview</h1>
+                <button onclick="generateMonthlyInvoices()" class="btn-primary">Generate Monthly Invoices</button>
             </div>
 
-            <!-- Platform Stats -->
+            <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">🏪</div>
+                    <div class="stat-header">
+                        <div class="stat-icon">🏪</div>
+                    </div>
                     <div class="stat-content">
                         <h3>Total Charities</h3>
                         <p id="totalCharities" class="stat-value">Loading...</p>
+                        <p class="stat-change positive" id="charitiesChange">+0 this month</p>
                     </div>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-icon">📦</div>
+                    <div class="stat-header">
+                        <div class="stat-icon">📦</div>
+                    </div>
                     <div class="stat-content">
                         <h3>Total Items</h3>
                         <p id="totalItems" class="stat-value">Loading...</p>
+                        <p class="stat-change positive" id="itemsChange">+0 this month</p>
                     </div>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
-                    <div class="stat-content">
-                        <h3>Pending Applications</h3>
-                        <p id="pendingApplications" class="stat-value">Loading...</p>
+                    <div class="stat-header">
+                        <div class="stat-icon">💷</div>
                     </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div>
                     <div class="stat-content">
                         <h3>Monthly Revenue</h3>
                         <p id="monthlyRevenue" class="stat-value">Loading...</p>
+                        <p class="stat-change positive" id="revenueChange">Current month</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">📋</div>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Pending Applications</h3>
+                        <p id="pendingApps" class="stat-value">Loading...</p>
+                        <p class="stat-change" id="pendingChange">Need review</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Pending Applications -->
-            <div class="admin-section-content">
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="action-card" onclick="showSection('charities')">
+                    <div class="action-icon">🏪</div>
+                    <div class="action-title">Manage Charities</div>
+                    <div class="action-desc">View and approve charity applications</div>
+                </div>
+                <div class="action-card" onclick="showSection('reports')">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Monthly Reports</div>
+                    <div class="action-desc">Track charity performance and billing</div>
+                </div>
+                <div class="action-card" onclick="showSection('items')">
+                    <div class="action-icon">📦</div>
+                    <div class="action-title">Platform Items</div>
+                    <div class="action-desc">Monitor all listed items</div>
+                </div>
+                <div class="action-card" onclick="generateInvoices()">
+                    <div class="action-icon">📄</div>
+                    <div class="action-title">Generate Invoices</div>
+                    <div class="action-desc">Create monthly billing invoices</div>
+                </div>
+            </div>
+
+            <!-- Charity Management Section -->
+            <div class="dashboard-section" id="charitiesSection">
                 <div class="section-header">
+                    <h2>Charity Management</h2>
                     <div>
-                        <h3>Pending Charity Applications</h3>
-                        <span class="section-subtitle">Review and approve new charity registrations</span>
+                        <button onclick="loadCharities()" class="btn-secondary">Refresh</button>
                     </div>
-                    <button onclick="refreshApplications()" class="btn-secondary">Refresh</button>
                 </div>
                 
-                <div id="pendingApplicationsList" class="applications-list">
-                    <div class="loading-placeholder">
-                        <p>Loading pending applications...</p>
+                <div id="charitiesTable">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading charities...</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Active Charities -->
-            <div class="admin-section-content">
+            <!-- Monthly Reports Section -->
+            <div class="dashboard-section" id="reportsSection">
                 <div class="section-header">
+                    <h2>Monthly Reports</h2>
                     <div>
-                        <h3>Active Charities</h3>
-                        <span class="section-subtitle">Approved charities currently using the platform</span>
+                        <select id="reportMonth" class="btn-secondary">
+                            <option value="">Select Month</option>
+                        </select>
+                        <button onclick="loadMonthlyReports()" class="btn-primary">Load Reports</button>
                     </div>
                 </div>
                 
-                <div id="activeCharitiesList" class="charities-list">
-                    <div class="loading-placeholder">
-                        <p>Loading active charities...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="admin-section-content">
-                <div class="section-header">
-                    <div>
-                        <h3>Recent Platform Activity</h3>
-                        <span class="section-subtitle">Latest items and reservations</span>
-                    </div>
-                </div>
-                
-                <div id="recentActivity" class="activity-list">
-                    <div class="loading-placeholder">
-                        <p>Loading recent activity...</p>
+                <div id="reportsTable">
+                    <div class="empty-state">
+                        <p>Select a month to view reports</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- View Charity Modal -->
-    <div id="viewModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Charity Details</h3>
-                <span class="close" onclick="closeModal('viewModal')">&times;</span>
-            </div>
-            <div id="viewModalContent">
-                <!-- Content will be populated by JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Charity Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Edit Charity</h3>
-                <span class="close" onclick="closeModal('editModal')">&times;</span>
-            </div>
-            <form id="editCharityForm">
-                <input type="hidden" id="editCharityId">
-                
-                <div class="form-group">
-                    <label for="editName">Charity Name</label>
-                    <input type="text" id="editName" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="editEmail">Email</label>
-                    <input type="email" id="editEmail" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="editPhone">Phone</label>
-                    <input type="text" id="editPhone">
-                </div>
-
-                <div class="form-group">
-                    <label for="editPostcode">Postcode</label>
-                    <input type="text" id="editPostcode" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="editAddress">Address</label>
-                    <textarea id="editAddress" rows="3"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="editContact">Contact Person</label>
-                    <input type="text" id="editContact">
-                </div>
-
-                <div class="form-group">
-                    <label for="editPosition">Contact Position</label>
-                    <input type="text" id="editPosition">
-                </div>
-
-                <div class="form-group">
-                    <label for="editStatus">Status</label>
-                    <select id="editStatus">
-                        <option value="active">Active</option>
-                        <option value="suspended">Suspended</option>
-                        <option value="paused">Paused</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="editBalance">Account Balance (£)</label>
-                    <input type="number" id="editBalance" step="0.01">
-                </div>
-
-                <div class="form-group">
-                    <button type="button" onclick="generateNewPassword()" class="btn-warning">Generate New Password</button>
-                    <div id="newPasswordDisplay" class="password-display" style="display: none;"></div>
-                </div>
-
-                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
-                    <button type="button" onclick="closeModal('editModal')" class="btn-secondary">Cancel</button>
-                    <button type="submit" class="btn-success">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <div class="logo-icon">🔒</div>
-                    <span class="logo-text">GiveSpot Admin</span>
-                </div>
-                <p class="footer-text">
-                    Secure Platform Management Dashboard
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
+    <!-- Scripts -->
     <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
     <script>
-        // Admin functionality
-        let adminUser = null;
+        // Global variables
+        let currentView = 'overview';
 
-        // Message system
-        function showMessage(text, type = 'success') {
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.textContent = text;
-            messageContainer.className = `message ${type} show`;
-            
-            setTimeout(() => {
-                messageContainer.classList.remove('show');
-            }, 4000);
-        }
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Admin dashboard loaded');
+            loadDashboardStats();
+            loadCharities();
+            populateMonthSelector();
+        });
 
-        function showSuccess(text) {
-            showMessage(text, 'success');
-        }
-
-        function showError(text) {
-            showMessage(text, 'error');
-        }
-
-        // Utility functions
-        function formatPrice(amount) {
-            return new Intl.NumberFormat('en-GB', {
-                style: 'currency',
-                currency: 'GBP'
-            }).format(amount);
-        }
-
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('en-GB', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-        }
-
-        // Password generation
-        function generatePassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let password = '';
-            for (let i = 0; i < 8; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return password;
-        }
-
-        // Modal functions
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            if (modalId === 'editModal') {
-                document.getElementById('newPasswordDisplay').style.display = 'none';
-            }
-        }
-
-        // Load admin dashboard
-        async function loadAdminDashboard() {
+        // Load dashboard statistics
+        async function loadDashboardStats() {
             try {
-                // Load platform statistics
-                const [charitiesResult, itemsResult, applicationsResult] = await Promise.all([
-                    supabase.from('charities').select('*').eq('status', 'active'),
-                    supabase.from('items').select('*'),
-                    supabase.from('charity_applications').select('*').eq('status', 'pending')
-                ]);
+                // Get total charities
+                const { data: charities } = await supabase
+                    .from('charities')
+                    .select('id, created_at')
+                    .eq('status', 'active');
 
-                const totalCharities = charitiesResult.data?.length || 0;
-                const totalItems = itemsResult.data?.length || 0;
-                const pendingCount = applicationsResult.data?.length || 0;
+                // Get total items
+                const { data: items } = await supabase
+                    .from('items')
+                    .select('id, created_at');
 
-                // Update stats
-                document.getElementById('totalCharities').textContent = totalCharities;
-                document.getElementById('totalItems').textContent = totalItems;
-                document.getElementById('pendingApplications').textContent = pendingCount;
-                document.getElementById('monthlyRevenue').textContent = formatPrice(totalItems * 0.10);
+                // Get current month's revenue
+                const currentMonth = new Date().getMonth() + 1;
+                const currentYear = new Date().getFullYear();
+                
+                const { data: monthlyRevenue } = await supabase
+                    .from('monthly_reports')
+                    .select('total_fee')
+                    .eq('month', currentMonth)
+                    .eq('year', currentYear);
 
-                // Load specific sections
-                await loadPendingApplications();
-                await loadActiveCharities();
-                await loadRecentActivity();
+                // Get pending applications
+                const { data: pending } = await supabase
+                    .from('charities')
+                    .select('id')
+                    .eq('status', 'pending');
 
-            } catch (err) {
-                console.error('Admin dashboard error:', err);
-                showError('Failed to load admin dashboard: ' + err.message);
+                // Update dashboard stats
+                document.getElementById('totalCharities').textContent = charities?.length || 0;
+                document.getElementById('totalItems').textContent = items?.length || 0;
+                
+                const totalRevenue = monthlyRevenue?.reduce((sum, report) => sum + parseFloat(report.total_fee), 0) || 0;
+                document.getElementById('monthlyRevenue').textContent = formatPrice(totalRevenue);
+                
+                document.getElementById('pendingApps').textContent = pending?.length || 0;
+
+                // Calculate this month's additions
+                const thisMonth = new Date();
+                thisMonth.setDate(1);
+                thisMonth.setHours(0, 0, 0, 0);
+
+                const newCharities = charities?.filter(c => new Date(c.created_at) >= thisMonth).length || 0;
+                const newItems = items?.filter(i => new Date(i.created_at) >= thisMonth).length || 0;
+
+                document.getElementById('charitiesChange').textContent = `+${newCharities} this month`;
+                document.getElementById('itemsChange').textContent = `+${newItems} this month`;
+                
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+                showError('Failed to load dashboard statistics');
             }
         }
 
-        // Load pending applications
-        async function loadPendingApplications() {
+        // Load charities table
+        async function loadCharities() {
             try {
-                const { data: applications, error } = await supabase
-                    .from('charity_applications')
-                    .select('*')
-                    .eq('status', 'pending')
-                    .order('applied_at', { ascending: false });
-
-                if (error) throw error;
-
-                displayPendingApplications(applications || []);
-
-            } catch (err) {
-                console.error('Error loading applications:', err);
-                showError('Failed to load applications');
-            }
-        }
-
-        // Display pending applications
-        function displayPendingApplications(applications) {
-            const container = document.getElementById('pendingApplicationsList');
-
-            if (applications.length === 0) {
-                container.innerHTML = `
-                    <div class="no-items">
-                        <p>No pending applications</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            applications.forEach(app => {
-                html += `
-                    <div class="application-card">
-                        <div class="application-header">
-                            <h4>${app.charity_name}</h4>
-                            <span class="application-date">${formatDate(app.applied_at)}</span>
-                        </div>
-                        <div class="application-details">
-                            <p><strong>Email:</strong> ${app.email}</p>
-                            <p><strong>Postcode:</strong> ${app.postcode}</p>
-                            <p><strong>Registration:</strong> ${app.registration_number || 'Not provided'}</p>
-                            <p><strong>Contact:</strong> ${app.contact_person || 'Not provided'}</p>
-                            <p><strong>Phone:</strong> ${app.phone || 'Not provided'}</p>
-                        </div>
-                        <div class="application-actions">
-                            <button onclick="approveApplication('${app.id}')" class="btn-success">
-                                ✅ Approve
-                            </button>
-                            <button onclick="rejectApplication('${app.id}')" class="btn-danger">
-                                ❌ Reject
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        // Load active charities
-        async function loadActiveCharities() {
-            try {
+                showLoading('charitiesTable');
+                
                 const { data: charities, error } = await supabase
                     .from('charities')
                     .select('*')
-                    .in('status', ['active', 'suspended', 'paused'])
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
-                displayActiveCharities(charities || []);
-
-            } catch (err) {
-                console.error('Error loading charities:', err);
+                displayCharitiesTable(charities);
+                
+            } catch (error) {
+                console.error('Error loading charities:', error);
+                showError('Failed to load charities');
             }
         }
 
-        // Display active charities
-        function displayActiveCharities(charities) {
-            const container = document.getElementById('activeCharitiesList');
-
-            if (charities.length === 0) {
-                container.innerHTML = `
-                    <div class="no-items">
-                        <p>No active charities</p>
-                    </div>
-                `;
+        // Display charities table
+        function displayCharitiesTable(charities) {
+            const container = document.getElementById('charitiesTable');
+            
+            if (!charities || charities.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No charities found</p></div>';
                 return;
             }
 
-            let html = '';
+            let html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Charity Name</th>
+                            <th>Email</th>
+                            <th>Postcode</th>
+                            <th>Status</th>
+                            <th>Balance</th>
+                            <th>Items</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
             charities.forEach(charity => {
                 html += `
-                    <div class="charity-row">
-                        <div class="charity-info">
-                            <h4>${charity.name}</h4>
-                            <p>${charity.email} • ${charity.postcode} • <span class="status-badge status-${charity.status}">${charity.status}</span></p>
-                        </div>
-                        <div class="charity-stats">
-                            <span>Balance: ${formatPrice(charity.balance || 0)}</span>
-                            <span>Joined: ${formatDate(charity.created_at)}</span>
-                        </div>
-                        <div class="charity-actions">
-                            <button onclick="viewCharity('${charity.id}')" class="btn-info btn-small">
-                                👁️ View
-                            </button>
-                            <button onclick="editCharity('${charity.id}')" class="btn-secondary btn-small">
-                                ✏️ Edit
-                            </button>
-                            <button onclick="toggleCharityStatus('${charity.id}', '${charity.status}')" class="btn-warning btn-small">
-                                ${charity.status === 'active' ? '⏸️ Suspend' : '▶️ Activate'}
-                            </button>
-                            <button onclick="removeCharity('${charity.id}')" class="btn-danger btn-small">
-                                🗑️ Remove
-                            </button>
-                        </div>
-                    </div>
+                    <tr>
+                        <td>${charity.name}</td>
+                        <td>${charity.email}</td>
+                        <td>${charity.postcode}</td>
+                        <td><span class="status-badge status-${charity.status}">${charity.status}</span></td>
+                        <td>${formatPrice(charity.balance || 0)}</td>
+                        <td><span id="items-${charity.id}">Loading...</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                ${charity.status === 'pending' ? 
+                                    `<button onclick="approveCharity('${charity.id}')" class="btn-small btn-approve">Approve</button>
+                                     <button onclick="rejectCharity('${charity.id}')" class="btn-small btn-reject">Reject</button>` :
+                                    `<button onclick="viewCharityDetails('${charity.id}')" class="btn-small btn-view">View</button>`
+                                }
+                            </div>
+                        </td>
+                    </tr>
                 `;
             });
 
+            html += '</tbody></table>';
             container.innerHTML = html;
+
+            // Load item counts for each charity
+            charities.forEach(charity => loadCharityItemCount(charity.id));
         }
 
-        // Load recent activity
-        async function loadRecentActivity() {
+        // Load charity item count
+        async function loadCharityItemCount(charityId) {
             try {
-                const { data: items, error } = await supabase
+                const { data: items } = await supabase
                     .from('items')
-                    .select('*, charities(name)')
-                    .order('created_at', { ascending: false })
-                    .limit(10);
+                    .select('id')
+                    .eq('charity_id', charityId);
 
-                if (error) throw error;
-
-                displayRecentActivity(items || []);
-
-            } catch (err) {
-                console.error('Error loading activity:', err);
+                document.getElementById(`items-${charityId}`).textContent = items?.length || 0;
+                
+            } catch (error) {
+                document.getElementById(`items-${charityId}`).textContent = 'Error';
             }
         }
 
-        // Display recent activity
-        function displayRecentActivity(items) {
-            const container = document.getElementById('recentActivity');
-
-            if (items.length === 0) {
-                container.innerHTML = `
-                    <div class="no-items">
-                        <p>No recent activity</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            items.forEach(item => {
-                html += `
-                    <div class="activity-item">
-                        <div class="activity-icon">📦</div>
-                        <div class="activity-details">
-                            <p><strong>${item.charities?.name || 'Unknown Charity'}</strong> added item <strong>${item.item_code}</strong></p>
-                            <p class="activity-meta">Price: ${formatPrice(item.price)} • ${formatDate(item.created_at)}</p>
-                        </div>
-                        <div class="activity-status">
-                            <span class="status-${item.status}">${item.status}</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        // Admin actions
-        async function approveApplication(applicationId) {
+        // Approve charity
+        async function approveCharity(charityId) {
             try {
-                // Get application details
-                const { data: application, error: fetchError } = await supabase
-                    .from('charity_applications')
-                    .select('*')
-                    .eq('id', applicationId)
-                    .single();
+                if (!confirm('Approve this charity application?')) return;
 
-                if (fetchError) throw fetchError;
-
-                // Check if charity already exists with this email
-                const { data: existingCharity, error: checkError } = await supabase
+                const { error } = await supabase
                     .from('charities')
-                    .select('id, email')
-                    .eq('email', application.email)
-                    .single();
-
-                if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows returned
-                    throw checkError;
-                }
-
-                if (existingCharity) {
-                    showError('A charity with this email already exists. Cannot approve duplicate application.');
-                    return;
-                }
-
-                // Generate temporary password
-                const tempPassword = generatePassword();
-
-                // Get current admin user
-                const currentAdmin = JSON.parse(localStorage.getItem('givespot_admin_user'));
-
-                // Create charity record with password fields
-                const { error: insertError } = await supabase
-                    .from('charities')
-                    .insert({
-                        name: application.charity_name,
-                        email: application.email,
-                        registration_number: application.registration_number,
-                        postcode: application.postcode,
-                        address: application.address,
-                        phone: application.phone,
-                        contact_person: application.contact_person,
-                        contact_position: application.contact_position,
+                    .update({ 
                         status: 'active',
-                        balance: 0.00,
-                        password_hash: tempPassword, // In production, this should be hashed
-                        temp_password: tempPassword,
-                        password_reset_required: true,
-                        last_password_change: new Date().toISOString(),
-                        approved_at: new Date().toISOString(),
-                        approved_by: currentAdmin?.id || null
-                    });
-
-                if (insertError) throw insertError;
-
-                // Update application status
-                const { error: updateError } = await supabase
-                    .from('charity_applications')
-                    .update({
-                        status: 'approved',
-                        processed_at: new Date().toISOString(),
-                        processed_by: currentAdmin?.id || null,
-                        temp_password_sent: tempPassword
+                        approved_at: new Date().toISOString()
                     })
-                    .eq('id', applicationId);
-
-                if (updateError) throw updateError;
-
-                // Show password to admin
-                alert(`Charity approved successfully!\n\nTemporary Login Details:\nEmail: ${application.email}\nPassword: ${tempPassword}\n\nPlease send these credentials to the charity securely.`);
-
-                await loadAdminDashboard();
-
-            } catch (err) {
-                console.error('Approval error:', err);
-                showError('Failed to approve charity: ' + err.message);
-            }
-        }
-
-        async function rejectApplication(applicationId) {
-            try {
-                if (!confirm('Are you sure you want to reject this charity application?')) {
-                    return;
-                }
-
-                const currentAdmin = JSON.parse(localStorage.getItem('givespot_admin_user'));
-
-                const { error } = await supabase
-                    .from('charity_applications')
-                    .update({
-                        status: 'rejected',
-                        processed_at: new Date().toISOString(),
-                        processed_by: currentAdmin?.id || null
-                    })
-                    .eq('id', applicationId);
-
-                if (error) throw error;
-
-                showSuccess('Application rejected');
-                await loadAdminDashboard();
-
-            } catch (err) {
-                console.error('Rejection error:', err);
-                showError('Failed to reject application: ' + err.message);
-            }
-        }
-
-        async function viewCharity(charityId) {
-            try {
-                const { data: charity, error } = await supabase
-                    .from('charities')
-                    .select('*')
-                    .eq('id', charityId)
-                    .single();
-
-                if (error) throw error;
-
-                const content = `
-                    <div class="form-group">
-                        <strong>Charity Name:</strong> ${charity.name}
-                    </div>
-                    <div class="form-group">
-                        <strong>Email:</strong> ${charity.email}
-                    </div>
-                    <div class="form-group">
-                        <strong>Phone:</strong> ${charity.phone || 'Not provided'}
-                    </div>
-                    <div class="form-group">
-                        <strong>Postcode:</strong> ${charity.postcode}
-                    </div>
-                    <div class="form-group">
-                        <strong>Address:</strong> ${charity.address || 'Not provided'}
-                    </div>
-                    <div class="form-group">
-                        <strong>Contact Person:</strong> ${charity.contact_person || 'Not provided'}
-                    </div>
-                    <div class="form-group">
-                        <strong>Registration Number:</strong> ${charity.registration_number || 'Not provided'}
-                    </div>
-                    <div class="form-group">
-                        <strong>Status:</strong> <span class="status-badge status-${charity.status}">${charity.status}</span>
-                    </div>
-                    <div class="form-group">
-                        <strong>Account Balance:</strong> ${formatPrice(charity.balance || 0)}
-                    </div>
-                    <div class="form-group">
-                        <strong>Joined:</strong> ${formatDate(charity.created_at)}
-                    </div>
-                    <div class="form-group">
-                        <strong>Last Password Change:</strong> ${charity.last_password_change ? formatDate(charity.last_password_change) : 'Never'}
-                    </div>
-                    <div class="form-group">
-                        <strong>Password Reset Required:</strong> ${charity.password_reset_required ? 'Yes' : 'No'}
-                    </div>
-                `;
-
-                document.getElementById('viewModalContent').innerHTML = content;
-                openModal('viewModal');
-
-            } catch (err) {
-                console.error('Error viewing charity:', err);
-                showError('Failed to load charity details');
-            }
-        }
-
-        async function editCharity(charityId) {
-            try {
-                const { data: charity, error } = await supabase
-                    .from('charities')
-                    .select('*')
-                    .eq('id', charityId)
-                    .single();
-
-                if (error) throw error;
-
-                // Populate form
-                document.getElementById('editCharityId').value = charity.id;
-                document.getElementById('editName').value = charity.name;
-                document.getElementById('editEmail').value = charity.email;
-                document.getElementById('editPhone').value = charity.phone || '';
-                document.getElementById('editPostcode').value = charity.postcode;
-                document.getElementById('editAddress').value = charity.address || '';
-                document.getElementById('editContact').value = charity.contact_person || '';
-                document.getElementById('editPosition').value = charity.contact_position || '';
-                document.getElementById('editStatus').value = charity.status;
-                document.getElementById('editBalance').value = charity.balance || 0;
-
-                openModal('editModal');
-
-            } catch (err) {
-                console.error('Error loading charity for edit:', err);
-                showError('Failed to load charity for editing');
-            }
-        }
-
-        function generateNewPassword() {
-            const newPassword = generatePassword();
-            const display = document.getElementById('newPasswordDisplay');
-            display.textContent = `New Password: ${newPassword}`;
-            display.style.display = 'block';
-            display.setAttribute('data-password', newPassword);
-        }
-
-        async function toggleCharityStatus(charityId, currentStatus) {
-            try {
-                const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
-                const action = newStatus === 'active' ? 'activate' : 'suspend';
-
-                if (!confirm(`Are you sure you want to ${action} this charity?`)) {
-                    return;
-                }
-
-                const { error } = await supabase
-                    .from('charities')
-                    .update({ status: newStatus })
                     .eq('id', charityId);
 
                 if (error) throw error;
 
-                showSuccess(`Charity ${action}d successfully`);
-                await loadAdminDashboard();
-
-            } catch (err) {
-                console.error('Status toggle error:', err);
-                showError('Failed to update charity status');
+                showSuccess('Charity approved successfully');
+                loadCharities();
+                loadDashboardStats();
+                
+            } catch (error) {
+                console.error('Error approving charity:', error);
+                showError('Failed to approve charity');
             }
         }
 
-        async function removeCharity(charityId) {
+        // Reject charity
+        async function rejectCharity(charityId) {
             try {
-                if (!confirm('Are you sure you want to permanently remove this charity? This action cannot be undone.')) {
-                    return;
-                }
-
-                if (!confirm('This will delete all charity data including items and reservations. Type "DELETE" to confirm.')) {
-                    return;
-                }
+                if (!confirm('Reject this charity application? This action cannot be undone.')) return;
 
                 const { error } = await supabase
                     .from('charities')
@@ -1359,103 +748,184 @@
 
                 if (error) throw error;
 
-                showSuccess('Charity removed successfully');
-                await loadAdminDashboard();
-
-            } catch (err) {
-                console.error('Remove error:', err);
-                showError('Failed to remove charity');
+                showSuccess('Charity application rejected');
+                loadCharities();
+                loadDashboardStats();
+                
+            } catch (error) {
+                console.error('Error rejecting charity:', error);
+                showError('Failed to reject charity');
             }
         }
 
-        async function refreshApplications() {
-            await loadAdminDashboard();
+        // Populate month selector
+        function populateMonthSelector() {
+            const select = document.getElementById('reportMonth');
+            const currentDate = new Date();
+            
+            for (let i = 0; i < 12; i++) {
+                const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+                const option = document.createElement('option');
+                option.value = `${date.getFullYear()}-${date.getMonth() + 1}`;
+                option.textContent = date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+                select.appendChild(option);
+            }
         }
 
-        // Form submission for editing charity
-        document.getElementById('editCharityForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
+        // Load monthly reports
+        async function loadMonthlyReports() {
             try {
-                const charityId = document.getElementById('editCharityId').value;
-                const passwordDisplay = document.getElementById('newPasswordDisplay');
-                const newPassword = passwordDisplay.getAttribute('data-password');
+                const monthYear = document.getElementById('reportMonth').value;
+                if (!monthYear) return;
 
-                const updateData = {
-                    name: document.getElementById('editName').value,
-                    email: document.getElementById('editEmail').value,
-                    phone: document.getElementById('editPhone').value,
-                    postcode: document.getElementById('editPostcode').value,
-                    address: document.getElementById('editAddress').value,
-                    contact_person: document.getElementById('editContact').value,
-                    contact_position: document.getElementById('editPosition').value,
-                    status: document.getElementById('editStatus').value,
-                    balance: parseFloat(document.getElementById('editBalance').value)
-                };
-
-                // Add password fields if new password was generated
-                if (newPassword) {
-                    updateData.password_hash = newPassword; // In production, this should be hashed
-                    updateData.temp_password = newPassword;
-                    updateData.password_reset_required = true;
-                    updateData.last_password_change = new Date().toISOString();
-                }
-
-                const { error } = await supabase
-                    .from('charities')
-                    .update(updateData)
-                    .eq('id', charityId);
+                const [year, month] = monthYear.split('-');
+                
+                showLoading('reportsTable');
+                
+                const { data: reports, error } = await supabase
+                    .from('monthly_reports')
+                    .select(`
+                        *,
+                        charities (name, email)
+                    `)
+                    .eq('month', parseInt(month))
+                    .eq('year', parseInt(year))
+                    .order('total_fee', { ascending: false });
 
                 if (error) throw error;
 
-                if (newPassword) {
-                    alert(`Charity updated successfully!\n\nNew temporary password: ${newPassword}\n\nPlease send this to the charity securely.`);
-                } else {
-                    showSuccess('Charity updated successfully');
-                }
-
-                closeModal('editModal');
-                await loadAdminDashboard();
-
-            } catch (err) {
-                console.error('Update error:', err);
-                showError('Failed to update charity: ' + err.message);
+                displayReportsTable(reports, month, year);
+                
+            } catch (error) {
+                console.error('Error loading reports:', error);
+                showError('Failed to load monthly reports');
             }
-        });
+        }
 
-        // Initialize admin dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Admin dashboard loaded');
+        // Display reports table
+        function displayReportsTable(reports, month, year) {
+            const container = document.getElementById('reportsTable');
             
-            // Check admin authentication
-            const adminUser = localStorage.getItem('givespot_admin_user');
-            if (!adminUser) {
-                window.location.href = 'login.html';
+            if (!reports || reports.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No reports found for this month</p></div>';
                 return;
             }
 
-            const admin = JSON.parse(adminUser);
-            console.log('Admin authenticated:', admin.username);
+            const monthName = new Date(year, month - 1).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+            const totalRevenue = reports.reduce((sum, report) => sum + parseFloat(report.total_fee), 0);
 
-            loadAdminDashboard();
+            let html = `
+                <div style="margin-bottom: 20px;">
+                    <h3>Report for ${monthName}</h3>
+                    <p><strong>Total Revenue: ${formatPrice(totalRevenue)}</strong></p>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Charity</th>
+                            <th>Items Added</th>
+                            <th>Total Fee</th>
+                            <th>Invoice Status</th>
+                            <th>Payment Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
 
-            // Logout functionality
-            document.getElementById('adminLogout').addEventListener('click', function() {
-                localStorage.removeItem('givespot_admin_user');
-                window.location.href = 'login.html';
+            reports.forEach(report => {
+                html += `
+                    <tr>
+                        <td>${report.charities.name}</td>
+                        <td>${report.items_added}</td>
+                        <td>${formatPrice(report.total_fee)}</td>
+                        <td>
+                            <span class="status-badge ${report.invoice_generated ? 'status-active' : 'status-pending'}">
+                                ${report.invoice_generated ? 'Generated' : 'Pending'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge ${report.payment_received ? 'status-active' : 'status-pending'}">
+                                ${report.payment_received ? 'Paid' : 'Unpaid'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                ${!report.invoice_generated ? 
+                                    `<button onclick="generateInvoice('${report.id}')" class="btn-small btn-view">Generate Invoice</button>` :
+                                    `<button onclick="viewInvoice('${report.id}')" class="btn-small btn-view">View Invoice</button>`
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
 
-            // Close modals when clicking outside
-            window.onclick = function(event) {
-                const modals = ['viewModal', 'editModal'];
-                modals.forEach(modalId => {
-                    const modal = document.getElementById(modalId);
-                    if (event.target == modal) {
-                        closeModal(modalId);
-                    }
-                });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Generate monthly invoices for all charities
+        async function generateMonthlyInvoices() {
+            try {
+                if (!confirm('Generate invoices for all charities for the current month?')) return;
+
+                const currentMonth = new Date().getMonth() + 1;
+                const currentYear = new Date().getFullYear();
+
+                const { data: reports, error } = await supabase
+                    .from('monthly_reports')
+                    .update({
+                        invoice_generated: true,
+                        invoice_date: new Date().toISOString()
+                    })
+                    .eq('month', currentMonth)
+                    .eq('year', currentYear)
+                    .eq('invoice_generated', false)
+                    .select();
+
+                if (error) throw error;
+
+                showSuccess(`Generated ${reports?.length || 0} invoices for current month`);
+                loadMonthlyReports();
+                
+            } catch (error) {
+                console.error('Error generating invoices:', error);
+                showError('Failed to generate invoices');
             }
-        });
+        }
+
+        // Show section
+        function showSection(section) {
+            // Update active view
+            currentView = section;
+            
+            // Show/hide sections based on selection
+            if (section === 'reports') {
+                document.getElementById('reportsSection').style.display = 'block';
+                document.getElementById('charitiesSection').style.display = 'none';
+            } else if (section === 'charities') {
+                document.getElementById('charitiesSection').style.display = 'block';
+                document.getElementById('reportsSection').style.display = 'none';
+            }
+        }
+
+        // Utility functions
+        function showLoading(containerId) {
+            document.getElementById(containerId).innerHTML = `
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading...</p>
+                </div>
+            `;
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('givespot_admin');
+                window.location.href = '../index.html';
+            }
+        }
     </script>
 </body>
 </html>
