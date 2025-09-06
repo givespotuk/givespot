@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Items - GiveSpot</title>
-    <meta name="description" content="Browse charity items available near you. Reserve online, collect in person.">
+    <meta name="description" content="Browse charity items available near you. Contact charities directly or visit their shops.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -151,67 +151,6 @@
             background: #2563eb;
         }
 
-        /* Filters Section */
-        .filters-section {
-            background: white;
-            padding: 24px 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .filters-container {
-            display: flex;
-            gap: 24px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .filter-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #374151;
-        }
-
-        .filter-select {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            background: white;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .filter-select:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            border: 1px solid #d1d5db;
-            background: white;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-btn:hover, .filter-btn.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
-
         /* Results Section */
         .results-section {
             padding: 40px 0;
@@ -236,21 +175,22 @@
             margin-top: 4px;
         }
 
-        .view-toggle {
+        .filter-buttons {
             display: flex;
             gap: 8px;
         }
 
-        .view-btn {
+        .filter-btn {
             padding: 8px 16px;
             border: 1px solid #d1d5db;
             background: white;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 14px;
         }
 
-        .view-btn.active {
+        .filter-btn:hover, .filter-btn.active {
             background: #3b82f6;
             color: white;
             border-color: #3b82f6;
@@ -275,62 +215,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        /* Error State */
-        .error-state {
-            text-align: center;
-            padding: 80px 20px;
-        }
-
-        .error-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .error-state h3 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #ef4444;
-        }
-
-        .error-state p {
-            color: #6b7280;
-            margin-bottom: 24px;
-        }
-
-        .retry-btn {
-            background: #3b82f6;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-        }
-
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .empty-state h3 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #374151;
-        }
-
-        .empty-state p {
-            color: #6b7280;
-            margin-bottom: 12px;
         }
 
         /* Items Grid */
@@ -435,8 +319,13 @@
             color: #6b7280;
         }
 
-        .reserve-btn {
-            width: 100%;
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .contact-btn {
+            flex: 1;
             background: #3b82f6;
             color: white;
             padding: 12px;
@@ -445,10 +334,143 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
+            font-size: 14px;
         }
 
-        .reserve-btn:hover {
+        .contact-btn:hover {
             background: #2563eb;
+        }
+
+        .visit-btn {
+            flex: 1;
+            background: white;
+            color: #3b82f6;
+            padding: 12px;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .visit-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        /* Contact Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .contact-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            padding: 12px 24px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #f3f4f6;
         }
 
         /* Responsive Design */
@@ -467,14 +489,12 @@
                 gap: 16px;
             }
 
-            .filters-container {
-                flex-direction: column;
-                align-items: start;
-                gap: 16px;
-            }
-
             .items-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .item-actions {
+                flex-direction: column;
             }
         }
     </style>
@@ -508,34 +528,6 @@
         </div>
     </section>
 
-    <!-- Filters Section -->
-    <section class="filters-section">
-        <div class="container">
-            <div class="filters-container">
-                <div class="filter-group">
-                    <label class="filter-label">Sort By</label>
-                    <select class="filter-select" id="sortBy" onchange="sortItems()">
-                        <option value="newest">Newest First</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="distance">Distance</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">Price Range</label>
-                    <select class="filter-select" id="priceRange" onchange="filterByPrice()">
-                        <option value="">All Prices</option>
-                        <option value="0-5">Under £5</option>
-                        <option value="5-15">£5 - £15</option>
-                        <option value="15-30">£15 - £30</option>
-                        <option value="30+">Over £30</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Results Section -->
     <section class="results-section">
         <div class="container">
@@ -544,9 +536,10 @@
                     <h1 class="results-title">Available Items</h1>
                     <p class="results-count" id="resultsCount">Loading items...</p>
                 </div>
-                <div class="view-toggle">
-                    <button class="view-btn active" onclick="setView('grid')">Grid</button>
-                    <button class="view-btn" onclick="setView('list')">List</button>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="sortItems('newest')">Newest</button>
+                    <button class="filter-btn" onclick="sortItems('price-low')">Price: Low-High</button>
+                    <button class="filter-btn" onclick="sortItems('price-high')">Price: High-Low</button>
                 </div>
             </div>
 
@@ -556,20 +549,12 @@
                 <p>Loading charity items...</p>
             </div>
 
-            <!-- Error State -->
-            <div id="errorState" class="error-state" style="display: none;">
-                <div class="error-icon">⚠️</div>
-                <h3>Unable to load items</h3>
-                <p>There was a problem connecting to our database. Please try again.</p>
-                <button onclick="loadItems()" class="retry-btn">Try Again</button>
-            </div>
-
             <!-- Empty State -->
             <div id="emptyState" class="empty-state" style="display: none;">
                 <div class="empty-icon">📦</div>
                 <h3>No items found</h3>
                 <p>There are no charity items available in this area at the moment.</p>
-                <p>Try expanding your search radius or check back later for new items.</p>
+                <p>Try expanding your search or check back later for new items.</p>
             </div>
 
             <!-- Items Grid -->
@@ -579,92 +564,71 @@
         </div>
     </section>
 
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Contact Charity</h3>
+                <button class="modal-close" onclick="closeContactModal()">×</button>
+            </div>
+            
+            <div id="contactInfo" class="contact-info">
+                <!-- Contact details will be populated here -->
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeContactModal()">Close</button>
+                <button class="contact-btn" onclick="sendInquiry()">Send Inquiry</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/config.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/items.js"></script>
     <script>
         let allItems = [];
         let filteredItems = [];
-        let currentDistance = 10;
-        let currentSort = 'newest';
+        let selectedItem = null;
 
-        // Search items
-        function searchItems() {
-            const postcode = document.getElementById('postcodeSearch').value.trim();
-            
-            if (!postcode) {
-                // If no postcode, show all items
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Browse page loaded');
+            loadItems();
+        });
+
+        // Load all active items
+        async function loadItems() {
+            try {
+                showLoadingState();
+                console.log('Loading items from database...');
+                
+                const { data: items, error } = await supabase
+                    .from('items')
+                    .select(`
+                        *,
+                        charities (name, postcode, address, phone, email)
+                    `)
+                    .eq('status', 'active')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Database error:', error);
+                    showEmptyState();
+                    return;
+                }
+
+                console.log('Items loaded:', items);
+                allItems = items || [];
                 filteredItems = [...allItems];
                 displayItems(filteredItems);
-                return;
+                
+            } catch (err) {
+                console.error('Load items error:', err);
+                showEmptyState();
             }
-            
-            console.log(`Searching for items near ${postcode}`);
-            
-            // For now, just show all items (distance filtering can be enhanced later)
-            filteredItems = [...allItems];
-            displayItems(filteredItems);
         }
 
-        // Sort items
-        function sortItems() {
-            const sortBy = document.getElementById('sortBy').value;
-            currentSort = sortBy;
-            
-            let sortedItems = [...filteredItems];
-            
-            switch(sortBy) {
-                case 'newest':
-                    sortedItems.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                    break;
-                case 'price-low':
-                    sortedItems.sort((a, b) => a.price - b.price);
-                    break;
-                case 'price-high':
-                    sortedItems.sort((a, b) => b.price - a.price);
-                    break;
-                case 'distance':
-                    // Distance sorting would require actual distance calculation
-                    break;
-            }
-            
-            displayItems(sortedItems);
-        }
-
-        // Filter by price
-        function filterByPrice() {
-            const priceRange = document.getElementById('priceRange').value;
-            
-            if (!priceRange) {
-                filteredItems = [...allItems];
-            } else {
-                filteredItems = allItems.filter(item => {
-                    const price = item.price;
-                    switch(priceRange) {
-                        case '0-5': return price < 5;
-                        case '5-15': return price >= 5 && price <= 15;
-                        case '15-30': return price >= 15 && price <= 30;
-                        case '30+': return price > 30;
-                        default: return true;
-                    }
-                });
-            }
-            
-            displayItems(filteredItems);
-        }
-
-        // Set view mode
-        function setView(view) {
-            document.querySelectorAll('.view-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            const itemsGrid = document.getElementById('itemsGrid');
-            itemsGrid.className = view === 'grid' ? 'items-grid' : 'items-list';
-        }
-
-        // Override displayItems function for this page
+        // Display items
         function displayItems(items) {
             const itemsGrid = document.getElementById('itemsGrid');
             const resultsCount = document.getElementById('resultsCount');
@@ -699,9 +663,14 @@
                             <span>📍</span>
                             <span>${item.charities?.postcode || 'Unknown Location'}</span>
                         </div>
-                        <button onclick="reserveItem('${item.id}', '${item.item_code}')" class="reserve-btn">
-                            Reserve Item
-                        </button>
+                        <div class="item-actions">
+                            <button onclick="contactCharity('${item.id}')" class="contact-btn">
+                                Contact Charity
+                            </button>
+                            <button onclick="getDirections('${item.charities?.postcode}')" class="visit-btn">
+                                Visit Shop
+                            </button>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -709,56 +678,135 @@
             showItemsGrid();
         }
 
-        // Override loadItems for this page
-        async function loadItems() {
-            try {
-                showLoadingState();
-                console.log('Loading items from database...');
-                
-                const { data: items, error } = await supabase
-                    .from('items')
-                    .select(`
-                        *,
-                        charities (name, postcode, address)
-                    `)
-                    .eq('status', 'active')
-                    .order('created_at', { ascending: false });
-
-                if (error) {
-                    console.error('Database error:', error);
-                    showErrorState();
-                    return;
-                }
-
-                console.log('Items loaded:', items);
-                allItems = items || [];
+        // Search items by postcode
+        function searchItems() {
+            const postcode = document.getElementById('postcodeSearch').value.trim();
+            
+            if (!postcode) {
                 filteredItems = [...allItems];
                 displayItems(filteredItems);
-                
-            } catch (err) {
-                console.error('Load items error:', err);
-                showErrorState();
+                return;
             }
+            
+            console.log(`Searching for items near ${postcode}`);
+            
+            // Simple postcode filtering
+            filteredItems = allItems.filter(item => {
+                const itemPostcode = item.charities?.postcode || '';
+                return itemPostcode.toLowerCase().includes(postcode.toLowerCase());
+            });
+            
+            displayItems(filteredItems);
         }
 
-        // State management
+        // Sort items
+        function sortItems(sortBy) {
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            let sortedItems = [...filteredItems];
+            
+            switch(sortBy) {
+                case 'newest':
+                    sortedItems.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+                case 'price-low':
+                    sortedItems.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    sortedItems.sort((a, b) => b.price - a.price);
+                    break;
+            }
+            
+            displayItems(sortedItems);
+        }
+
+        // Contact charity
+        function contactCharity(itemId) {
+            const item = allItems.find(i => i.id === itemId);
+            if (!item) return;
+            
+            selectedItem = item;
+            const charity = item.charities;
+            
+            document.getElementById('contactInfo').innerHTML = `
+                <h4 style="margin-bottom: 16px;">Contact Details for ${charity.name}</h4>
+                <div class="contact-item">
+                    <span class="contact-icon">📧</span>
+                    <span>Email: ${charity.email || 'Not provided'}</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <span>Phone: ${charity.phone || 'Not provided'}</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <span>Location: ${charity.address || charity.postcode || 'Not provided'}</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📦</span>
+                    <span>Item: ${item.item_code} - ${formatPrice(item.price)}</span>
+                </div>
+            `;
+            
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        // Get directions to charity shop
+        function getDirections(postcode) {
+            if (!postcode) {
+                showError('Location not available for this charity');
+                return;
+            }
+            
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(postcode + ' UK')}`;
+            window.open(mapsUrl, '_blank');
+        }
+
+        // Send inquiry (placeholder)
+        function sendInquiry() {
+            if (!selectedItem) return;
+            
+            const charity = selectedItem.charities;
+            const subject = `Inquiry about ${selectedItem.item_code} on GiveSpot`;
+            const body = `Hello ${charity.name},
+
+I'm interested in the item ${selectedItem.item_code} listed for ${formatPrice(selectedItem.price)} on GiveSpot.
+
+Could you please let me know:
+- Is this item still available?
+- When would be the best time to visit your shop?
+- Do you have any other similar items?
+
+Thank you for your time.
+
+Best regards`;
+            
+            const mailtoUrl = `mailto:${charity.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoUrl;
+            
+            closeContactModal();
+            showSuccess('Email client opened. Please send your inquiry to the charity.');
+        }
+
+        // Close contact modal
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+            selectedItem = null;
+        }
+
+        // State management functions
         function showLoadingState() {
             document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('errorState').style.display = 'none';
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('itemsGrid').style.display = 'none';
-        }
-
-        function showErrorState() {
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('errorState').style.display = 'block';
             document.getElementById('emptyState').style.display = 'none';
             document.getElementById('itemsGrid').style.display = 'none';
         }
 
         function showEmptyState() {
             document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('errorState').style.display = 'none';
             document.getElementById('emptyState').style.display = 'block';
             document.getElementById('itemsGrid').style.display = 'none';
             document.getElementById('resultsCount').textContent = '0 items found';
@@ -766,16 +814,9 @@
 
         function showItemsGrid() {
             document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('errorState').style.display = 'none';
             document.getElementById('emptyState').style.display = 'none';
             document.getElementById('itemsGrid').style.display = 'grid';
         }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Browse page loaded');
-            loadItems();
-        });
     </script>
 </body>
 </html>
