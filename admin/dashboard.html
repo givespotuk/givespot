@@ -178,7 +178,7 @@
 
         .section-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
             padding-bottom: 16px;
@@ -268,6 +268,21 @@
             background: #059669;
         }
 
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
         .btn-warning {
             background: #f59e0b;
             color: white;
@@ -281,6 +296,26 @@
 
         .btn-warning:hover {
             background: #d97706;
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-info:hover {
+            background: #2563eb;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
         }
 
         /* Charity Rows */
@@ -313,6 +348,127 @@
             gap: 16px;
             font-size: 14px;
             color: #4b5563;
+        }
+
+        .charity-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-suspended {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-paused {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .close {
+            color: #9ca3af;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close:hover {
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .password-display {
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ef4444;
+            text-align: center;
+            margin: 12px 0;
         }
 
         /* Activity Items */
@@ -351,15 +507,6 @@
 
         .activity-status {
             margin-left: auto;
-        }
-
-        .status-active {
-            background: #d1fae5;
-            color: #065f46;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
         }
 
         .status-reserved {
@@ -459,12 +606,22 @@
                 gap: 12px;
             }
 
+            .charity-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
             .application-actions {
                 flex-direction: column;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
             }
         }
     </style>
@@ -475,7 +632,7 @@
         <div class="container">
             <div class="header-content">
                 <a href="../index.html" class="logo-link">
-                    <div class="logo-icon">🔐</div>
+                    <div class="logo-icon">🔒</div>
                     <h1 class="logo-text">GiveSpot Admin</h1>
                 </a>
                 <nav class="nav">
@@ -584,12 +741,97 @@
         </div>
     </main>
 
+    <!-- View Charity Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Charity Details</h3>
+                <span class="close" onclick="closeModal('viewModal')">&times;</span>
+            </div>
+            <div id="viewModalContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Charity Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Charity</h3>
+                <span class="close" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <form id="editCharityForm">
+                <input type="hidden" id="editCharityId">
+                
+                <div class="form-group">
+                    <label for="editName">Charity Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="email" id="editEmail" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPhone">Phone</label>
+                    <input type="text" id="editPhone">
+                </div>
+
+                <div class="form-group">
+                    <label for="editPostcode">Postcode</label>
+                    <input type="text" id="editPostcode" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editAddress">Address</label>
+                    <textarea id="editAddress" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editContact">Contact Person</label>
+                    <input type="text" id="editContact">
+                </div>
+
+                <div class="form-group">
+                    <label for="editPosition">Contact Position</label>
+                    <input type="text" id="editPosition">
+                </div>
+
+                <div class="form-group">
+                    <label for="editStatus">Status</label>
+                    <select id="editStatus">
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="paused">Paused</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editBalance">Account Balance (£)</label>
+                    <input type="number" id="editBalance" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <button type="button" onclick="generateNewPassword()" class="btn-warning">Generate New Password</button>
+                    <div id="newPasswordDisplay" class="password-display" style="display: none;"></div>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" onclick="closeModal('editModal')" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <div class="logo-icon">🔐</div>
+                    <div class="logo-icon">🔒</div>
                     <span class="logo-text">GiveSpot Admin</span>
                 </div>
                 <p class="footer-text">
@@ -638,6 +880,28 @@
                 month: 'short',
                 day: 'numeric'
             });
+        }
+
+        // Password generation
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let password = '';
+            for (let i = 0; i < 8; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            if (modalId === 'editModal') {
+                document.getElementById('newPasswordDisplay').style.display = 'none';
+            }
         }
 
         // Load admin dashboard
@@ -722,7 +986,7 @@
                             <button onclick="approveApplication('${app.id}')" class="btn-success">
                                 ✅ Approve
                             </button>
-                            <button onclick="rejectApplication('${app.id}')" class="btn-warning">
+                            <button onclick="rejectApplication('${app.id}')" class="btn-danger">
                                 ❌ Reject
                             </button>
                         </div>
@@ -770,15 +1034,24 @@
                     <div class="charity-row">
                         <div class="charity-info">
                             <h4>${charity.name}</h4>
-                            <p>${charity.email} • ${charity.postcode}</p>
+                            <p>${charity.email} • ${charity.postcode} • <span class="status-badge status-${charity.status}">${charity.status}</span></p>
                         </div>
                         <div class="charity-stats">
                             <span>Balance: ${formatPrice(charity.balance || 0)}</span>
                             <span>Joined: ${formatDate(charity.created_at)}</span>
                         </div>
                         <div class="charity-actions">
-                            <button onclick="pauseCharity('${charity.id}')" class="btn-warning">
-                                Pause
+                            <button onclick="viewCharity('${charity.id}')" class="btn-info btn-small">
+                                👁️ View
+                            </button>
+                            <button onclick="editCharity('${charity.id}')" class="btn-secondary btn-small">
+                                ✏️ Edit
+                            </button>
+                            <button onclick="toggleCharityStatus('${charity.id}', '${charity.status}')" class="btn-warning btn-small">
+                                ${charity.status === 'active' ? '⏸️ Suspend' : '▶️ Activate'}
+                            </button>
+                            <button onclick="removeCharity('${charity.id}')" class="btn-danger btn-small">
+                                🗑️ Remove
                             </button>
                         </div>
                     </div>
@@ -850,7 +1123,29 @@
 
                 if (fetchError) throw fetchError;
 
-                // Create charity record
+                // Check if charity already exists with this email
+                const { data: existingCharity, error: checkError } = await supabase
+                    .from('charities')
+                    .select('id, email')
+                    .eq('email', application.email)
+                    .single();
+
+                if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows returned
+                    throw checkError;
+                }
+
+                if (existingCharity) {
+                    showError('A charity with this email already exists. Cannot approve duplicate application.');
+                    return;
+                }
+
+                // Generate temporary password
+                const tempPassword = generatePassword();
+
+                // Get current admin user
+                const currentAdmin = JSON.parse(localStorage.getItem('givespot_admin_user'));
+
+                // Create charity record with password fields
                 const { error: insertError } = await supabase
                     .from('charities')
                     .insert({
@@ -864,7 +1159,12 @@
                         contact_position: application.contact_position,
                         status: 'active',
                         balance: 0.00,
-                        approved_at: new Date().toISOString()
+                        password_hash: tempPassword, // In production, this should be hashed
+                        temp_password: tempPassword,
+                        password_reset_required: true,
+                        last_password_change: new Date().toISOString(),
+                        approved_at: new Date().toISOString(),
+                        approved_by: currentAdmin?.id || null
                     });
 
                 if (insertError) throw insertError;
@@ -874,13 +1174,17 @@
                     .from('charity_applications')
                     .update({
                         status: 'approved',
-                        processed_at: new Date().toISOString()
+                        processed_at: new Date().toISOString(),
+                        processed_by: currentAdmin?.id || null,
+                        temp_password_sent: tempPassword
                     })
                     .eq('id', applicationId);
 
                 if (updateError) throw updateError;
 
-                showSuccess('Charity approved successfully!');
+                // Show password to admin
+                alert(`Charity approved successfully!\n\nTemporary Login Details:\nEmail: ${application.email}\nPassword: ${tempPassword}\n\nPlease send these credentials to the charity securely.`);
+
                 await loadAdminDashboard();
 
             } catch (err) {
@@ -895,11 +1199,14 @@
                     return;
                 }
 
+                const currentAdmin = JSON.parse(localStorage.getItem('givespot_admin_user'));
+
                 const { error } = await supabase
                     .from('charity_applications')
                     .update({
                         status: 'rejected',
-                        processed_at: new Date().toISOString()
+                        processed_at: new Date().toISOString(),
+                        processed_by: currentAdmin?.id || null
                     })
                     .eq('id', applicationId);
 
@@ -914,27 +1221,207 @@
             }
         }
 
-        async function pauseCharity(charityId) {
+        async function viewCharity(charityId) {
             try {
+                const { data: charity, error } = await supabase
+                    .from('charities')
+                    .select('*')
+                    .eq('id', charityId)
+                    .single();
+
+                if (error) throw error;
+
+                const content = `
+                    <div class="form-group">
+                        <strong>Charity Name:</strong> ${charity.name}
+                    </div>
+                    <div class="form-group">
+                        <strong>Email:</strong> ${charity.email}
+                    </div>
+                    <div class="form-group">
+                        <strong>Phone:</strong> ${charity.phone || 'Not provided'}
+                    </div>
+                    <div class="form-group">
+                        <strong>Postcode:</strong> ${charity.postcode}
+                    </div>
+                    <div class="form-group">
+                        <strong>Address:</strong> ${charity.address || 'Not provided'}
+                    </div>
+                    <div class="form-group">
+                        <strong>Contact Person:</strong> ${charity.contact_person || 'Not provided'}
+                    </div>
+                    <div class="form-group">
+                        <strong>Registration Number:</strong> ${charity.registration_number || 'Not provided'}
+                    </div>
+                    <div class="form-group">
+                        <strong>Status:</strong> <span class="status-badge status-${charity.status}">${charity.status}</span>
+                    </div>
+                    <div class="form-group">
+                        <strong>Account Balance:</strong> ${formatPrice(charity.balance || 0)}
+                    </div>
+                    <div class="form-group">
+                        <strong>Joined:</strong> ${formatDate(charity.created_at)}
+                    </div>
+                    <div class="form-group">
+                        <strong>Last Password Change:</strong> ${charity.last_password_change ? formatDate(charity.last_password_change) : 'Never'}
+                    </div>
+                    <div class="form-group">
+                        <strong>Password Reset Required:</strong> ${charity.password_reset_required ? 'Yes' : 'No'}
+                    </div>
+                `;
+
+                document.getElementById('viewModalContent').innerHTML = content;
+                openModal('viewModal');
+
+            } catch (err) {
+                console.error('Error viewing charity:', err);
+                showError('Failed to load charity details');
+            }
+        }
+
+        async function editCharity(charityId) {
+            try {
+                const { data: charity, error } = await supabase
+                    .from('charities')
+                    .select('*')
+                    .eq('id', charityId)
+                    .single();
+
+                if (error) throw error;
+
+                // Populate form
+                document.getElementById('editCharityId').value = charity.id;
+                document.getElementById('editName').value = charity.name;
+                document.getElementById('editEmail').value = charity.email;
+                document.getElementById('editPhone').value = charity.phone || '';
+                document.getElementById('editPostcode').value = charity.postcode;
+                document.getElementById('editAddress').value = charity.address || '';
+                document.getElementById('editContact').value = charity.contact_person || '';
+                document.getElementById('editPosition').value = charity.contact_position || '';
+                document.getElementById('editStatus').value = charity.status;
+                document.getElementById('editBalance').value = charity.balance || 0;
+
+                openModal('editModal');
+
+            } catch (err) {
+                console.error('Error loading charity for edit:', err);
+                showError('Failed to load charity for editing');
+            }
+        }
+
+        function generateNewPassword() {
+            const newPassword = generatePassword();
+            const display = document.getElementById('newPasswordDisplay');
+            display.textContent = `New Password: ${newPassword}`;
+            display.style.display = 'block';
+            display.setAttribute('data-password', newPassword);
+        }
+
+        async function toggleCharityStatus(charityId, currentStatus) {
+            try {
+                const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
+                const action = newStatus === 'active' ? 'activate' : 'suspend';
+
+                if (!confirm(`Are you sure you want to ${action} this charity?`)) {
+                    return;
+                }
+
                 const { error } = await supabase
                     .from('charities')
-                    .update({ status: 'paused' })
+                    .update({ status: newStatus })
                     .eq('id', charityId);
 
                 if (error) throw error;
 
-                showSuccess('Charity paused');
+                showSuccess(`Charity ${action}d successfully`);
                 await loadAdminDashboard();
 
             } catch (err) {
-                console.error('Pause error:', err);
-                showError('Failed to pause charity: ' + err.message);
+                console.error('Status toggle error:', err);
+                showError('Failed to update charity status');
+            }
+        }
+
+        async function removeCharity(charityId) {
+            try {
+                if (!confirm('Are you sure you want to permanently remove this charity? This action cannot be undone.')) {
+                    return;
+                }
+
+                if (!confirm('This will delete all charity data including items and reservations. Type "DELETE" to confirm.')) {
+                    return;
+                }
+
+                const { error } = await supabase
+                    .from('charities')
+                    .delete()
+                    .eq('id', charityId);
+
+                if (error) throw error;
+
+                showSuccess('Charity removed successfully');
+                await loadAdminDashboard();
+
+            } catch (err) {
+                console.error('Remove error:', err);
+                showError('Failed to remove charity');
             }
         }
 
         async function refreshApplications() {
             await loadAdminDashboard();
         }
+
+        // Form submission for editing charity
+        document.getElementById('editCharityForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            try {
+                const charityId = document.getElementById('editCharityId').value;
+                const passwordDisplay = document.getElementById('newPasswordDisplay');
+                const newPassword = passwordDisplay.getAttribute('data-password');
+
+                const updateData = {
+                    name: document.getElementById('editName').value,
+                    email: document.getElementById('editEmail').value,
+                    phone: document.getElementById('editPhone').value,
+                    postcode: document.getElementById('editPostcode').value,
+                    address: document.getElementById('editAddress').value,
+                    contact_person: document.getElementById('editContact').value,
+                    contact_position: document.getElementById('editPosition').value,
+                    status: document.getElementById('editStatus').value,
+                    balance: parseFloat(document.getElementById('editBalance').value)
+                };
+
+                // Add password fields if new password was generated
+                if (newPassword) {
+                    updateData.password_hash = newPassword; // In production, this should be hashed
+                    updateData.temp_password = newPassword;
+                    updateData.password_reset_required = true;
+                    updateData.last_password_change = new Date().toISOString();
+                }
+
+                const { error } = await supabase
+                    .from('charities')
+                    .update(updateData)
+                    .eq('id', charityId);
+
+                if (error) throw error;
+
+                if (newPassword) {
+                    alert(`Charity updated successfully!\n\nNew temporary password: ${newPassword}\n\nPlease send this to the charity securely.`);
+                } else {
+                    showSuccess('Charity updated successfully');
+                }
+
+                closeModal('editModal');
+                await loadAdminDashboard();
+
+            } catch (err) {
+                console.error('Update error:', err);
+                showError('Failed to update charity: ' + err.message);
+            }
+        });
 
         // Initialize admin dashboard
         document.addEventListener('DOMContentLoaded', function() {
@@ -957,6 +1444,17 @@
                 localStorage.removeItem('givespot_admin_user');
                 window.location.href = 'login.html';
             });
+
+            // Close modals when clicking outside
+            window.onclick = function(event) {
+                const modals = ['viewModal', 'editModal'];
+                modals.forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (event.target == modal) {
+                        closeModal(modalId);
+                    }
+                });
+            }
         });
     </script>
 </body>
