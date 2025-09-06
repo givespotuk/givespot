@@ -255,6 +255,58 @@
             font-weight: 500;
         }
 
+        /* Warning Message */
+        .warning-message {
+            display: none;
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .warning-message.show {
+            display: block;
+        }
+
+        .warning-message p {
+            color: #d97706;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Demo Helper */
+        .demo-helper {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .demo-helper p {
+            color: #0369a1;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .demo-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .demo-btn:hover {
+            background: #0284c7;
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .login-card {
@@ -271,7 +323,7 @@
     <div class="container">
         <div class="login-card">
             <div class="logo">
-                <div class="logo-icon">💝</div>
+                <div class="logo-icon">❤️</div>
                 <span class="logo-text">GiveSpot</span>
             </div>
 
@@ -280,8 +332,18 @@
                 <p>Sign in to your charity account</p>
             </div>
 
+            <!-- Demo Helper (remove in production) -->
+            <div class="demo-helper">
+                <p><strong>Quick Login:</strong> Use your approved charity email and the temporary password provided by admin.</p>
+                <button type="button" onclick="fillDemoLogin()" class="demo-btn">Fill Demo Login</button>
+            </div>
+
             <div id="errorMessage" class="error-message">
                 <p>Invalid email or password. Please try again.</p>
+            </div>
+
+            <div id="warningMessage" class="warning-message">
+                <p>Your password needs to be reset. Please contact admin for assistance.</p>
             </div>
 
             <div id="successMessage" class="success-message">
@@ -329,12 +391,20 @@
             const loginBtn = document.getElementById('loginBtn');
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
+            const warningMessage = document.getElementById('warningMessage');
 
             // Check if user is already logged in
             const currentUser = localStorage.getItem('givespot_charity_user');
             if (currentUser) {
                 window.location.href = 'dashboard.html';
                 return;
+            }
+
+            // Hide all messages
+            function hideAllMessages() {
+                errorMessage.classList.remove('show');
+                successMessage.classList.remove('show');
+                warningMessage.classList.remove('show');
             }
 
             form.addEventListener('submit', async function(e) {
@@ -345,16 +415,16 @@
                 loginBtn.textContent = 'Signing in...';
                 
                 // Hide previous messages
-                errorMessage.classList.remove('show');
-                successMessage.classList.remove('show');
+                hideAllMessages();
 
                 try {
                     const formData = new FormData(form);
                     const email = formData.get('email');
                     const password = formData.get('password');
 
-                    // For now, we'll use a simple check against the charities table
-                    // In production, you'd want proper password hashing and authentication
+                    console.log('Attempting login for:', email);
+
+                    // Get charity data with password fields
                     const { data: charity, error } = await supabase
                         .from('charities')
                         .select('*')
@@ -362,61 +432,149 @@
                         .eq('status', 'active')
                         .single();
 
-                    if (error || !charity) {
+                    if (error) {
+                        console.error('Database error:', error);
                         throw new Error('Invalid credentials');
                     }
 
-                    // Simple password check (in production, use proper hashing)
-                    // For demo purposes, we'll accept any password for active charities
-                    console.log('Login successful for charity:', charity.name);
-                    
-                    // Store user session
-                    localStorage.setItem('givespot_charity_user', JSON.stringify({
-                        id: charity.id,
-                        name: charity.name,
-                        email: charity.email,
-                        loginTime: new Date().toISOString()
-                    }));
+                    if (!charity) {
+                        throw new Error('Invalid credentials');
+                    }
 
-                    // Show success message
-                    successMessage.classList.add('show');
-                    
-                    // Redirect to dashboard
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
+                    console.log('Found charity:', charity.name);
+                    console.log('Password fields check:', {
+                        has_password_hash: !!charity.password_hash,
+                        has_temp_password: !!charity.temp_password,
+                        password_reset_required: charity.password_reset_required
+                    });
+
+                    // Check password against both temp_password and password_hash
+                    let passwordValid = false;
+                    let passwordType = '';
+
+                    // First check temp_password (generated by admin)
+                    if (charity.temp_password && charity.temp_password === password) {
+                        passwordValid = true;
+                        passwordType = 'temp';
+                        console.log('Password matched temp_password');
+                    }
+                    // Then check password_hash (should be same as temp for now)
+                    else if (charity.password_hash && charity.password_hash === password) {
+                        passwordValid = true;
+                        passwordType = 'hash';
+                        console.log('Password matched password_hash');
+                    }
+
+                    if (!passwordValid) {
+                        console.log('Password mismatch. Entered:', password);
+                        console.log('Expected temp_password:', charity.temp_password);
+                        console.log('Expected password_hash:', charity.password_hash);
+                        throw new Error('Invalid credentials');
+                    }
+
+                    // Check if password reset is required
+                    if (charity.password_reset_required) {
+                        console.log('Password reset required for this charity');
+                        warningMessage.querySelector('p').textContent = 
+                            'Your temporary password worked, but you need to reset it. Please contact admin or use the dashboard to change your password.';
+                        warningMessage.classList.add('show');
+                        
+                        // Still allow login but show warning
+                        setTimeout(() => {
+                            proceedWithLogin(charity);
+                        }, 2000);
+                    } else {
+                        // Proceed with normal login
+                        proceedWithLogin(charity);
+                    }
 
                 } catch (error) {
                     console.error('Login error:', error);
                     
-                    // Show error message
+                    // Show specific error message
+                    const errorText = error.message === 'Invalid credentials' 
+                        ? 'Invalid email or password. Please check your credentials and try again.'
+                        : 'Login failed: ' + error.message;
+                    
+                    errorMessage.querySelector('p').textContent = errorText;
                     errorMessage.classList.add('show');
+                    
+                    // Re-enable submit button
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Sign In';
                 }
-
-                // Re-enable submit button
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Sign In';
             });
 
-            // Demo login helper (remove in production)
-            window.demoLogin = async function() {
+            // Function to complete login process
+            function proceedWithLogin(charity) {
+                console.log('Login successful for charity:', charity.name);
+                
+                // Store user session with all relevant data
+                const userSession = {
+                    id: charity.id,
+                    name: charity.name,
+                    email: charity.email,
+                    postcode: charity.postcode,
+                    status: charity.status,
+                    balance: charity.balance || 0,
+                    password_reset_required: charity.password_reset_required || false,
+                    loginTime: new Date().toISOString()
+                };
+
+                localStorage.setItem('givespot_charity_user', JSON.stringify(userSession));
+
+                // Update last login time in database
+                supabase
+                    .from('charities')
+                    .update({ 
+                        last_login: new Date().toISOString() 
+                    })
+                    .eq('id', charity.id)
+                    .then(() => {
+                        console.log('Last login time updated');
+                    })
+                    .catch((err) => {
+                        console.warn('Could not update last login:', err);
+                    });
+
+                // Show success message
+                successMessage.classList.add('show');
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            }
+
+            // Demo login helper function
+            window.fillDemoLogin = async function() {
                 try {
+                    // Get the first active charity with a temp password
                     const { data: charity, error } = await supabase
                         .from('charities')
                         .select('*')
                         .eq('status', 'active')
+                        .not('temp_password', 'is', null)
                         .limit(1)
                         .single();
 
                     if (charity) {
                         document.getElementById('email').value = charity.email;
-                        document.getElementById('password').value = 'demo123';
+                        document.getElementById('password').value = charity.temp_password || charity.password_hash || '';
                         console.log('Demo login filled for:', charity.name);
+                        console.log('Using password:', charity.temp_password || charity.password_hash);
+                    } else {
+                        console.log('No active charities with passwords found');
+                        alert('No demo login available. Please contact admin to approve a charity first.');
                     }
                 } catch (error) {
                     console.error('Demo login error:', error);
+                    alert('Demo login failed: ' + error.message);
                 }
             };
+
+            // Legacy demo function for compatibility
+            window.demoLogin = window.fillDemoLogin;
         });
     </script>
 </body>
