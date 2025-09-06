@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - GiveSpot</title>
+    <meta name="description" content="Secure admin access to GiveSpot platform management.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .admin-login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 2px solid #ef4444;
+            text-align: center;
+        }
+
+        .admin-header {
+            margin-bottom: 32px;
+        }
+
+        .admin-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 16px;
+        }
+
+        .admin-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .admin-header p {
+            color: #ef4444;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .security-notice {
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .security-notice h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 8px;
+        }
+
+        .security-notice ul {
+            font-size: 12px;
+            color: #991b1b;
+            margin-left: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #ef4444;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: #dc2626;
+        }
+
+        .login-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .error-message p {
+            color: #dc2626;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .success-message {
+            display: none;
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-message p {
+            color: #047857;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .back-link a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link a:hover {
+            color: #374151;
+        }
+
+        @media (max-width: 480px) {
+            .admin-login-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="admin-login-card">
+            <div class="admin-header">
+                <div class="admin-icon">🔐</div>
+                <h1>Admin Access</h1>
+                <p>RESTRICTED AREA</p>
+            </div>
+
+            <div class="security-notice">
+                <h3>Security Notice</h3>
+                <ul>
+                    <li>Admin access is logged and monitored</li>
+                    <li>Unauthorized access attempts are tracked</li>
+                    <li>Use only authorized credentials</li>
+                </ul>
+            </div>
+
+            <div id="errorMessage" class="error-message">
+                <p>Invalid admin credentials. Access denied.</p>
+            </div>
+
+            <div id="successMessage" class="success-message">
+                <p>Authentication successful. Redirecting to admin panel...</p>
+            </div>
+
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">Admin Username</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Enter admin username" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Admin Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter admin password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">Access Admin Panel</button>
+            </form>
+
+            <div class="back-link">
+                <a href="../index.html">← Back to GiveSpot</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('adminLoginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            // Check if admin is already logged in
+            const currentAdmin = localStorage.getItem('givespot_admin_user');
+            if (currentAdmin) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Disable submit button
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Authenticating...';
+                
+                // Hide previous messages
+                errorMessage.classList.remove('show');
+                successMessage.classList.remove('show');
+
+                try {
+                    const formData = new FormData(form);
+                    const username = formData.get('username');
+                    const password = formData.get('password');
+
+                    // Query admin table
+                    const { data: admin, error } = await supabase
+                        .from('admins')
+                        .select('*')
+                        .eq('username', username)
+                        .eq('password_hash', password)
+                        .single();
+
+                    if (error || !admin) {
+                        throw new Error('Invalid admin credentials');
+                    }
+
+                    console.log('Admin login successful:', admin.username);
+                    
+                    // Update last login time
+                    await supabase
+                        .from('admins')
+                        .update({ last_login: new Date().toISOString() })
+                        .eq('id', admin.id);
+                    
+                    // Store admin session
+                    localStorage.setItem('givespot_admin_user', JSON.stringify({
+                        id: admin.id,
+                        username: admin.username,
+                        email: admin.email,
+                        role: admin.role,
+                        loginTime: new Date().toISOString()
+                    }));
+
+                    // Show success message
+                    successMessage.classList.add('show');
+                    
+                    // Redirect to admin dashboard
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+
+                } catch (error) {
+                    console.error('Admin login error:', error);
+                    
+                    // Show error message
+                    errorMessage.classList.add('show');
+                    
+                    // Log failed attempt (in production, you'd want proper logging)
+                    console.warn('Failed admin login attempt for username:', formData.get('username'));
+                }
+
+                // Re-enable submit button
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Access Admin Panel';
+            });
+        });
+    </script>
+</body>
+</html>
