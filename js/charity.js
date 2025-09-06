@@ -1,337 +1,304 @@
-// Charity functionality for GiveSpot
+// Charity authentication and management functions
 
-// Register a new charity
-async function registerCharity(charityData) {
+// Get current logged-in charity
+function getCurrentCharity() {
     try {
-        showLoading('Submitting charity application...');
+        const charityData = localStorage.getItem('givespot_charity');
+        if (!charityData) return null;
         
-        // Validate required fields
-        if (!charityData.name || !charityData.email || !charityData.postcode) {
-            throw new Error('Please fill in all required fields');
-        }
+        const charity = JSON.parse(charityData);
         
-        if (!isValidEmail(charityData.email)) {
-            throw new Error('Please enter a valid email address');
-        }
-        
-        if (!isValidPostcode(charityData.postcode)) {
-            throw new Error('Please enter a valid UK postcode');
-        }
-        
-        // Insert charity application
-        const { data, error } = await supabase
-            .from('charities')
-            .insert([{
-                name: charityData.name.trim(),
-                email: charityData.email.trim().toLowerCase(),
-                registration_number: charityData.registrationNumber?.trim() || null,
-                postcode: charityData.postcode.trim().toUpperCase(),
-                address: charityData.address?.trim() || null,
-                phone: charityData.phone?.trim() || null,
-                contact_person: charityData.contactPerson?.trim() || null,
-                contact_position: charityData.contactPosition?.trim() || null,
-                status: 'pending',
-                balance: 0.00
-            }])
-            .select();
-
-        if (error) {
-            if (error.code === '23505') { // Unique constraint violation
-                throw new Error('This email is already registered. Please use a different email address.');
-            }
-            throw error;
-        }
-
-        console.log('Charity registered:', data[0]);
-        showSuccess('Application submitted successfully! We will review and contact you within 2-3 business days.');
-        
-        // Clear form if it exists
-        const form = document.getElementById('charityRegisterForm');
-        if (form) {
-            form.reset();
-        }
-        
-        hideLoading();
-        return data[0];
-        
-    } catch (err) {
-        console.error('Registration error:', err);
-        showError(err.message);
-        hideLoading();
-        return null;
-    }
-}
-
-// Login charity (simple version for now)
-async function loginCharity(email, password) {
-    try {
-        showLoading('Logging in...');
-        
-        if (!email || !password) {
-            throw new Error('Please enter both email and password');
-        }
-        
-        if (!isValidEmail(email)) {
-            throw new Error('Please enter a valid email address');
-        }
-        
-        // For now, just check if charity exists and is active
-        // TODO: Implement proper password authentication in later steps
-        const { data: charity, error } = await supabase
-            .from('charities')
-            .select('*')
-            .eq('email', email.toLowerCase())
-            .eq('status', 'active')
-            .single();
-
-        if (error || !charity) {
-            throw new Error('Invalid login credentials or charity not approved yet');
-        }
-
-        // Store charity session (FIXED: using correct key)
-        localStorage.setItem('givespot_charity_user', JSON.stringify({
-            id: charity.id,
-            name: charity.name,
-            email: charity.email,
-            loginTime: new Date().toISOString()
-        }));
-
-        showSuccess('Login successful! Redirecting to dashboard...');
-        
-        // Redirect to dashboard after short delay
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 1500);
-
-        hideLoading();
-        return charity;
-        
-    } catch (err) {
-        console.error('Login error:', err);
-        showError(err.message);
-        hideLoading();
-        return null;
-    }
-}
-
-// Check if charity is logged in
-function isCharityLoggedIn() {
-    const session = localStorage.getItem('givespot_charity_user');
-    if (!session) return false;
-    
-    try {
-        const charity = JSON.parse(session);
-        const loginTime = new Date(charity.loginTime);
+        // Check if session is still valid (24 hours)
+        const loginTime = new Date(charity.loginTime || 0);
         const now = new Date();
-        const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+        const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
         
-        // Session expires after 24 hours
-        if (hoursSinceLogin > 24) {
-            localStorage.removeItem('givespot_charity_user');
-            return false;
+        if (hoursDiff > 24) {
+            // Session expired
+            logoutCharity();
+            return null;
         }
         
         return charity;
-    } catch (err) {
-        localStorage.removeItem('givespot_charity_user');
+    } catch (error) {
+        console.error('Error getting current charity:', error);
+        logoutCharity();
+        return null;
+    }
+}
+
+// Set current charity (after login)
+function setCurrentCharity(charityData) {
+    try {
+        const charityWithTime = {
+            ...charityData,
+            loginTime: new Date().toISOString()
+        };
+        localStorage.setItem('givespot_charity', JSON.stringify(charityWithTime));
+        return true;
+    } catch (error) {
+        console.error('Error setting current charity:', error);
         return false;
     }
 }
 
-// Get current charity session
-function getCurrentCharity() {
-    return isCharityLoggedIn();
-}
-
 // Logout charity
 function logoutCharity() {
-    localStorage.removeItem('givespot_charity_user');
-    showSuccess('Logged out successfully');
-    
-    // Redirect to login page after short delay
-    setTimeout(() => {
+    try {
+        localStorage.removeItem('givespot_charity');
         window.location.href = 'login.html';
-    }, 1000);
+    } catch (error) {
+        console.error('Error during logout:', error);
+        // Force redirect anyway
+        window.location.href = 'login.html';
+    }
 }
 
-// Load charity dashboard data
-async function loadCharityDashboard() {
+// Check if charity is authenticated
+function requireCharityAuth() {
+    const charity = getCurrentCharity();
+    if (!charity) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    return charity;
+}
+
+// Login charity
+async function loginCharity(email, password) {
     try {
-        const charity = getCurrentCharity();
-        if (!charity) {
-            window.location.href = 'login.html';
-            return;
-        }
-        
-        showLoading('Loading dashboard...');
-        
-        // Load charity details and items
-        const [charityResult, itemsResult] = await Promise.all([
-            supabase
-                .from('charities')
-                .select('*')
-                .eq('id', charity.id)
-                .single(),
-            supabase
-                .from('items')
-                .select('*')
-                .eq('charity_id', charity.id)
-                .order('created_at', { ascending: false })
-        ]);
-
-        if (charityResult.error) {
-            throw charityResult.error;
+        if (!email || !password) {
+            throw new Error('Email and password are required');
         }
 
-        const charityData = charityResult.data;
-        const items = itemsResult.data || [];
+        showLoading('Signing in...');
 
-        // Update dashboard display
-        displayCharityDashboard(charityData, items);
+        // For now, simple email/password check against database
+        // In production, you'd use proper password hashing
+        const { data: charity, error } = await supabase
+            .from('charities')
+            .select('*')
+            .eq('email', email.toLowerCase().trim())
+            .eq('status', 'active')
+            .single();
+
+        if (error || !charity) {
+            throw new Error('Invalid email or charity not found');
+        }
+
+        // For now, we'll use a simple password check
+        // In production, use proper password hashing (bcrypt, etc.)
+        if (!charity.password_hash) {
+            throw new Error('Charity account not fully set up. Please contact admin.');
+        }
+
+        // Simple password check (replace with proper hash verification)
+        if (charity.password_hash !== password) {
+            throw new Error('Invalid password');
+        }
+
+        // Set current charity
+        if (!setCurrentCharity(charity)) {
+            throw new Error('Failed to save login session');
+        }
+
         hideLoading();
+        showSuccess('Login successful! Redirecting...');
         
-        return { charity: charityData, items };
-        
-    } catch (err) {
-        console.error('Dashboard loading error:', err);
-        showError('Failed to load dashboard: ' + err.message);
+        // Redirect to dashboard
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1000);
+
+        return charity;
+
+    } catch (error) {
         hideLoading();
+        console.error('Login error:', error);
+        showError(error.message || 'Login failed. Please try again.');
+        return null;
     }
 }
 
-// Display charity dashboard
-function displayCharityDashboard(charity, items) {
-    // Update charity info
-    const charityNameEl = document.getElementById('charityName');
-    if (charityNameEl) {
-        charityNameEl.textContent = charity.name;
-    }
-    
-    const balanceEl = document.getElementById('accountBalance');
-    if (balanceEl) {
-        balanceEl.textContent = formatPrice(charity.balance);
-    }
-    
-    const itemCountEl = document.getElementById('itemCount');
-    if (itemCountEl) {
-        itemCountEl.textContent = items.length;
-    }
-    
-    // Display items list
-    const itemsListEl = document.getElementById('charityItemsList');
-    if (itemsListEl && items.length > 0) {
-        let html = '<div class="charity-items">';
-        
-        items.slice(0, 5).forEach(item => { // Show latest 5 items
-            html += `
-                <div class="charity-item">
-                    <span class="item-code">${item.item_code}</span>
-                    <span class="item-price">${formatPrice(item.price)}</span>
-                    <span class="item-status status-${item.status}">${item.status}</span>
-                    <span class="item-date">${formatDate(item.created_at)}</span>
-                </div>
-            `;
-        });
-        
-        html += '</div>';
-        itemsListEl.innerHTML = html;
-    }
-    
-    console.log('Dashboard updated for:', charity.name);
-}
-
-// Add new item (placeholder for Step 8)
-async function addNewItem(itemData) {
+// Register charity
+async function registerCharity(formData) {
     try {
-        const charity = getCurrentCharity();
-        if (!charity) {
-            throw new Error('Please log in first');
+        showLoading('Submitting application...');
+
+        // Validate required fields
+        const required = ['charity_name', 'email', 'postcode', 'contact_person'];
+        for (const field of required) {
+            if (!formData[field] || !formData[field].trim()) {
+                throw new Error(`${field.replace('_', ' ')} is required`);
+            }
         }
-        
-        showLoading('Adding new item...');
-        
-        // Validate item data
-        if (!itemData.price || itemData.price <= 0) {
-            throw new Error('Please enter a valid price');
+
+        // Validate email format
+        if (!isValidEmail(formData.email)) {
+            throw new Error('Please enter a valid email address');
         }
-        
-        // TODO: Implement image upload and item creation in Step 8
-        showSuccess('Item upload will be implemented in Step 8!');
-        
+
+        // Validate UK postcode
+        if (!isValidPostcode(formData.postcode)) {
+            throw new Error('Please enter a valid UK postcode');
+        }
+
+        // Check if charity already exists
+        const { data: existingCharity } = await supabase
+            .from('charities')
+            .select('id')
+            .eq('email', formData.email.toLowerCase().trim())
+            .single();
+
+        if (existingCharity) {
+            throw new Error('A charity with this email address already exists');
+        }
+
+        // Insert charity application
+        const { data: charity, error } = await supabase
+            .from('charities')
+            .insert({
+                name: formData.charity_name.trim(),
+                email: formData.email.toLowerCase().trim(),
+                registration_number: formData.registration_number?.trim() || null,
+                postcode: formData.postcode.toUpperCase().trim(),
+                address: formData.address?.trim() || null,
+                phone: formData.phone?.trim() || null,
+                contact_person: formData.contact_person.trim(),
+                contact_position: formData.contact_position?.trim() || null,
+                status: 'pending'
+            })
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error('Failed to submit application: ' + error.message);
+        }
+
         hideLoading();
+        showSuccess('Application submitted successfully! You will receive an email when approved.');
         
-    } catch (err) {
-        console.error('Add item error:', err);
-        showError(err.message);
+        // Redirect to confirmation page or login
+        setTimeout(() => {
+            window.location.href = 'login.html?registered=true';
+        }, 2000);
+
+        return charity;
+
+    } catch (error) {
         hideLoading();
+        console.error('Registration error:', error);
+        showError(error.message || 'Registration failed. Please try again.');
+        return null;
     }
 }
 
-// Initialize charity functionality when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    const path = window.location.pathname;
-    
-    // Charity registration page
-    if (path.includes('charity/register.html')) {
-        console.log('Charity registration page loaded');
-        
-        const form = document.getElementById('charityRegisterForm');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(form);
-                const charityData = {
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    registrationNumber: formData.get('registrationNumber'),
-                    postcode: formData.get('postcode'),
-                    address: formData.get('address'),
-                    phone: formData.get('phone'),
-                    contactPerson: formData.get('contactPerson'),
-                    contactPosition: formData.get('contactPosition')
-                };
-                
-                registerCharity(charityData);
-            });
+// Update charity profile
+async function updateCharityProfile(charityId, updateData) {
+    try {
+        showLoading('Updating profile...');
+
+        const { data: charity, error } = await supabase
+            .from('charities')
+            .update(updateData)
+            .eq('id', charityId)
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error('Failed to update profile: ' + error.message);
         }
+
+        // Update stored charity data
+        setCurrentCharity(charity);
+
+        hideLoading();
+        showSuccess('Profile updated successfully');
+        return charity;
+
+    } catch (error) {
+        hideLoading();
+        console.error('Update error:', error);
+        showError(error.message || 'Failed to update profile');
+        return null;
     }
-    
-    // Charity login page
-    else if (path.includes('charity/login.html')) {
-        console.log('Charity login page loaded');
-        
-        const form = document.getElementById('charityLoginForm');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(form);
-                const email = formData.get('email');
-                const password = formData.get('password');
-                
-                loginCharity(email, password);
-            });
-        }
+}
+
+// Get charity statistics
+async function getCharityStats(charityId) {
+    try {
+        // Get item counts
+        const { data: items } = await supabase
+            .from('items')
+            .select('id, status, created_at')
+            .eq('charity_id', charityId);
+
+        const stats = {
+            totalItems: items?.length || 0,
+            activeItems: items?.filter(item => item.status === 'active').length || 0,
+            soldItems: items?.filter(item => item.status === 'sold').length || 0,
+            thisMonthItems: 0
+        };
+
+        // Calculate this month's items
+        const thisMonth = new Date();
+        thisMonth.setDate(1);
+        thisMonth.setHours(0, 0, 0, 0);
+
+        stats.thisMonthItems = items?.filter(item => 
+            new Date(item.created_at) >= thisMonth
+        ).length || 0;
+
+        return stats;
+
+    } catch (error) {
+        console.error('Error getting charity stats:', error);
+        return {
+            totalItems: 0,
+            activeItems: 0,
+            soldItems: 0,
+            thisMonthItems: 0
+        };
     }
-    
-    // Charity dashboard page
-    else if (path.includes('charity/dashboard.html')) {
-        console.log('Charity dashboard page loaded');
-        
-        // Check if logged in
-        if (!isCharityLoggedIn()) {
-            window.location.href = 'login.html';
-            return;
+}
+
+// Simple password setup (for demo purposes)
+async function setupCharityPassword(charityId, password) {
+    try {
+        if (!password || password.length < 6) {
+            throw new Error('Password must be at least 6 characters long');
         }
-        
-        // Load dashboard data
-        loadCharityDashboard();
-        
-        // Set up logout button
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', logoutCharity);
+
+        // In production, use proper password hashing
+        const { error } = await supabase
+            .from('charities')
+            .update({ password_hash: password })
+            .eq('id', charityId);
+
+        if (error) {
+            throw new Error('Failed to set password: ' + error.message);
         }
+
+        return true;
+
+    } catch (error) {
+        console.error('Password setup error:', error);
+        showError(error.message || 'Failed to set password');
+        return false;
     }
-});
+}
+
+// Export functions for use in other scripts
+if (typeof window !== 'undefined') {
+    window.charityFunctions = {
+        getCurrentCharity,
+        setCurrentCharity,
+        logoutCharity,
+        requireCharityAuth,
+        loginCharity,
+        registerCharity,
+        updateCharityProfile,
+        getCharityStats,
+        setupCharityPassword
+    };
+}
