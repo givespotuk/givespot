@@ -4,303 +4,836 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Dashboard - GiveSpot</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <meta name="description" content="Manage your charity items, reservations, and account on GiveSpot.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.2s;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: #3b82f6;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .user-info:hover {
+            background: #f3f4f6;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .dashboard-header {
+            margin-bottom: 40px;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-text h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .add-item-btn {
+            background: white;
+            color: #3b82f6;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-item-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-icon.blue { background: #eff6ff; }
+        .stat-icon.green { background: #ecfdf5; }
+        .stat-icon.yellow { background: #fffbeb; }
+        .stat-icon.purple { background: #f3e8ff; }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        /* Content Sections */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .view-all-btn {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .view-all-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Recent Items */
+        .items-list {
+            padding: 0 24px 24px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-code {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .item-price {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .item-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .status-reserved {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-sold {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Reservations */
+        .reservation-item {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .reservation-item:last-child {
+            border-bottom: none;
+        }
+
+        .reservation-header {
+            display: flex;
+            justify-content: between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .reservation-code {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .reservation-price {
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .customer-info {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .reservation-time {
+            font-size: 12px;
+            color: #ef4444;
+            margin-bottom: 16px;
+        }
+
+        .reservation-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn.sold {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .action-btn.no-show {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .action-btn.extend {
+            background: #f59e0b;
+            color: white;
+            border-color: #f59e0b;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 40px 24px;
+            color: #6b7280;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav {
+                gap: 16px;
+            }
+
+            .welcome-section {
+                padding: 24px;
+            }
+
+            .welcome-text h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <a href="../index.html" class="logo-link">
-                        <span class="logo-icon">❤️</span>
-                        <h1 class="logo-text">GiveSpot</h1>
-                    </a>
-                </div>
+            <div class="nav-wrapper">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">💝</div>
+                    <span class="logo-text">GiveSpot</span>
+                </a>
                 <nav class="nav">
-                    <span id="charityName" class="charity-welcome">Loading...</span>
-                    <button id="logoutBtn" class="nav-link btn-outline">Logout</button>
+                    <a href="dashboard.html" class="active">Dashboard</a>
+                    <a href="add-item.html">Add Item</a>
+                    <a href="../browse.html">Browse Items</a>
+                    <div class="user-menu">
+                        <div class="user-info">
+                            <div class="user-avatar" id="userAvatar">C</div>
+                            <span id="charityName">Charity Name</span>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
                 </nav>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="main">
+    <main class="main-content">
         <div class="container">
-            <div class="dashboard-section">
-                <!-- Dashboard Header -->
-                <div class="dashboard-header">
-                    <h2>Charity Dashboard</h2>
-                    <a href="add-item.html" class="btn-primary">
-                        📦 Add New Item
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>Welcome back, <span id="welcomeName">Charity Name</span>!</h1>
+                        <p>Manage your items and track your impact on the community</p>
+                    </div>
+                    <a href="add-item.html" class="add-item-btn">
+                        ➕ Add New Item
                     </a>
                 </div>
+            </div>
 
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-content">
-                            <h3>Account Balance</h3>
-                            <p id="accountBalance" class="stat-value">Loading...</p>
-                        </div>
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Total Items</span>
+                        <div class="stat-icon blue">📦</div>
                     </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">📦</div>
-                        <div class="stat-content">
-                            <h3>Total Items</h3>
-                            <p id="itemCount" class="stat-value">Loading...</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">🔖</div>
-                        <div class="stat-content">
-                            <h3>Active Reservations</h3>
-                            <p id="reservationCount" class="stat-value">0</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">💷</div>
-                        <div class="stat-content">
-                            <h3>This Month</h3>
-                            <p id="monthlyRevenue" class="stat-value">£0.00</p>
-                        </div>
-                    </div>
+                    <div class="stat-number" id="totalItems">0</div>
+                    <div class="stat-change">All time</div>
                 </div>
 
-                <!-- Recent Items -->
-                <div class="dashboard-section-content">
-                    <div class="section-header">
-                        <h3>Recent Items</h3>
-                        <a href="add-item.html" class="btn-secondary">Add Item</a>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Active Items</span>
+                        <div class="stat-icon green">✅</div>
                     </div>
-                    
-                    <div id="charityItemsList" class="items-table">
-                        <div class="loading-placeholder">
-                            <p>Loading your items...</p>
-                        </div>
+                    <div class="stat-number" id="activeItems">0</div>
+                    <div class="stat-change">Available now</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Reservations</span>
+                        <div class="stat-icon yellow">🔖</div>
+                    </div>
+                    <div class="stat-number" id="reservationCount">0</div>
+                    <div class="stat-change">Needs attention</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Account Balance</span>
+                        <div class="stat-icon purple">💷</div>
+                    </div>
+                    <div class="stat-number" id="accountBalance">£0.00</div>
+                    <div class="stat-change">Current balance</div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Recent Items -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Items</h2>
+                        <a href="items.html" class="view-all-btn">View all items</a>
+                    </div>
+                    <div class="items-list" id="recentItems">
+                        <!-- Items will be loaded here -->
                     </div>
                 </div>
 
                 <!-- Active Reservations -->
-                <div class="dashboard-section-content">
+                <div class="section-card">
                     <div class="section-header">
-                        <h3>Active Reservations</h3>
-                        <span class="section-subtitle">Items that customers have reserved</span>
+                        <h2 class="section-title">Active Reservations</h2>
+                        <a href="reservations.html" class="view-all-btn">View all</a>
                     </div>
-                    
-                    <div id="activeReservations" class="reservations-section">
-                        <div class="no-reservations">
-                            <p>No active reservations at the moment</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="quick-actions">
-                    <h3>Quick Actions</h3>
-                    <div class="action-buttons">
-                        <a href="add-item.html" class="action-btn">
-                            <span class="action-icon">📦</span>
-                            <span>Add New Item</span>
-                        </a>
-                        <button onclick="refreshDashboard()" class="action-btn">
-                            <span class="action-icon">🔄</span>
-                            <span>Refresh Data</span>
-                        </button>
-                        <a href="../browse.html" class="action-btn">
-                            <span class="action-icon">👁️</span>
-                            <span>View Marketplace</span>
-                        </a>
+                    <div id="activeReservations">
+                        <!-- Reservations will be loaded here -->
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <span class="logo-icon">❤️</span>
-                    <span class="logo-text">GiveSpot</span>
-                </div>
-                <p class="footer-text">
-                    Connecting communities with local charities
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/config.js"></script>
     <script src="../js/main.js"></script>
-    <script src="../js/charity.js"></script>
-    
     <script>
-        // Dashboard-specific functionality
-        async function refreshDashboard() {
-            showLoading('Refreshing dashboard...');
-            await loadCharityDashboard();
-        }
+        let currentUser = null;
 
-        // Load and display charity items in table format
-        async function displayCharityItems(items) {
-            const container = document.getElementById('charityItemsList');
-            
-            if (!items || items.length === 0) {
-                container.innerHTML = `
-                    <div class="no-items">
-                        <p>No items posted yet</p>
-                        <a href="add-item.html" class="btn-primary">Add Your First Item</a>
-                    </div>
-                `;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            const userData = localStorage.getItem('givespot_charity_user');
+            if (!userData) {
+                window.location.href = 'login.html';
                 return;
             }
 
-            let html = `
-                <div class="items-table-header">
-                    <span>Item Code</span>
-                    <span>Price</span>
-                    <span>Status</span>
-                    <span>Date Added</span>
-                </div>
-            `;
+            currentUser = JSON.parse(userData);
+            initializeDashboard();
+        });
 
-            items.forEach(item => {
-                const statusClass = `status-${item.status}`;
-                html += `
-                    <div class="items-table-row">
-                        <span class="item-code">${item.item_code}</span>
-                        <span class="item-price">${formatPrice(item.price)}</span>
-                        <span class="item-status ${statusClass}">${item.status}</span>
-                        <span class="item-date">${formatDate(item.created_at)}</span>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        // Enhanced dashboard loading
-        async function loadCharityDashboard() {
+        async function initializeDashboard() {
             try {
-                const charity = getCurrentCharity();
-                if (!charity) {
-                    window.location.href = 'login.html';
-                    return;
-                }
-                
-                showLoading('Loading dashboard...');
-                
-                // Load charity details and items
-                const [charityResult, itemsResult, reservationsResult] = await Promise.all([
-                    supabase
-                        .from('charities')
-                        .select('*')
-                        .eq('id', charity.id)
-                        .single(),
-                    supabase
-                        .from('items')
-                        .select('*')
-                        .eq('charity_id', charity.id)
-                        .order('created_at', { ascending: false }),
-                    supabase
-                        .from('reservations')
-                        .select(`
-                            *,
-                            items (item_code, price),
-                            users (name, phone, email)
-                        `)
-                        .eq('status', 'active')
-                        .gte('expires_at', new Date().toISOString())
+                // Update UI with user info
+                document.getElementById('charityName').textContent = currentUser.name;
+                document.getElementById('welcomeName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+
+                // Load dashboard data
+                await Promise.all([
+                    loadStats(),
+                    loadRecentItems(),
+                    loadActiveReservations()
                 ]);
 
-                if (charityResult.error) throw charityResult.error;
-
-                const charityData = charityResult.data;
-                const items = itemsResult.data || [];
-                const reservations = reservationsResult.data || [];
-
-                // Update dashboard display
-                displayCharityDashboard(charityData, items);
-                displayCharityItems(items);
-                displayActiveReservations(reservations);
-                
-                hideLoading();
-                
-            } catch (err) {
-                console.error('Dashboard loading error:', err);
-                showError('Failed to load dashboard: ' + err.message);
-                hideLoading();
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
             }
         }
 
-        // Display active reservations
-        function displayActiveReservations(reservations) {
-            const container = document.getElementById('activeReservations');
-            
-            if (!reservations || reservations.length === 0) {
-                container.innerHTML = `
-                    <div class="no-reservations">
-                        <p>No active reservations at the moment</p>
-                    </div>
-                `;
-                return;
+        async function loadStats() {
+            try {
+                // Get charity data
+                const { data: charity, error: charityError } = await supabase
+                    .from('charities')
+                    .select('balance')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (!charityError && charity) {
+                    document.getElementById('accountBalance').textContent = formatPrice(charity.balance || 0);
+                }
+
+                // Get items stats
+                const { data: items, error: itemsError } = await supabase
+                    .from('items')
+                    .select('status')
+                    .eq('charity_id', currentUser.id);
+
+                if (!itemsError && items) {
+                    const totalItems = items.length;
+                    const activeItems = items.filter(item => item.status === 'active').length;
+                    
+                    document.getElementById('totalItems').textContent = totalItems;
+                    document.getElementById('activeItems').textContent = activeItems;
+                }
+
+                // Get reservations count
+                const { data: reservations, error: reservationsError } = await supabase
+                    .from('reservations')
+                    .select(`
+                        id,
+                        items!inner(charity_id)
+                    `)
+                    .eq('status', 'active')
+                    .eq('items.charity_id', currentUser.id);
+
+                if (!reservationsError && reservations) {
+                    document.getElementById('reservationCount').textContent = reservations.length;
+                }
+
+            } catch (error) {
+                console.error('Stats loading error:', error);
             }
+        }
 
-            let html = '<div class="reservations-list">';
-            
-            reservations.forEach(reservation => {
-                const item = reservation.items || {};
-                const user = reservation.users || {};
-                const expiresAt = new Date(reservation.expires_at);
-                const hoursLeft = Math.max(0, Math.floor((expiresAt - new Date()) / (1000 * 60 * 60)));
-                
-                html += `
-                    <div class="reservation-card">
-                        <div class="reservation-header">
-                            <h4>${item.item_code || 'Unknown Item'}</h4>
-                            <span class="reservation-price">${formatPrice(item.price || 0)}</span>
+        async function loadRecentItems() {
+            try {
+                const { data: items, error } = await supabase
+                    .from('items')
+                    .select('*')
+                    .eq('charity_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                const container = document.getElementById('recentItems');
+
+                if (error || !items || items.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📦</div>
+                            <h3>No items yet</h3>
+                            <p>Start by adding your first item to the marketplace</p>
                         </div>
-                        <div class="reservation-details">
-                            <p><strong>Customer:</strong> ${user.name || 'Unknown'}</p>
-                            <p><strong>Phone:</strong> ${user.phone || 'Not provided'}</p>
-                            <p><strong>Email:</strong> ${user.email || 'Not provided'}</p>
-                            <p><strong>Expires:</strong> ${hoursLeft}h remaining</p>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = items.map(item => `
+                    <div class="item-row">
+                        <div class="item-image">
+                            ${item.image_urls && item.image_urls.length > 0 
+                                ? `<img src="${item.image_urls[0]}" alt="Item ${item.item_code}">` 
+                                : 'No Image'
+                            }
                         </div>
-                        <div class="reservation-actions">
-                            <button onclick="markAsSold('${reservation.id}')" class="btn-success">
-                                ✅ Mark as Sold
-                            </button>
-                            <button onclick="markAsNoShow('${reservation.id}')" class="btn-warning">
-                                ❌ No Show
-                            </button>
+                        <div class="item-details">
+                            <div class="item-code">${item.item_code}</div>
+                            <div class="item-price">${formatPrice(item.price)}</div>
+                        </div>
+                        <div class="item-status status-${item.status}">
+                            ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}
                         </div>
                     </div>
-                `;
-            });
-            
-            html += '</div>';
-            container.innerHTML = html;
+                `).join('');
 
-            // Update reservation count
-            document.getElementById('reservationCount').textContent = reservations.length;
+            } catch (error) {
+                console.error('Recent items loading error:', error);
+            }
         }
 
-        // Placeholder functions for reservation management (will be implemented in Step 10)
-        function markAsSold(reservationId) {
-            showSuccess('Mark as sold functionality will be implemented in Step 10!');
+        async function loadActiveReservations() {
+            try {
+                const { data: reservations, error } = await supabase
+                    .from('reservations')
+                    .select(`
+                        *,
+                        items!inner(item_code, price, charity_id),
+                        users(name, phone, email)
+                    `)
+                    .eq('status', 'active')
+                    .eq('items.charity_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                const container = document.getElementById('activeReservations');
+
+                if (error || !reservations || reservations.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">🔖</div>
+                            <h3>No active reservations</h3>
+                            <p>Reservations will appear here when customers reserve your items</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = reservations.map(reservation => {
+                    const expiresAt = new Date(reservation.expires_at);
+                    const now = new Date();
+                    const timeLeft = Math.max(0, Math.ceil((expiresAt - now) / (1000 * 60 * 60)));
+                    
+                    return `
+                        <div class="reservation-item">
+                            <div class="reservation-header">
+                                <span class="reservation-code">${reservation.items.item_code}</span>
+                                <span class="reservation-price">${formatPrice(reservation.items.price)}</span>
+                            </div>
+                            <div class="customer-info">
+                                👤 ${reservation.users?.name || 'Unknown'} • 📞 ${reservation.users?.phone || 'No phone'}
+                            </div>
+                            <div class="reservation-time">
+                                ⏰ Expires in ${timeLeft}h (${expiresAt.toLocaleDateString()})
+                            </div>
+                            <div class="reservation-actions">
+                                <button class="action-btn sold" onclick="updateReservation('${reservation.id}', '${reservation.item_id}', 'sold')">
+                                    ✅ Sold
+                                </button>
+                                <button class="action-btn no-show" onclick="updateReservation('${reservation.id}', '${reservation.item_id}', 'expired')">
+                                    ❌ No Show
+                                </button>
+                                <button class="action-btn extend" onclick="extendReservation('${reservation.id}')">
+                                    📞 Extend
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Reservations loading error:', error);
+            }
         }
 
-        function markAsNoShow(reservationId) {
-            showSuccess('Mark as no-show functionality will be implemented in Step 10!');
+        async function updateReservation(reservationId, itemId, action) {
+            try {
+                let itemStatus = action === 'sold' ? 'sold' : 'active';
+                let reservationStatus = action === 'sold' ? 'collected' : 'expired';
+
+                // Update item status
+                await supabase
+                    .from('items')
+                    .update({ status: itemStatus })
+                    .eq('id', itemId);
+
+                // Update reservation status
+                await supabase
+                    .from('reservations')
+                    .update({ status: reservationStatus })
+                    .eq('id', reservationId);
+
+                // Reload data
+                await Promise.all([
+                    loadStats(),
+                    loadRecentItems(),
+                    loadActiveReservations()
+                ]);
+
+                console.log(`Reservation ${action} successfully`);
+
+            } catch (error) {
+                console.error('Update reservation error:', error);
+                alert('Failed to update reservation. Please try again.');
+            }
+        }
+
+        async function extendReservation(reservationId) {
+            try {
+                const newExpiryTime = new Date();
+                newExpiryTime.setHours(newExpiryTime.getHours() + 24);
+
+                await supabase
+                    .from('reservations')
+                    .update({ expires_at: newExpiryTime.toISOString() })
+                    .eq('id', reservationId);
+
+                await loadActiveReservations();
+                console.log('Reservation extended successfully');
+
+            } catch (error) {
+                console.error('Extend reservation error:', error);
+                alert('Failed to extend reservation. Please try again.');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('givespot_charity_user');
+            window.location.href = 'login.html';
         }
     </script>
 </body>
