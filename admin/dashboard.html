@@ -739,7 +739,7 @@
                 const { data: charities, error } = await supabase
                     .from('charities')
                     .select('*')
-                    .eq('status', 'active')
+                    .in('status', ['active', 'suspended', 'paused'])
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
