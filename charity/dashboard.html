@@ -620,6 +620,7 @@
                     <thead>
                         <tr>
                             <th>Item Code</th>
+                            <th>Name</th>
                             <th>Price</th>
                             <th>Status</th>
                             <th>Added</th>
@@ -633,6 +634,7 @@
                 html += `
                     <tr>
                         <td>${item.item_code}</td>
+                        <td>${item.name || 'No name'}</td>
                         <td>${formatPrice(item.price)}</td>
                         <td><span class="status-badge status-${item.status}">${item.status}</span></td>
                         <td>${formatDate(item.created_at)}</td>
