@@ -4,119 +4,681 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Dashboard - GiveSpot</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <meta name="description" content="Manage your charity's items and reservations on GiveSpot.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 2px solid #3b82f6;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .charity-welcome {
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-outline:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px 0;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-content h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        /* Dashboard Sections */
+        .dashboard-section-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Items Table */
+        .items-table {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .items-table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 2fr 1fr;
+            gap: 16px;
+            padding: 12px 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .items-table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 2fr 1fr;
+            gap: 16px;
+            padding: 16px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            transition: background 0.2s;
+            align-items: center;
+        }
+
+        .items-table-row:hover {
+            background: #f9fafb;
+        }
+
+        .item-code {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #059669;
+        }
+
+        .item-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-reserved {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-sold {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .status-removed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #d97706;
+        }
+
+        .btn-remove {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-remove:hover {
+            background: #dc2626;
+        }
+
+        /* Reservations */
+        .reservations-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .reservation-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .reservation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .reservation-header h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .reservation-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #059669;
+        }
+
+        .reservation-details {
+            margin-bottom: 16px;
+        }
+
+        .reservation-details p {
+            margin-bottom: 4px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .reservation-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-info:hover {
+            background: #2563eb;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .quick-actions h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #1a1a1a;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background: #f3f4f6;
+            border-color: #3b82f6;
+        }
+
+        .action-icon {
+            font-size: 20px;
+        }
+
+        /* Empty States */
+        .no-items, .no-reservations {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .loading-placeholder {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        /* Messages */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            display: none;
+        }
+
+        .message.success {
+            background: #10b981;
+        }
+
+        .message.error {
+            background: #ef4444;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1f2937;
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-text {
+            color: #d1d5db;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .items-table-header,
+            .items-table-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .reservation-actions {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <div class="logo">
-                    <a href="../index.html" class="logo-link">
-                        <span class="logo-icon">❤️</span>
-                        <h1 class="logo-text">GiveSpot</h1>
-                    </a>
-                </div>
+                <a href="../index.html" class="logo-link">
+                    <div class="logo-icon">❤️</div>
+                    <h1 class="logo-text">GiveSpot</h1>
+                </a>
                 <nav class="nav">
                     <span id="charityName" class="charity-welcome">Loading...</span>
-                    <button id="logoutBtn" class="nav-link btn-outline">Logout</button>
+                    <button id="logoutBtn" class="btn-outline">Logout</button>
                 </nav>
             </div>
         </div>
     </header>
 
+    <!-- Messages -->
+    <div id="messageContainer" class="message"></div>
+
     <!-- Main Content -->
     <main class="main">
         <div class="container">
-            <div class="dashboard-section">
-                <!-- Dashboard Header -->
-                <div class="dashboard-header">
-                    <h2>Charity Dashboard</h2>
-                    <a href="add-item.html" class="btn-primary">
-                        📦 Add New Item
-                    </a>
-                </div>
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h2>Charity Dashboard</h2>
+                <a href="add-item.html" class="btn-primary">
+                    📦 Add New Item
+                </a>
+            </div>
 
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-content">
-                            <h3>Account Balance</h3>
-                            <p id="accountBalance" class="stat-value">Loading...</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">📦</div>
-                        <div class="stat-content">
-                            <h3>Total Items</h3>
-                            <p id="itemCount" class="stat-value">Loading...</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">🔖</div>
-                        <div class="stat-content">
-                            <h3>Active Reservations</h3>
-                            <p id="reservationCount" class="stat-value">0</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">💷</div>
-                        <div class="stat-content">
-                            <h3>This Month</h3>
-                            <p id="monthlyRevenue" class="stat-value">£0.00</p>
-                        </div>
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3>Account Balance</h3>
+                        <p id="accountBalance" class="stat-value">Loading...</p>
                     </div>
                 </div>
 
-                <!-- Recent Items -->
-                <div class="dashboard-section-content">
-                    <div class="section-header">
-                        <h3>Recent Items</h3>
-                        <a href="add-item.html" class="btn-secondary">Add Item</a>
-                    </div>
-                    
-                    <div id="charityItemsList" class="items-table">
-                        <div class="loading-placeholder">
-                            <p>Loading your items...</p>
-                        </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-content">
+                        <h3>Total Items</h3>
+                        <p id="itemCount" class="stat-value">Loading...</p>
                     </div>
                 </div>
 
-                <!-- Active Reservations -->
-                <div class="dashboard-section-content">
-                    <div class="section-header">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-content">
+                        <h3>Active Reservations</h3>
+                        <p id="reservationCount" class="stat-value">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">💷</div>
+                    <div class="stat-content">
+                        <h3>This Month</h3>
+                        <p id="monthlyRevenue" class="stat-value">£0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Items -->
+            <div class="dashboard-section-content">
+                <div class="section-header">
+                    <div>
+                        <h3>Your Items</h3>
+                        <span class="section-subtitle">Manage your listed items</span>
+                    </div>
+                    <a href="add-item.html" class="btn-secondary">Add Item</a>
+                </div>
+                
+                <div id="charityItemsList" class="items-table">
+                    <div class="loading-placeholder">
+                        <p>Loading your items...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Reservations -->
+            <div class="dashboard-section-content">
+                <div class="section-header">
+                    <div>
                         <h3>Active Reservations</h3>
                         <span class="section-subtitle">Items that customers have reserved</span>
                     </div>
-                    
-                    <div id="activeReservations" class="reservations-section">
-                        <div class="no-reservations">
-                            <p>No active reservations at the moment</p>
-                        </div>
+                </div>
+                
+                <div id="activeReservations" class="reservations-section">
+                    <div class="no-reservations">
+                        <p>No active reservations at the moment</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Quick Actions -->
-                <div class="quick-actions">
-                    <h3>Quick Actions</h3>
-                    <div class="action-buttons">
-                        <a href="add-item.html" class="action-btn">
-                            <span class="action-icon">📦</span>
-                            <span>Add New Item</span>
-                        </a>
-                        <button onclick="refreshDashboard()" class="action-btn">
-                            <span class="action-icon">🔄</span>
-                            <span>Refresh Data</span>
-                        </button>
-                        <a href="../browse.html" class="action-btn">
-                            <span class="action-icon">👁️</span>
-                            <span>View Marketplace</span>
-                        </a>
-                    </div>
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <a href="add-item.html" class="action-btn">
+                        <span class="action-icon">📦</span>
+                        <span>Add New Item</span>
+                    </a>
+                    <button onclick="refreshDashboard()" class="action-btn">
+                        <span class="action-icon">🔄</span>
+                        <span>Refresh Data</span>
+                    </button>
+                    <a href="../browse.html" class="action-btn">
+                        <span class="action-icon">👁️</span>
+                        <span>View Marketplace</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -127,7 +689,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <span class="logo-icon">❤️</span>
+                    <div class="logo-icon">❤️</div>
                     <span class="logo-text">GiveSpot</span>
                 </div>
                 <p class="footer-text">
@@ -138,20 +700,145 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/config.js"></script>
-    <script src="../js/main.js"></script>
-    <script src="../js/charity.js"></script>
-    
     <script>
-        // Dashboard-specific functionality
-        async function refreshDashboard() {
-            showLoading('Refreshing dashboard...');
-            await loadCharityDashboard();
+        // Global variables
+        let currentCharity = null;
+
+        // Message system
+        function showMessage(text, type = 'success') {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.textContent = text;
+            messageContainer.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageContainer.classList.remove('show');
+            }, 4000);
         }
 
-        // Load and display charity items in table format
-        async function displayCharityItems(items) {
+        function showSuccess(text) {
+            showMessage(text, 'success');
+        }
+
+        function showError(text) {
+            showMessage(text, 'error');
+        }
+
+        // Utility functions
+        function formatPrice(amount) {
+            return new Intl.NumberFormat('en-GB', {
+                style: 'currency',
+                currency: 'GBP'
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-GB', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Get current charity from session
+        function getCurrentCharity() {
+            const userSession = localStorage.getItem('givespot_charity_user');
+            if (!userSession) return null;
+            
+            try {
+                return JSON.parse(userSession);
+            } catch (e) {
+                console.error('Error parsing user session:', e);
+                return null;
+            }
+        }
+
+        // Load charity dashboard
+        async function loadCharityDashboard() {
+            try {
+                currentCharity = getCurrentCharity();
+                if (!currentCharity) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                console.log('Loading dashboard for charity:', currentCharity.name);
+                
+                // Update header with charity name
+                document.getElementById('charityName').textContent = `Welcome, ${currentCharity.name}`;
+                
+                // Load charity details and items
+                const [charityResult, itemsResult] = await Promise.all([
+                    supabase
+                        .from('charities')
+                        .select('*')
+                        .eq('id', currentCharity.id)
+                        .single(),
+                    supabase
+                        .from('items')
+                        .select('*')
+                        .eq('charity_id', currentCharity.id)
+                        .order('created_at', { ascending: false })
+                ]);
+
+                if (charityResult.error) {
+                    throw charityResult.error;
+                }
+
+                const charityData = charityResult.data;
+                const items = itemsResult.data || [];
+
+                // Load reservations for charity items
+                const itemIds = items.map(item => item.id);
+                let reservations = [];
+                
+                if (itemIds.length > 0) {
+                    const reservationsResult = await supabase
+                        .from('reservations')
+                        .select(`
+                            *,
+                            items!inner (item_code, price, charity_id),
+                            users (name, phone, email)
+                        `)
+                        .in('item_id', itemIds)
+                        .eq('status', 'active')
+                        .gte('expires_at', new Date().toISOString());
+
+                    reservations = reservationsResult.data || [];
+                }
+
+                // Update dashboard display
+                updateDashboardStats(charityData, items, reservations);
+                displayCharityItems(items);
+                displayActiveReservations(reservations);
+                
+            } catch (err) {
+                console.error('Dashboard loading error:', err);
+                showError('Failed to load dashboard: ' + err.message);
+            }
+        }
+
+        // Update dashboard statistics
+        function updateDashboardStats(charity, items, reservations) {
+            // Update account balance
+            document.getElementById('accountBalance').textContent = formatPrice(charity.balance || 0);
+            
+            // Update item count
+            document.getElementById('itemCount').textContent = items.length;
+            
+            // Update reservation count
+            document.getElementById('reservationCount').textContent = reservations.length;
+            
+            // Calculate monthly revenue (items posted this month * £0.10)
+            const thisMonth = new Date();
+            thisMonth.setDate(1);
+            const thisMonthItems = items.filter(item => new Date(item.created_at) >= thisMonth);
+            const monthlyRevenue = thisMonthItems.length * 0.10;
+            document.getElementById('monthlyRevenue').textContent = formatPrice(monthlyRevenue);
+        }
+
+        // Display charity items
+        function displayCharityItems(items) {
             const container = document.getElementById('charityItemsList');
             
             if (!items || items.length === 0) {
@@ -170,6 +857,7 @@
                     <span>Price</span>
                     <span>Status</span>
                     <span>Date Added</span>
+                    <span>Actions</span>
                 </div>
             `;
 
@@ -181,65 +869,15 @@
                         <span class="item-price">${formatPrice(item.price)}</span>
                         <span class="item-status ${statusClass}">${item.status}</span>
                         <span class="item-date">${formatDate(item.created_at)}</span>
+                        <div class="item-actions">
+                            <button onclick="editItem('${item.id}')" class="btn-small btn-edit">Edit</button>
+                            <button onclick="removeItem('${item.id}')" class="btn-small btn-remove">Remove</button>
+                        </div>
                     </div>
                 `;
             });
 
             container.innerHTML = html;
-        }
-
-        // Enhanced dashboard loading
-        async function loadCharityDashboard() {
-            try {
-                const charity = getCurrentCharity();
-                if (!charity) {
-                    window.location.href = 'login.html';
-                    return;
-                }
-                
-                showLoading('Loading dashboard...');
-                
-                // Load charity details and items
-                const [charityResult, itemsResult, reservationsResult] = await Promise.all([
-                    supabase
-                        .from('charities')
-                        .select('*')
-                        .eq('id', charity.id)
-                        .single(),
-                    supabase
-                        .from('items')
-                        .select('*')
-                        .eq('charity_id', charity.id)
-                        .order('created_at', { ascending: false }),
-                    supabase
-                        .from('reservations')
-                        .select(`
-                            *,
-                            items (item_code, price),
-                            users (name, phone, email)
-                        `)
-                        .eq('status', 'active')
-                        .gte('expires_at', new Date().toISOString())
-                ]);
-
-                if (charityResult.error) throw charityResult.error;
-
-                const charityData = charityResult.data;
-                const items = itemsResult.data || [];
-                const reservations = reservationsResult.data || [];
-
-                // Update dashboard display
-                displayCharityDashboard(charityData, items);
-                displayCharityItems(items);
-                displayActiveReservations(reservations);
-                
-                hideLoading();
-                
-            } catch (err) {
-                console.error('Dashboard loading error:', err);
-                showError('Failed to load dashboard: ' + err.message);
-                hideLoading();
-            }
         }
 
         // Display active reservations
@@ -276,11 +914,14 @@
                             <p><strong>Expires:</strong> ${hoursLeft}h remaining</p>
                         </div>
                         <div class="reservation-actions">
-                            <button onclick="markAsSold('${reservation.id}')" class="btn-success">
+                            <button onclick="markAsSold('${reservation.id}', '${reservation.item_id}')" class="btn-success">
                                 ✅ Mark as Sold
                             </button>
-                            <button onclick="markAsNoShow('${reservation.id}')" class="btn-warning">
+                            <button onclick="markAsNoShow('${reservation.id}', '${reservation.item_id}')" class="btn-warning">
                                 ❌ No Show
+                            </button>
+                            <button onclick="extendReservation('${reservation.id}')" class="btn-info">
+                                📞 Extend (24h)
                             </button>
                         </div>
                     </div>
@@ -289,19 +930,155 @@
             
             html += '</div>';
             container.innerHTML = html;
-
-            // Update reservation count
-            document.getElementById('reservationCount').textContent = reservations.length;
         }
 
-        // Placeholder functions for reservation management (will be implemented in Step 10)
-        function markAsSold(reservationId) {
-            showSuccess('Mark as sold functionality will be implemented in Step 10!');
+        // Reservation management functions
+        async function markAsSold(reservationId, itemId) {
+            try {
+                if (!confirm('Mark this item as sold? This action cannot be undone.')) {
+                    return;
+                }
+
+                // Update item status to sold
+                const { error: itemError } = await supabase
+                    .from('items')
+                    .update({ status: 'sold' })
+                    .eq('id', itemId);
+
+                if (itemError) throw itemError;
+
+                // Update reservation status to collected
+                const { error: reservationError } = await supabase
+                    .from('reservations')
+                    .update({ status: 'collected' })
+                    .eq('id', reservationId);
+
+                if (reservationError) throw reservationError;
+
+                showSuccess('Item marked as sold successfully!');
+                await loadCharityDashboard();
+
+            } catch (err) {
+                console.error('Error marking as sold:', err);
+                showError('Failed to mark item as sold: ' + err.message);
+            }
         }
 
-        function markAsNoShow(reservationId) {
-            showSuccess('Mark as no-show functionality will be implemented in Step 10!');
+        async function markAsNoShow(reservationId, itemId) {
+            try {
+                if (!confirm('Mark this reservation as no-show? The item will become available again.')) {
+                    return;
+                }
+
+                // Update item status back to active
+                const { error: itemError } = await supabase
+                    .from('items')
+                    .update({ status: 'active' })
+                    .eq('id', itemId);
+
+                if (itemError) throw itemError;
+
+                // Update reservation status to expired
+                const { error: reservationError } = await supabase
+                    .from('reservations')
+                    .update({ status: 'expired' })
+                    .eq('id', reservationId);
+
+                if (reservationError) throw reservationError;
+
+                showSuccess('Reservation marked as no-show. Item is now available again.');
+                await loadCharityDashboard();
+
+            } catch (err) {
+                console.error('Error marking as no-show:', err);
+                showError('Failed to mark as no-show: ' + err.message);
+            }
         }
+
+        async function extendReservation(reservationId) {
+            try {
+                if (!confirm('Extend this reservation by 24 hours?')) {
+                    return;
+                }
+
+                // Add 24 hours to expires_at
+                const newExpiryTime = new Date();
+                newExpiryTime.setHours(newExpiryTime.getHours() + 24);
+
+                const { error } = await supabase
+                    .from('reservations')
+                    .update({ 
+                        expires_at: newExpiryTime.toISOString(),
+                        status: 'extended'
+                    })
+                    .eq('id', reservationId);
+
+                if (error) throw error;
+
+                showSuccess('Reservation extended by 24 hours');
+                await loadCharityDashboard();
+
+            } catch (err) {
+                console.error('Error extending reservation:', err);
+                showError('Failed to extend reservation: ' + err.message);
+            }
+        }
+
+        // Item management functions (placeholders for future implementation)
+        function editItem(itemId) {
+            showSuccess('Edit item functionality will be implemented in a future update!');
+        }
+
+        async function removeItem(itemId) {
+            try {
+                if (!confirm('Are you sure you want to remove this item? This action cannot be undone.')) {
+                    return;
+                }
+
+                const { error } = await supabase
+                    .from('items')
+                    .update({ status: 'removed' })
+                    .eq('id', itemId);
+
+                if (error) throw error;
+
+                showSuccess('Item removed successfully');
+                await loadCharityDashboard();
+
+            } catch (err) {
+                console.error('Error removing item:', err);
+                showError('Failed to remove item: ' + err.message);
+            }
+        }
+
+        // Refresh dashboard
+        async function refreshDashboard() {
+            showSuccess('Refreshing dashboard...');
+            await loadCharityDashboard();
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Charity dashboard loaded');
+            
+            // Check authentication
+            const charity = getCurrentCharity();
+            if (!charity) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Load dashboard data
+            loadCharityDashboard();
+
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    localStorage.removeItem('givespot_charity_user');
+                    window.location.href = 'login.html';
+                }
+            });
+        });
     </script>
 </body>
 </html>
