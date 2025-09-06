@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Dashboard - GiveSpot</title>
-    <meta name="description" content="Manage your charity's items and reservations on GiveSpot.">
+    <meta name="description" content="Manage your charity's items and track your monthly billing on GiveSpot.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -73,12 +73,12 @@
             align-items: center;
         }
 
-        .charity-welcome {
+        .charity-info {
             color: #4b5563;
             font-weight: 500;
         }
 
-        .btn-outline {
+        .btn-logout {
             background: transparent;
             border: 2px solid #3b82f6;
             color: #3b82f6;
@@ -87,10 +87,9 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s;
-            text-decoration: none;
         }
 
-        .btn-outline:hover {
+        .btn-logout:hover {
             background: #3b82f6;
             color: white;
         }
@@ -107,7 +106,7 @@
             margin-bottom: 32px;
         }
 
-        .dashboard-header h2 {
+        .dashboard-header h1 {
             font-size: 32px;
             font-weight: 700;
             color: #1a1a1a;
@@ -120,11 +119,10 @@
             border: none;
             border-radius: 8px;
             font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            cursor: pointer;
             transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-primary:hover {
@@ -145,9 +143,13 @@
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid #e5e7eb;
+        }
+
+        .stat-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 16px;
+            margin-bottom: 16px;
         }
 
         .stat-icon {
@@ -159,6 +161,7 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            color: white;
         }
 
         .stat-content h3 {
@@ -169,13 +172,19 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: #1a1a1a;
         }
 
+        .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+            color: #6b7280;
+        }
+
         /* Dashboard Sections */
-        .dashboard-section-content {
+        .dashboard-section {
             background: white;
             border-radius: 12px;
             padding: 24px;
@@ -193,15 +202,10 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        .section-header h3 {
+        .section-header h2 {
             font-size: 20px;
             font-weight: 600;
             color: #1a1a1a;
-        }
-
-        .section-subtitle {
-            font-size: 14px;
-            color: #6b7280;
         }
 
         .btn-secondary {
@@ -213,59 +217,41 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.2s;
-            text-decoration: none;
         }
 
         .btn-secondary:hover {
             background: #e5e7eb;
         }
 
-        /* Items Table */
-        .items-table {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .items-table-header {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 2fr 1fr;
-            gap: 16px;
-            padding: 12px 16px;
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table th {
             background: #f9fafb;
-            border-radius: 8px;
             font-weight: 600;
+            color: #374151;
             font-size: 14px;
-            color: #6b7280;
         }
 
-        .items-table-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 2fr 1fr;
-            gap: 16px;
-            padding: 16px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            transition: background 0.2s;
-            align-items: center;
+        .data-table td {
+            font-size: 14px;
         }
 
-        .items-table-row:hover {
+        .data-table tr:hover {
             background: #f9fafb;
         }
 
-        .item-code {
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .item-price {
-            font-weight: 600;
-            color: #059669;
-        }
-
-        .item-status {
+        .status-badge {
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 12px;
@@ -278,22 +264,17 @@
             color: #065f46;
         }
 
-        .status-reserved {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
         .status-sold {
-            background: #e0e7ff;
-            color: #3730a3;
-        }
-
-        .status-removed {
             background: #fee2e2;
             color: #991b1b;
         }
 
-        .item-actions {
+        .status-removed {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .action-buttons {
             display: flex;
             gap: 8px;
         }
@@ -308,13 +289,13 @@
             transition: all 0.2s;
         }
 
-        .btn-edit {
-            background: #f59e0b;
+        .btn-sold {
+            background: #10b981;
             color: white;
         }
 
-        .btn-edit:hover {
-            background: #d97706;
+        .btn-sold:hover {
+            background: #059669;
         }
 
         .btn-remove {
@@ -326,240 +307,73 @@
             background: #dc2626;
         }
 
-        /* Reservations */
-        .reservations-list {
-            display: grid;
-            gap: 16px;
-        }
-
-        .reservation-card {
-            background: #f9fafb;
+        /* Billing Section */
+        .billing-summary {
+            background: #f8fafc;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             padding: 20px;
+            margin-bottom: 24px;
         }
 
-        .reservation-header {
+        .billing-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-        }
-
-        .reservation-header h4 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .reservation-price {
-            font-size: 16px;
-            font-weight: 600;
-            color: #059669;
-        }
-
-        .reservation-details {
-            margin-bottom: 16px;
-        }
-
-        .reservation-details p {
-            margin-bottom: 4px;
             font-size: 14px;
-            color: #4b5563;
         }
 
-        .reservation-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-success {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-        }
-
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-        }
-
-        .btn-info {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .btn-info:hover {
-            background: #2563eb;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #e5e7eb;
-        }
-
-        .quick-actions h3 {
-            font-size: 20px;
+        .billing-item:last-child {
+            margin-bottom: 0;
             font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 16px;
+            font-size: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
         }
 
-        .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #1a1a1a;
-            font-weight: 500;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .action-btn:hover {
-            background: #f3f4f6;
-            border-color: #3b82f6;
-        }
-
-        .action-icon {
-            font-size: 20px;
-        }
-
-        /* Empty States */
-        .no-items, .no-reservations {
+        /* Loading/Empty States */
+        .loading-state,
+        .empty-state {
             text-align: center;
             padding: 40px;
             color: #6b7280;
         }
 
-        .loading-placeholder {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
+        .spinner {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 16px;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        /* Messages */
-        .message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            z-index: 1000;
-            display: none;
-        }
-
-        .message.success {
-            background: #10b981;
-        }
-
-        .message.error {
-            background: #ef4444;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        /* Footer */
-        .footer {
-            background: #1f2937;
-            color: white;
-            padding: 40px 0;
-            margin-top: 60px;
-        }
-
-        .footer-content {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .footer-text {
-            color: #d1d5db;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            .nav {
-                flex-direction: column;
-                gap: 12px;
-            }
-
             .dashboard-header {
                 flex-direction: column;
                 gap: 16px;
                 align-items: flex-start;
             }
 
-            .items-table-header,
-            .items-table-row {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-
-            .reservation-actions {
-                flex-direction: column;
-            }
-
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px;
             }
         }
     </style>
@@ -570,470 +384,328 @@
         <div class="container">
             <div class="header-content">
                 <a href="../index.html" class="logo-link">
-                    <div class="logo-icon">❤️</div>
+                    <div class="logo-icon">💖</div>
                     <h1 class="logo-text">GiveSpot</h1>
                 </a>
                 <nav class="nav">
-                    <span id="charityName" class="charity-welcome">Loading...</span>
-                    <button id="logoutBtn" class="btn-outline">Logout</button>
+                    <span id="charityName" class="charity-info">Loading...</span>
+                    <button onclick="logout()" class="btn-logout">Logout</button>
                 </nav>
             </div>
         </div>
     </header>
-
-    <!-- Messages -->
-    <div id="messageContainer" class="message"></div>
 
     <!-- Main Content -->
     <main class="main">
         <div class="container">
             <!-- Dashboard Header -->
             <div class="dashboard-header">
-                <h2>Charity Dashboard</h2>
-                <a href="add-item.html" class="btn-primary">
-                    📦 Add New Item
-                </a>
+                <h1>Your Dashboard</h1>
+                <a href="add-item.html" class="btn-primary">Add New Item</a>
             </div>
 
-            <!-- Stats Cards -->
+            <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">💰</div>
+                    <div class="stat-header">
+                        <div class="stat-icon">📦</div>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Active Items</h3>
+                        <p id="activeItems" class="stat-value">Loading...</p>
+                        <p class="stat-change">Currently on marketplace</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">💷</div>
+                    </div>
                     <div class="stat-content">
                         <h3>Account Balance</h3>
                         <p id="accountBalance" class="stat-value">Loading...</p>
+                        <p class="stat-change">Current balance</p>
                     </div>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-icon">📦</div>
-                    <div class="stat-content">
-                        <h3>Total Items</h3>
-                        <p id="itemCount" class="stat-value">Loading...</p>
+                    <div class="stat-header">
+                        <div class="stat-icon">📈</div>
                     </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">📋</div>
-                    <div class="stat-content">
-                        <h3>Active Reservations</h3>
-                        <p id="reservationCount" class="stat-value">0</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">💷</div>
                     <div class="stat-content">
                         <h3>This Month</h3>
-                        <p id="monthlyRevenue" class="stat-value">£0.00</p>
+                        <p id="monthlyItems" class="stat-value">Loading...</p>
+                        <p class="stat-change">Items added</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">📊</div>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Monthly Cost</h3>
+                        <p id="monthlyCost" class="stat-value">Loading...</p>
+                        <p class="stat-change">At £0.10 per item</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Recent Items -->
-            <div class="dashboard-section-content">
+            <!-- Monthly Billing Section -->
+            <div class="dashboard-section">
                 <div class="section-header">
-                    <div>
-                        <h3>Your Items</h3>
-                        <span class="section-subtitle">Manage your listed items</span>
-                    </div>
-                    <a href="add-item.html" class="btn-secondary">Add Item</a>
+                    <h2>Monthly Billing Summary</h2>
+                    <button onclick="loadBillingSummary()" class="btn-secondary">Refresh</button>
                 </div>
                 
-                <div id="charityItemsList" class="items-table">
-                    <div class="loading-placeholder">
+                <div class="billing-summary">
+                    <div class="billing-item">
+                        <span>Items added this month:</span>
+                        <span id="currentMonthItems">Loading...</span>
+                    </div>
+                    <div class="billing-item">
+                        <span>Cost per item:</span>
+                        <span>£0.10</span>
+                    </div>
+                    <div class="billing-item">
+                        <span>Total monthly charge:</span>
+                        <span id="currentMonthTotal">Loading...</span>
+                    </div>
+                </div>
+
+                <p style="font-size: 14px; color: #6b7280; margin-top: 16px;">
+                    Monthly invoices are generated at the end of each month and sent via email.
+                </p>
+            </div>
+
+            <!-- Your Items Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2>Your Items</h2>
+                    <div>
+                        <button onclick="loadItems()" class="btn-secondary">Refresh</button>
+                    </div>
+                </div>
+                
+                <div id="itemsTable">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
                         <p>Loading your items...</p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Active Reservations -->
-            <div class="dashboard-section-content">
-                <div class="section-header">
-                    <div>
-                        <h3>Active Reservations</h3>
-                        <span class="section-subtitle">Items that customers have reserved</span>
-                    </div>
-                </div>
-                
-                <div id="activeReservations" class="reservations-section">
-                    <div class="no-reservations">
-                        <p>No active reservations at the moment</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="quick-actions">
-                <h3>Quick Actions</h3>
-                <div class="action-buttons">
-                    <a href="add-item.html" class="action-btn">
-                        <span class="action-icon">📦</span>
-                        <span>Add New Item</span>
-                    </a>
-                    <button onclick="refreshDashboard()" class="action-btn">
-                        <span class="action-icon">🔄</span>
-                        <span>Refresh Data</span>
-                    </button>
-                    <a href="../browse.html" class="action-btn">
-                        <span class="action-icon">👁️</span>
-                        <span>View Marketplace</span>
-                    </a>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <div class="logo-icon">❤️</div>
-                    <span class="logo-text">GiveSpot</span>
-                </div>
-                <p class="footer-text">
-                    Connecting communities with local charities
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
+    <!-- Scripts -->
     <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/charity.js"></script>
     <script>
-        // Global variables
         let currentCharity = null;
+        let charityItems = [];
 
-        // Message system
-        function showMessage(text, type = 'success') {
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.textContent = text;
-            messageContainer.className = `message ${type} show`;
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Charity dashboard loaded');
             
-            setTimeout(() => {
-                messageContainer.classList.remove('show');
-            }, 4000);
-        }
-
-        function showSuccess(text) {
-            showMessage(text, 'success');
-        }
-
-        function showError(text) {
-            showMessage(text, 'error');
-        }
-
-        // Utility functions
-        function formatPrice(amount) {
-            return new Intl.NumberFormat('en-GB', {
-                style: 'currency',
-                currency: 'GBP'
-            }).format(amount);
-        }
-
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('en-GB', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-        }
-
-        // Get current charity from session
-        function getCurrentCharity() {
-            const userSession = localStorage.getItem('givespot_charity_user');
-            if (!userSession) return null;
-            
-            try {
-                return JSON.parse(userSession);
-            } catch (e) {
-                console.error('Error parsing user session:', e);
-                return null;
+            // Check authentication
+            currentCharity = getCurrentCharity();
+            if (!currentCharity) {
+                window.location.href = 'login.html';
+                return;
             }
-        }
 
-        // Load charity dashboard
-        async function loadCharityDashboard() {
+            // Load dashboard data
+            loadDashboard();
+        });
+
+        // Load all dashboard data
+        async function loadDashboard() {
             try {
-                currentCharity = getCurrentCharity();
-                if (!currentCharity) {
-                    window.location.href = 'login.html';
-                    return;
-                }
-                
-                console.log('Loading dashboard for charity:', currentCharity.name);
-                
-                // Update header with charity name
-                document.getElementById('charityName').textContent = `Welcome, ${currentCharity.name}`;
-                
-                // Load charity details and items
-                const [charityResult, itemsResult] = await Promise.all([
-                    supabase
-                        .from('charities')
-                        .select('*')
-                        .eq('id', currentCharity.id)
-                        .single(),
-                    supabase
-                        .from('items')
-                        .select('*')
-                        .eq('charity_id', currentCharity.id)
-                        .order('created_at', { ascending: false })
+                // Update charity name
+                document.getElementById('charityName').textContent = currentCharity.name;
+
+                // Load charity data and items in parallel
+                await Promise.all([
+                    loadCharityData(),
+                    loadItems(),
+                    loadBillingSummary()
                 ]);
-
-                if (charityResult.error) {
-                    throw charityResult.error;
-                }
-
-                const charityData = charityResult.data;
-                const items = itemsResult.data || [];
-
-                // Load reservations for charity items
-                const itemIds = items.map(item => item.id);
-                let reservations = [];
                 
-                if (itemIds.length > 0) {
-                    const reservationsResult = await supabase
-                        .from('reservations')
-                        .select(`
-                            *,
-                            items!inner (item_code, price, charity_id),
-                            users (name, phone, email)
-                        `)
-                        .in('item_id', itemIds)
-                        .eq('status', 'active')
-                        .gte('expires_at', new Date().toISOString());
-
-                    reservations = reservationsResult.data || [];
-                }
-
-                // Update dashboard display
-                updateDashboardStats(charityData, items, reservations);
-                displayCharityItems(items);
-                displayActiveReservations(reservations);
-                
-            } catch (err) {
-                console.error('Dashboard loading error:', err);
-                showError('Failed to load dashboard: ' + err.message);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showError('Failed to load dashboard data');
             }
         }
 
-        // Update dashboard statistics
-        function updateDashboardStats(charity, items, reservations) {
-            // Update account balance
-            document.getElementById('accountBalance').textContent = formatPrice(charity.balance || 0);
-            
-            // Update item count
-            document.getElementById('itemCount').textContent = items.length;
-            
-            // Update reservation count
-            document.getElementById('reservationCount').textContent = reservations.length;
-            
-            // Calculate monthly revenue (items posted this month * £0.10)
-            const thisMonth = new Date();
-            thisMonth.setDate(1);
-            const thisMonthItems = items.filter(item => new Date(item.created_at) >= thisMonth);
-            const monthlyRevenue = thisMonthItems.length * 0.10;
-            document.getElementById('monthlyRevenue').textContent = formatPrice(monthlyRevenue);
+        // Load charity data and stats
+        async function loadCharityData() {
+            try {
+                const { data: charity, error } = await supabase
+                    .from('charities')
+                    .select('*')
+                    .eq('id', currentCharity.id)
+                    .single();
+
+                if (error) throw error;
+
+                // Update account balance
+                document.getElementById('accountBalance').textContent = formatPrice(charity.balance || 0);
+
+                // Count active items
+                const { data: items } = await supabase
+                    .from('items')
+                    .select('id, created_at')
+                    .eq('charity_id', currentCharity.id)
+                    .eq('status', 'active');
+
+                document.getElementById('activeItems').textContent = items?.length || 0;
+
+                // Count this month's items
+                const thisMonth = new Date();
+                thisMonth.setDate(1);
+                thisMonth.setHours(0, 0, 0, 0);
+
+                const thisMonthItems = items?.filter(item => 
+                    new Date(item.created_at) >= thisMonth
+                ).length || 0;
+
+                document.getElementById('monthlyItems').textContent = thisMonthItems;
+                document.getElementById('monthlyCost').textContent = formatPrice(thisMonthItems * 0.10);
+                
+            } catch (error) {
+                console.error('Error loading charity data:', error);
+            }
         }
 
-        // Display charity items
-        function displayCharityItems(items) {
-            const container = document.getElementById('charityItemsList');
+        // Load items table
+        async function loadItems() {
+            try {
+                showLoading('itemsTable');
+                
+                const { data: items, error } = await supabase
+                    .from('items')
+                    .select('*')
+                    .eq('charity_id', currentCharity.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                charityItems = items || [];
+                displayItemsTable(charityItems);
+                
+            } catch (error) {
+                console.error('Error loading items:', error);
+                showError('Failed to load items');
+            }
+        }
+
+        // Display items table
+        function displayItemsTable(items) {
+            const container = document.getElementById('itemsTable');
             
             if (!items || items.length === 0) {
                 container.innerHTML = `
-                    <div class="no-items">
-                        <p>No items posted yet</p>
-                        <a href="add-item.html" class="btn-primary">Add Your First Item</a>
+                    <div class="empty-state">
+                        <p>No items found</p>
+                        <p>Click "Add New Item" to get started</p>
                     </div>
                 `;
                 return;
             }
 
             let html = `
-                <div class="items-table-header">
-                    <span>Item Code</span>
-                    <span>Price</span>
-                    <span>Status</span>
-                    <span>Date Added</span>
-                    <span>Actions</span>
-                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Added</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
 
             items.forEach(item => {
-                const statusClass = `status-${item.status}`;
                 html += `
-                    <div class="items-table-row">
-                        <span class="item-code">${item.item_code}</span>
-                        <span class="item-price">${formatPrice(item.price)}</span>
-                        <span class="item-status ${statusClass}">${item.status}</span>
-                        <span class="item-date">${formatDate(item.created_at)}</span>
-                        <div class="item-actions">
-                            <button onclick="editItem('${item.id}')" class="btn-small btn-edit">Edit</button>
-                            <button onclick="removeItem('${item.id}')" class="btn-small btn-remove">Remove</button>
-                        </div>
-                    </div>
+                    <tr>
+                        <td>${item.item_code}</td>
+                        <td>${formatPrice(item.price)}</td>
+                        <td><span class="status-badge status-${item.status}">${item.status}</span></td>
+                        <td>${formatDate(item.created_at)}</td>
+                        <td>
+                            <div class="action-buttons">
+                                ${item.status === 'active' ? 
+                                    `<button onclick="markAsSold('${item.id}')" class="btn-small btn-sold">Mark Sold</button>
+                                     <button onclick="removeItem('${item.id}')" class="btn-small btn-remove">Remove</button>` :
+                                    `<span style="color: #6b7280; font-size: 12px;">No actions</span>`
+                                }
+                            </div>
+                        </td>
+                    </tr>
                 `;
             });
 
+            html += '</tbody></table>';
             container.innerHTML = html;
         }
 
-        // Display active reservations
-        function displayActiveReservations(reservations) {
-            const container = document.getElementById('activeReservations');
-            
-            if (!reservations || reservations.length === 0) {
-                container.innerHTML = `
-                    <div class="no-reservations">
-                        <p>No active reservations at the moment</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '<div class="reservations-list">';
-            
-            reservations.forEach(reservation => {
-                const item = reservation.items || {};
-                const user = reservation.users || {};
-                const expiresAt = new Date(reservation.expires_at);
-                const hoursLeft = Math.max(0, Math.floor((expiresAt - new Date()) / (1000 * 60 * 60)));
-                
-                html += `
-                    <div class="reservation-card">
-                        <div class="reservation-header">
-                            <h4>${item.item_code || 'Unknown Item'}</h4>
-                            <span class="reservation-price">${formatPrice(item.price || 0)}</span>
-                        </div>
-                        <div class="reservation-details">
-                            <p><strong>Customer:</strong> ${user.name || 'Unknown'}</p>
-                            <p><strong>Phone:</strong> ${user.phone || 'Not provided'}</p>
-                            <p><strong>Email:</strong> ${user.email || 'Not provided'}</p>
-                            <p><strong>Expires:</strong> ${hoursLeft}h remaining</p>
-                        </div>
-                        <div class="reservation-actions">
-                            <button onclick="markAsSold('${reservation.id}', '${reservation.item_id}')" class="btn-success">
-                                ✅ Mark as Sold
-                            </button>
-                            <button onclick="markAsNoShow('${reservation.id}', '${reservation.item_id}')" class="btn-warning">
-                                ❌ No Show
-                            </button>
-                            <button onclick="extendReservation('${reservation.id}')" class="btn-info">
-                                📞 Extend (24h)
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        // Reservation management functions
-        async function markAsSold(reservationId, itemId) {
+        // Load billing summary
+        async function loadBillingSummary() {
             try {
-                if (!confirm('Mark this item as sold? This action cannot be undone.')) {
-                    return;
-                }
+                const currentMonth = new Date().getMonth() + 1;
+                const currentYear = new Date().getFullYear();
 
-                // Update item status to sold
-                const { error: itemError } = await supabase
+                const { data: monthlyReport } = await supabase
+                    .from('monthly_reports')
+                    .select('*')
+                    .eq('charity_id', currentCharity.id)
+                    .eq('month', currentMonth)
+                    .eq('year', currentYear)
+                    .single();
+
+                const itemsAdded = monthlyReport?.items_added || 0;
+                const totalFee = monthlyReport?.total_fee || 0;
+
+                document.getElementById('currentMonthItems').textContent = itemsAdded;
+                document.getElementById('currentMonthTotal').textContent = formatPrice(totalFee);
+                
+            } catch (error) {
+                console.error('Error loading billing summary:', error);
+                document.getElementById('currentMonthItems').textContent = '0';
+                document.getElementById('currentMonthTotal').textContent = '£0.00';
+            }
+        }
+
+        // Mark item as sold
+        async function markAsSold(itemId) {
+            try {
+                if (!confirm('Mark this item as sold? This will remove it from the marketplace.')) return;
+
+                const { error } = await supabase
                     .from('items')
                     .update({ status: 'sold' })
                     .eq('id', itemId);
 
-                if (itemError) throw itemError;
-
-                // Update reservation status to collected
-                const { error: reservationError } = await supabase
-                    .from('reservations')
-                    .update({ status: 'collected' })
-                    .eq('id', reservationId);
-
-                if (reservationError) throw reservationError;
-
-                showSuccess('Item marked as sold successfully!');
-                await loadCharityDashboard();
-
-            } catch (err) {
-                console.error('Error marking as sold:', err);
-                showError('Failed to mark item as sold: ' + err.message);
-            }
-        }
-
-        async function markAsNoShow(reservationId, itemId) {
-            try {
-                if (!confirm('Mark this reservation as no-show? The item will become available again.')) {
-                    return;
-                }
-
-                // Update item status back to active
-                const { error: itemError } = await supabase
-                    .from('items')
-                    .update({ status: 'active' })
-                    .eq('id', itemId);
-
-                if (itemError) throw itemError;
-
-                // Update reservation status to expired
-                const { error: reservationError } = await supabase
-                    .from('reservations')
-                    .update({ status: 'expired' })
-                    .eq('id', reservationId);
-
-                if (reservationError) throw reservationError;
-
-                showSuccess('Reservation marked as no-show. Item is now available again.');
-                await loadCharityDashboard();
-
-            } catch (err) {
-                console.error('Error marking as no-show:', err);
-                showError('Failed to mark as no-show: ' + err.message);
-            }
-        }
-
-        async function extendReservation(reservationId) {
-            try {
-                if (!confirm('Extend this reservation by 24 hours?')) {
-                    return;
-                }
-
-                // Add 24 hours to expires_at
-                const newExpiryTime = new Date();
-                newExpiryTime.setHours(newExpiryTime.getHours() + 24);
-
-                const { error } = await supabase
-                    .from('reservations')
-                    .update({ 
-                        expires_at: newExpiryTime.toISOString(),
-                        status: 'extended'
-                    })
-                    .eq('id', reservationId);
-
                 if (error) throw error;
 
-                showSuccess('Reservation extended by 24 hours');
-                await loadCharityDashboard();
-
-            } catch (err) {
-                console.error('Error extending reservation:', err);
-                showError('Failed to extend reservation: ' + err.message);
+                showSuccess('Item marked as sold');
+                loadItems();
+                loadCharityData();
+                
+            } catch (error) {
+                console.error('Error marking item as sold:', error);
+                showError('Failed to update item status');
             }
         }
 
-        // Item management functions (placeholders for future implementation)
-        function editItem(itemId) {
-            showSuccess('Edit item functionality will be implemented in a future update!');
-        }
-
+        // Remove item
         async function removeItem(itemId) {
             try {
-                if (!confirm('Are you sure you want to remove this item? This action cannot be undone.')) {
-                    return;
-                }
+                if (!confirm('Remove this item from the marketplace? This action cannot be undone.')) return;
 
                 const { error } = await supabase
                     .from('items')
@@ -1042,43 +714,32 @@
 
                 if (error) throw error;
 
-                showSuccess('Item removed successfully');
-                await loadCharityDashboard();
-
-            } catch (err) {
-                console.error('Error removing item:', err);
-                showError('Failed to remove item: ' + err.message);
+                showSuccess('Item removed from marketplace');
+                loadItems();
+                loadCharityData();
+                
+            } catch (error) {
+                console.error('Error removing item:', error);
+                showError('Failed to remove item');
             }
         }
 
-        // Refresh dashboard
-        async function refreshDashboard() {
-            showSuccess('Refreshing dashboard...');
-            await loadCharityDashboard();
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                logoutCharity();
+            }
         }
 
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Charity dashboard loaded');
-            
-            // Check authentication
-            const charity = getCurrentCharity();
-            if (!charity) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Load dashboard data
-            loadCharityDashboard();
-
-            // Logout functionality
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                if (confirm('Are you sure you want to logout?')) {
-                    localStorage.removeItem('givespot_charity_user');
-                    window.location.href = 'login.html';
-                }
-            });
-        });
+        // Utility functions
+        function showLoading(containerId) {
+            document.getElementById(containerId).innerHTML = `
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading...</p>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
