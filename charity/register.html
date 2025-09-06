@@ -246,6 +246,16 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
+        .form-input.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .form-input.success {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
         .form-input::placeholder {
             color: #9ca3af;
         }
@@ -342,6 +352,29 @@
             text-decoration: underline;
         }
 
+        /* Validation Messages */
+        .field-error {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+
+        .field-success {
+            color: #10b981;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .field-success.show {
+            display: block;
+        }
+
         /* Success Message */
         .success-message {
             display: none;
@@ -389,6 +422,20 @@
         .error-message p {
             color: #dc2626;
             font-weight: 500;
+        }
+
+        /* Validation Status Icons */
+        .validation-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            display: none;
+        }
+
+        .field-wrapper {
+            position: relative;
         }
 
         /* Responsive Design */
@@ -511,46 +558,77 @@
                     </div>
 
                     <div id="errorMessage" class="error-message">
-                        <p>There was an error submitting your application. Please try again.</p>
+                        <p>Please fix the errors below before submitting.</p>
                     </div>
 
                     <form id="registrationForm">
                         <div class="form-group">
                             <label class="form-label" for="charityName">Charity Name *</label>
-                            <input type="text" id="charityName" name="charityName" class="form-input" placeholder="e.g. Age UK Manchester" required>
+                            <div class="field-wrapper">
+                                <input type="text" id="charityName" name="charityName" class="form-input" placeholder="e.g. Age UK Manchester" required>
+                                <span class="validation-icon" id="charityNameIcon"></span>
+                            </div>
+                            <div class="field-error" id="charityNameError"></div>
+                            <div class="field-success" id="charityNameSuccess">✓ Charity name looks good</div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="registrationNumber">UK Charity Registration Number *</label>
-                            <input type="text" id="registrationNumber" name="registrationNumber" class="form-input" placeholder="e.g. 123456789" required>
+                            <div class="field-wrapper">
+                                <input type="text" id="registrationNumber" name="registrationNumber" class="form-input" placeholder="e.g. 123456789" required>
+                                <span class="validation-icon" id="registrationNumberIcon"></span>
+                            </div>
+                            <div class="field-error" id="registrationNumberError"></div>
+                            <div class="field-success" id="registrationNumberSuccess">✓ Valid registration number format</div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="contactEmail">Contact Email *</label>
-                                <input type="email" id="contactEmail" name="contactEmail" class="form-input" placeholder="charity@example.org" required>
+                                <div class="field-wrapper">
+                                    <input type="email" id="contactEmail" name="contactEmail" class="form-input" placeholder="charity@example.org" required>
+                                    <span class="validation-icon" id="contactEmailIcon"></span>
+                                </div>
+                                <div class="field-error" id="contactEmailError"></div>
+                                <div class="field-success" id="contactEmailSuccess">✓ Email available and valid</div>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="contactPhone">Phone Number *</label>
-                                <input type="tel" id="contactPhone" name="contactPhone" class="form-input" placeholder="0161 123 4567" required>
+                                <div class="field-wrapper">
+                                    <input type="tel" id="contactPhone" name="contactPhone" class="form-input" placeholder="0161 123 4567" required>
+                                    <span class="validation-icon" id="contactPhoneIcon"></span>
+                                </div>
+                                <div class="field-error" id="contactPhoneError"></div>
+                                <div class="field-success" id="contactPhoneSuccess">✓ Valid UK phone number</div>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="address">Charity Address *</label>
                             <textarea id="address" name="address" class="form-textarea" placeholder="Full address including postcode" required></textarea>
+                            <div class="field-error" id="addressError"></div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="postcode">Postcode *</label>
-                                <input type="text" id="postcode" name="postcode" class="form-input" placeholder="M1 1AA" required>
+                                <div class="field-wrapper">
+                                    <input type="text" id="postcode" name="postcode" class="form-input" placeholder="M1 1AA" required>
+                                    <span class="validation-icon" id="postcodeIcon"></span>
+                                </div>
+                                <div class="field-error" id="postcodeError"></div>
+                                <div class="field-success" id="postcodeSuccess">✓ Valid UK postcode</div>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="contactPerson">Contact Person *</label>
-                                <input type="text" id="contactPerson" name="contactPerson" class="form-input" placeholder="Full name" required>
+                                <div class="field-wrapper">
+                                    <input type="text" id="contactPerson" name="contactPerson" class="form-input" placeholder="Full name" required>
+                                    <span class="validation-icon" id="contactPersonIcon"></span>
+                                </div>
+                                <div class="field-error" id="contactPersonError"></div>
+                                <div class="field-success" id="contactPersonSuccess">✓ Contact person name entered</div>
                             </div>
                         </div>
 
@@ -593,20 +671,236 @@
             const successMessage = document.getElementById('successMessage');
             const errorMessage = document.getElementById('errorMessage');
 
+            // Validation patterns
+            const patterns = {
+                email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                phone: /^(\+44|0)[1-9]\d{8,10}$/,
+                postcode: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i,
+                charityNumber: /^\d{6,8}$/
+            };
+
+            // Validation functions
+            function validateField(fieldId, validationFn, errorMsg, successMsg) {
+                const field = document.getElementById(fieldId);
+                const errorDiv = document.getElementById(fieldId + 'Error');
+                const successDiv = document.getElementById(fieldId + 'Success');
+                const icon = document.getElementById(fieldId + 'Icon');
+
+                const isValid = validationFn(field.value.trim());
+
+                // Reset classes
+                field.classList.remove('error', 'success');
+                errorDiv.classList.remove('show');
+                successDiv.classList.remove('show');
+
+                if (field.value.trim() === '') {
+                    // Empty field
+                    return false;
+                } else if (isValid) {
+                    // Valid field
+                    field.classList.add('success');
+                    successDiv.classList.add('show');
+                    if (icon) {
+                        icon.textContent = '✓';
+                        icon.style.color = '#10b981';
+                        icon.style.display = 'block';
+                    }
+                    return true;
+                } else {
+                    // Invalid field
+                    field.classList.add('error');
+                    errorDiv.textContent = errorMsg;
+                    errorDiv.classList.add('show');
+                    if (icon) {
+                        icon.textContent = '✗';
+                        icon.style.color = '#ef4444';
+                        icon.style.display = 'block';
+                    }
+                    return false;
+                }
+            }
+
+            // Check for duplicate email
+            async function checkEmailAvailability(email) {
+                if (!patterns.email.test(email)) {
+                    return false;
+                }
+
+                try {
+                    // Check both charities and charity_applications tables
+                    const [charitiesCheck, applicationsCheck] = await Promise.all([
+                        supabase.from('charities').select('email').eq('email', email),
+                        supabase.from('charity_applications').select('email').eq('email', email).eq('status', 'pending')
+                    ]);
+
+                    const emailExists = (charitiesCheck.data && charitiesCheck.data.length > 0) || 
+                                      (applicationsCheck.data && applicationsCheck.data.length > 0);
+
+                    return !emailExists;
+                } catch (error) {
+                    console.error('Email check error:', error);
+                    return false;
+                }
+            }
+
+            // Real-time validation
+            document.getElementById('charityName').addEventListener('blur', function() {
+                validateField('charityName', 
+                    (value) => value.length >= 3,
+                    'Charity name must be at least 3 characters long',
+                    'Charity name looks good'
+                );
+            });
+
+            document.getElementById('registrationNumber').addEventListener('blur', function() {
+                validateField('registrationNumber',
+                    (value) => patterns.charityNumber.test(value),
+                    'Please enter a valid UK charity registration number (6-8 digits)',
+                    'Valid registration number format'
+                );
+            });
+
+            document.getElementById('contactEmail').addEventListener('blur', async function() {
+                const email = this.value.trim();
+                const field = this;
+                const errorDiv = document.getElementById('contactEmailError');
+                const successDiv = document.getElementById('contactEmailSuccess');
+                const icon = document.getElementById('contactEmailIcon');
+
+                // Reset
+                field.classList.remove('error', 'success');
+                errorDiv.classList.remove('show');
+                successDiv.classList.remove('show');
+                if (icon) icon.style.display = 'none';
+
+                if (email === '') return;
+
+                if (!patterns.email.test(email)) {
+                    field.classList.add('error');
+                    errorDiv.textContent = 'Please enter a valid email address';
+                    errorDiv.classList.add('show');
+                    if (icon) {
+                        icon.textContent = '✗';
+                        icon.style.color = '#ef4444';
+                        icon.style.display = 'block';
+                    }
+                    return;
+                }
+
+                // Show checking status
+                if (icon) {
+                    icon.textContent = '...';
+                    icon.style.color = '#6b7280';
+                    icon.style.display = 'block';
+                }
+
+                const isAvailable = await checkEmailAvailability(email);
+
+                if (isAvailable) {
+                    field.classList.add('success');
+                    successDiv.classList.add('show');
+                    if (icon) {
+                        icon.textContent = '✓';
+                        icon.style.color = '#10b981';
+                    }
+                } else {
+                    field.classList.add('error');
+                    errorDiv.textContent = 'This email is already registered. Please use a different email or login if you already have an account.';
+                    errorDiv.classList.add('show');
+                    if (icon) {
+                        icon.textContent = '✗';
+                        icon.style.color = '#ef4444';
+                    }
+                }
+            });
+
+            document.getElementById('contactPhone').addEventListener('blur', function() {
+                validateField('contactPhone',
+                    (value) => patterns.phone.test(value.replace(/\s/g, '')),
+                    'Please enter a valid UK phone number',
+                    'Valid UK phone number'
+                );
+            });
+
+            document.getElementById('postcode').addEventListener('blur', function() {
+                validateField('postcode',
+                    (value) => patterns.postcode.test(value),
+                    'Please enter a valid UK postcode',
+                    'Valid UK postcode'
+                );
+            });
+
+            document.getElementById('contactPerson').addEventListener('blur', function() {
+                validateField('contactPerson',
+                    (value) => value.length >= 2,
+                    'Please enter the contact person\'s name',
+                    'Contact person name entered'
+                );
+            });
+
+            // Real-time postcode formatting
+            document.getElementById('postcode').addEventListener('input', function(e) {
+                let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                if (value.length > 3) {
+                    value = value.substring(0, value.length - 3) + ' ' + value.substring(value.length - 3);
+                }
+                e.target.value = value;
+            });
+
+            // Form submission
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 // Disable submit button
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Submitting...';
+                submitBtn.textContent = 'Validating...';
                 
                 // Hide previous messages
                 successMessage.classList.remove('show');
                 errorMessage.classList.remove('show');
 
                 try {
-                    // Get form data
+                    // Final validation
                     const formData = new FormData(form);
+                    const email = formData.get('contactEmail');
+                    
+                    // Check all required fields
+                    const requiredFields = ['charityName', 'registrationNumber', 'contactEmail', 'contactPhone', 'address', 'postcode', 'contactPerson'];
+                    let hasErrors = false;
+
+                    for (const fieldId of requiredFields) {
+                        const field = document.getElementById(fieldId);
+                        if (!field.value.trim()) {
+                            field.classList.add('error');
+                            document.getElementById(fieldId + 'Error').textContent = 'This field is required';
+                            document.getElementById(fieldId + 'Error').classList.add('show');
+                            hasErrors = true;
+                        }
+                    }
+
+                    // Check terms acceptance
+                    if (!formData.get('termsAccepted')) {
+                        alert('Please accept the Terms of Service and Privacy Policy to continue.');
+                        hasErrors = true;
+                    }
+
+                    // Final email availability check
+                    const emailAvailable = await checkEmailAvailability(email);
+                    if (!emailAvailable) {
+                        document.getElementById('contactEmail').classList.add('error');
+                        document.getElementById('contactEmailError').textContent = 'This email is already registered';
+                        document.getElementById('contactEmailError').classList.add('show');
+                        hasErrors = true;
+                    }
+
+                    if (hasErrors) {
+                        errorMessage.classList.add('show');
+                        throw new Error('Please fix the errors above');
+                    }
+
+                    // Submit application
+                    submitBtn.textContent = 'Submitting Application...';
+
                     const applicationData = {
                         charity_name: formData.get('charityName'),
                         registration_number: formData.get('registrationNumber'),
@@ -621,7 +915,6 @@
                         applied_at: new Date().toISOString()
                     };
 
-                    // Submit to Supabase
                     const { data, error } = await supabase
                         .from('charity_applications')
                         .insert([applicationData])
@@ -637,29 +930,33 @@
                     successMessage.classList.add('show');
                     form.reset();
                     
+                    // Reset all validation states
+                    document.querySelectorAll('.form-input').forEach(input => {
+                        input.classList.remove('error', 'success');
+                    });
+                    document.querySelectorAll('.field-error, .field-success').forEach(msg => {
+                        msg.classList.remove('show');
+                    });
+                    document.querySelectorAll('.validation-icon').forEach(icon => {
+                        icon.style.display = 'none';
+                    });
+                    
                     // Scroll to success message
                     successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
                 } catch (error) {
                     console.error('Application submission error:', error);
                     
-                    // Show error message
-                    errorMessage.classList.add('show');
-                    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (!errorMessage.classList.contains('show')) {
+                        errorMessage.innerHTML = '<p>' + error.message + '</p>';
+                        errorMessage.classList.add('show');
+                        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
 
                 // Re-enable submit button
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Register Charity';
-            });
-
-            // Real-time postcode formatting
-            document.getElementById('postcode').addEventListener('input', function(e) {
-                let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                if (value.length > 3) {
-                    value = value.substring(0, value.length - 3) + ' ' + value.substring(value.length - 3);
-                }
-                e.target.value = value;
             });
         });
     </script>
