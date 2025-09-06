@@ -38,7 +38,7 @@ async function loadItems(filters = {}) {
             throw error;
         }
 
-        console.log(`📦 Loaded ${items?.length || 0} items`);
+        console.log(`Loaded ${items?.length || 0} items`);
         displayItems(items || []);
         hideLoading();
         
@@ -54,7 +54,7 @@ async function loadItems(filters = {}) {
 
 // Display items on the page
 function displayItems(items) {
-    const container = document.getElementById('itemsContainer');
+    const container = document.getElementById('itemsContainer') || document.getElementById('itemsGrid');
     
     if (!container) {
         console.error('Items container not found');
@@ -72,12 +72,7 @@ function displayItems(items) {
     }
 
     // Create items grid
-    let html = `
-        <div class="items-header">
-            <h2>Available Items (${items.length})</h2>
-        </div>
-        <div class="items-grid">
-    `;
+    let html = '';
     
     items.forEach(item => {
         const charity = item.charities || {};
@@ -87,12 +82,15 @@ function displayItems(items) {
             <div class="item-card" data-item-id="${item.id}">
                 <div class="item-image">
                     ${hasImage 
-                        ? `<img src="${item.image_urls[0]}" alt="Item ${item.item_code}" loading="lazy">`
+                        ? `<img src="${item.image_urls[0]}" alt="Item ${item.item_code}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                           <div class="no-image-placeholder" style="display: none;">
+                             <span>No Image</span>
+                           </div>`
                         : `<div class="no-image-placeholder">
-                             <span>📦</span>
-                             <p>No Image</p>
+                             <span>No Image Available</span>
                            </div>`
                     }
+                    <div class="item-status">Available</div>
                 </div>
                 <div class="item-details">
                     <div class="item-header">
@@ -101,41 +99,41 @@ function displayItems(items) {
                     </div>
                     
                     <div class="charity-info">
-                        <p class="charity-name">
-                            <span class="charity-icon">🏪</span>
-                            ${charity.name || 'Unknown Charity'}
-                        </p>
-                        ${charity.postcode ? `
-                            <p class="charity-location">
-                                <span class="location-icon">📍</span>
-                                ${charity.postcode}
-                            </p>
-                        ` : ''}
+                        <span class="charity-icon">🏪</span>
+                        <span class="charity-name">${charity.name || 'Unknown Charity'}</span>
                     </div>
+                    
+                    ${charity.postcode ? `
+                        <div class="item-location">
+                            <span class="location-icon">📍</span>
+                            <span>${charity.postcode}</span>
+                        </div>
+                    ` : ''}
                     
                     <button onclick="reserveItem('${item.id}', '${item.item_code}')" 
                             class="reserve-btn">
-                        🔖 Reserve Item
+                        Reserve Item
                     </button>
                 </div>
             </div>
         `;
     });
     
-    html += '</div>';
     container.innerHTML = html;
     
-    console.log(`✅ Displayed ${items.length} items successfully`);
+    console.log(`Displayed ${items.length} items successfully`);
 }
 
-// Reserve an item (will be implemented in Step 5)
+// Reserve an item - redirect to reservation page
 function reserveItem(itemId, itemCode) {
-    console.log('🔖 Reserve item clicked:', itemId, itemCode);
+    console.log('Reserve item clicked:', itemId, itemCode);
     
-    // For now, show a placeholder message
-    showSuccess(`Reservation for ${itemCode} will be implemented in Step 5!`);
+    // Store item ID for reservation page
+    localStorage.setItem('reserveItemId', itemId);
+    localStorage.setItem('reserveItemCode', itemCode);
     
-    // TODO: Implement reservation form and functionality
+    // Redirect to reservation page
+    window.location.href = `reserve.html?item=${itemId}&code=${itemCode}`;
 }
 
 // Search items by postcode
@@ -150,21 +148,21 @@ async function searchItems(postcode) {
         return;
     }
     
-    console.log('🔍 Searching items near:', postcode);
+    console.log('Searching items near:', postcode);
     
     await loadItems({ postcode: postcode.trim() });
 }
 
 // Filter items by price range
 async function filterByPrice(maxPrice) {
-    console.log('💷 Filtering by max price:', maxPrice);
+    console.log('Filtering by max price:', maxPrice);
     
     await loadItems({ maxPrice: maxPrice });
 }
 
 // Refresh items list
 async function refreshItems() {
-    console.log('🔄 Refreshing items...');
+    console.log('Refreshing items...');
     await loadItems();
 }
 
@@ -172,9 +170,10 @@ async function refreshItems() {
 document.addEventListener('DOMContentLoaded', function() {
     // Only run on browse page
     if (window.location.pathname.includes('browse.html') || 
-        document.getElementById('itemsContainer')) {
+        document.getElementById('itemsContainer') || 
+        document.getElementById('itemsGrid')) {
         
-        console.log('📋 Initializing items page...');
+        console.log('Initializing items page...');
         
         // Load items automatically
         loadItems();
@@ -184,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (searchForm) {
             searchForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const postcodeInput = document.getElementById('postcodeInput');
+                const postcodeInput = document.getElementById('postcodeInput') || document.getElementById('postcodeSearch');
                 if (postcodeInput) {
                     searchItems(postcodeInput.value);
                 }
@@ -192,13 +191,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Set up postcode input if it exists
-        const postcodeInput = document.getElementById('postcodeInput');
+        const postcodeInput = document.getElementById('postcodeInput') || document.getElementById('postcodeSearch');
         if (postcodeInput) {
             postcodeInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     searchItems(this.value);
                 }
+            });
+        }
+        
+        // Set up search button if it exists
+        const searchBtn = document.querySelector('.search-btn');
+        if (searchBtn && postcodeInput) {
+            searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchItems(postcodeInput.value);
             });
         }
     }
