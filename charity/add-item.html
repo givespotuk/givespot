@@ -341,6 +341,12 @@
             margin-bottom: 24px;
         }
 
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
         .form-label {
             display: block;
             font-weight: 600;
@@ -349,23 +355,35 @@
             font-size: 14px;
         }
 
-        .form-input {
+        .form-input,
+        .form-textarea,
+        .form-select {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             font-size: 16px;
             transition: all 0.2s;
+            font-family: inherit;
         }
 
-        .form-input:focus {
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        .form-input.error {
+        .form-input.error,
+        .form-textarea.error,
+        .form-select.error {
             border-color: #ef4444;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
         }
 
         .price-input-container {
@@ -396,6 +414,43 @@
             color: #6b7280;
             font-size: 14px;
             margin-top: 4px;
+        }
+
+        /* Condition Tags */
+        .condition-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .condition-option {
+            position: relative;
+        }
+
+        .condition-radio {
+            display: none;
+        }
+
+        .condition-label {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            background: white;
+        }
+
+        .condition-radio:checked + .condition-label {
+            border-color: #3b82f6;
+            background: #3b82f6;
+            color: white;
+        }
+
+        .condition-label:hover {
+            border-color: #3b82f6;
         }
 
         /* Pricing Info */
@@ -593,6 +648,15 @@
             .btn-secondary {
                 width: 100%;
             }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .condition-options {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -627,7 +691,7 @@
             <!-- Page Header -->
             <div class="page-header">
                 <h1>Add New Item</h1>
-                <p>Upload photos and set a price to list your item on the marketplace</p>
+                <p>Upload photos, add details and set a price to list your item on the marketplace</p>
             </div>
 
             <!-- Back Navigation -->
@@ -649,11 +713,16 @@
                         <div class="step-connector"></div>
                         <div class="step" data-step="2">
                             <div class="step-number">2</div>
-                            <div class="step-label">Price</div>
+                            <div class="step-label">Details</div>
                         </div>
                         <div class="step-connector"></div>
                         <div class="step" data-step="3">
                             <div class="step-number">3</div>
+                            <div class="step-label">Price</div>
+                        </div>
+                        <div class="step-connector"></div>
+                        <div class="step" data-step="4">
+                            <div class="step-number">4</div>
                             <div class="step-label">Review</div>
                         </div>
                     </div>
@@ -678,13 +747,67 @@
 
                         <div class="form-actions">
                             <button type="button" onclick="nextStep()" class="btn-primary" id="photosNextBtn" disabled>
+                                Continue to Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Details -->
+                    <div class="form-section" data-step="2">
+                        <h2 class="section-title">Item Details</h2>
+                        <p class="section-subtitle">Provide information about your item</p>
+
+                        <div class="form-group">
+                            <label class="form-label" for="itemName">Item Name / Description *</label>
+                            <input type="text" id="itemName" class="form-input" 
+                                   placeholder="e.g. Vintage Leather Jacket, Children's Books Set, Kitchen Table..." 
+                                   maxlength="100" required>
+                            <div class="form-error" id="nameError"></div>
+                            <div class="form-hint">Give your item a clear, descriptive name (max 100 characters)</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Item Condition *</label>
+                            <div class="condition-options">
+                                <div class="condition-option">
+                                    <input type="radio" id="conditionNew" name="condition" value="new" class="condition-radio">
+                                    <label for="conditionNew" class="condition-label">New</label>
+                                </div>
+                                <div class="condition-option">
+                                    <input type="radio" id="conditionLikeNew" name="condition" value="like_new" class="condition-radio">
+                                    <label for="conditionLikeNew" class="condition-label">Like New</label>
+                                </div>
+                                <div class="condition-option">
+                                    <input type="radio" id="conditionUsed" name="condition" value="used" class="condition-radio" checked>
+                                    <label for="conditionUsed" class="condition-label">Used</label>
+                                </div>
+                                <div class="condition-option">
+                                    <input type="radio" id="conditionWorn" name="condition" value="well_used" class="condition-radio">
+                                    <label for="conditionWorn" class="condition-label">Well Used</label>
+                                </div>
+                            </div>
+                            <div class="form-error" id="conditionError"></div>
+                            <div class="form-hint">Select the condition that best describes your item</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="itemNotes">Additional Notes (Optional)</label>
+                            <textarea id="itemNotes" class="form-textarea" 
+                                      placeholder="Any additional details, size information, or special notes about the item..."
+                                      maxlength="300"></textarea>
+                            <div class="form-hint">Add any extra details that might be helpful to buyers (max 300 characters)</div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" onclick="previousStep()" class="btn-secondary">Back</button>
+                            <button type="button" onclick="nextStep()" class="btn-primary" id="detailsNextBtn" disabled>
                                 Continue to Pricing
                             </button>
                         </div>
                     </div>
 
-                    <!-- Step 2: Price -->
-                    <div class="form-section" data-step="2">
+                    <!-- Step 3: Price -->
+                    <div class="form-section" data-step="3">
                         <h2 class="section-title">Set Your Price</h2>
                         <p class="section-subtitle">Choose a fair price for your item</p>
 
@@ -723,8 +846,8 @@
                         </div>
                     </div>
 
-                    <!-- Step 3: Review -->
-                    <div class="form-section" data-step="3">
+                    <!-- Step 4: Review -->
+                    <div class="form-section" data-step="4">
                         <h2 class="section-title">Review Your Item</h2>
                         <p class="section-subtitle">Check everything looks correct before publishing</p>
 
@@ -785,8 +908,14 @@
             // Update charity name
             document.getElementById('charityName').textContent = currentCharity.name;
 
-            // Set up price input validation
+            // Set up validation
+            document.getElementById('itemName').addEventListener('input', validateDetails);
             document.getElementById('itemPrice').addEventListener('input', validatePrice);
+            
+            // Set up condition change listener
+            document.querySelectorAll('input[name="condition"]').forEach(radio => {
+                radio.addEventListener('change', validateDetails);
+            });
         });
 
         // Photo upload handling
@@ -838,6 +967,36 @@
             btn.disabled = uploadedPhotos.length === 0;
         }
 
+        // Validate details step
+        function validateDetails() {
+            const name = document.getElementById('itemName').value.trim();
+            const condition = document.querySelector('input[name="condition"]:checked');
+            const detailsNextBtn = document.getElementById('detailsNextBtn');
+            const nameError = document.getElementById('nameError');
+            
+            let isValid = true;
+            
+            if (!name || name.length < 3) {
+                nameError.textContent = 'Item name must be at least 3 characters long';
+                isValid = false;
+            } else if (name.length > 100) {
+                nameError.textContent = 'Item name must be less than 100 characters';
+                isValid = false;
+            } else {
+                nameError.textContent = '';
+            }
+            
+            if (!condition) {
+                document.getElementById('conditionError').textContent = 'Please select item condition';
+                isValid = false;
+            } else {
+                document.getElementById('conditionError').textContent = '';
+            }
+            
+            detailsNextBtn.disabled = !isValid;
+            return isValid;
+        }
+
         // Validate price
         function validatePrice() {
             const price = parseFloat(document.getElementById('itemPrice').value);
@@ -868,11 +1027,11 @@
 
         // Navigation
         function nextStep() {
-            if (currentStep < 3) {
+            if (currentStep < 4) {
                 currentStep++;
                 updateStepDisplay();
                 
-                if (currentStep === 3) {
+                if (currentStep === 4) {
                     updateReviewPreview();
                 }
             }
@@ -909,11 +1068,29 @@
 
         // Update review preview
         function updateReviewPreview() {
+            const name = document.getElementById('itemName').value.trim();
+            const condition = document.querySelector('input[name="condition"]:checked').value;
+            const notes = document.getElementById('itemNotes').value.trim();
             const price = parseFloat(document.getElementById('itemPrice').value);
             const reviewPreview = document.getElementById('reviewPreview');
             
+            const conditionLabels = {
+                'new': 'New',
+                'like_new': 'Like New',
+                'used': 'Used',
+                'well_used': 'Well Used'
+            };
+            
             reviewPreview.innerHTML = `
                 <div class="item-summary">
+                    <div class="summary-item">
+                        <span>Item name:</span>
+                        <span>${name}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Condition:</span>
+                        <span>${conditionLabels[condition]}</span>
+                    </div>
                     <div class="summary-item">
                         <span>Photos uploaded:</span>
                         <span>${uploadedPhotos.length} image${uploadedPhotos.length !== 1 ? 's' : ''}</span>
@@ -926,10 +1103,12 @@
                         <span>Listing fee:</span>
                         <span>£0.10</span>
                     </div>
+                    ${notes ? `
                     <div class="summary-item">
-                        <span>Item code:</span>
-                        <span>Will be generated automatically</span>
+                        <span>Additional notes:</span>
+                        <span>${notes}</span>
                     </div>
+                    ` : ''}
                 </div>
                 
                 <div class="photo-preview">
@@ -947,13 +1126,19 @@
             try {
                 document.getElementById('loadingOverlay').style.display = 'flex';
                 
+                const name = document.getElementById('itemName').value.trim();
+                const condition = document.querySelector('input[name="condition"]:checked').value;
+                const notes = document.getElementById('itemNotes').value.trim();
                 const price = parseFloat(document.getElementById('itemPrice').value);
                 
-                // Create item record
+                // Create item record with new fields
                 const { data: item, error } = await supabase
                     .from('items')
                     .insert({
                         charity_id: currentCharity.id,
+                        name: name,
+                        condition: condition,
+                        notes: notes || null,
                         price: price,
                         image_urls: [], // For now, no actual image upload
                         status: 'active'
@@ -962,25 +1147,6 @@
                     .single();
 
                 if (error) throw error;
-
-                // Deduct £0.10 from charity balance
-                await supabase
-                    .from('charities')
-                    .update({ 
-                        balance: (parseFloat(currentCharity.balance) || 0) - 0.10 
-                    })
-                    .eq('id', currentCharity.id);
-
-                // Record transaction
-                await supabase
-                    .from('transactions')
-                    .insert({
-                        charity_id: currentCharity.id,
-                        item_id: item.id,
-                        amount: 0.10,
-                        type: 'item_listing',
-                        status: 'charged'
-                    });
 
                 showSuccess(item);
                 
@@ -997,11 +1163,29 @@
             document.querySelector('.form-container form').style.display = 'none';
             document.getElementById('successSection').style.display = 'block';
             
+            const name = document.getElementById('itemName').value.trim();
+            const condition = document.querySelector('input[name="condition"]:checked').value;
             const price = parseFloat(document.getElementById('itemPrice').value);
+            
+            const conditionLabels = {
+                'new': 'New',
+                'like_new': 'Like New',
+                'used': 'Used',
+                'well_used': 'Well Used'
+            };
+            
             document.getElementById('itemSummary').innerHTML = `
                 <div class="summary-item">
                     <span>Item Code:</span>
                     <span>${item.item_code}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Name:</span>
+                    <span>${name}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Condition:</span>
+                    <span>${conditionLabels[condition]}</span>
                 </div>
                 <div class="summary-item">
                     <span>Price:</span>
