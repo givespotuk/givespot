@@ -42,7 +42,7 @@ async function registerCharity(charityData) {
             throw error;
         }
 
-        console.log('✅ Charity registered:', data[0]);
+        console.log('Charity registered:', data[0]);
         showSuccess('Application submitted successfully! We will review and contact you within 2-3 business days.');
         
         // Clear form if it exists
@@ -88,8 +88,8 @@ async function loginCharity(email, password) {
             throw new Error('Invalid login credentials or charity not approved yet');
         }
 
-        // Store charity session (simple localStorage for now)
-        localStorage.setItem('givespot_charity', JSON.stringify({
+        // Store charity session (FIXED: using correct key)
+        localStorage.setItem('givespot_charity_user', JSON.stringify({
             id: charity.id,
             name: charity.name,
             email: charity.email,
@@ -116,7 +116,7 @@ async function loginCharity(email, password) {
 
 // Check if charity is logged in
 function isCharityLoggedIn() {
-    const session = localStorage.getItem('givespot_charity');
+    const session = localStorage.getItem('givespot_charity_user');
     if (!session) return false;
     
     try {
@@ -127,13 +127,13 @@ function isCharityLoggedIn() {
         
         // Session expires after 24 hours
         if (hoursSinceLogin > 24) {
-            localStorage.removeItem('givespot_charity');
+            localStorage.removeItem('givespot_charity_user');
             return false;
         }
         
         return charity;
     } catch (err) {
-        localStorage.removeItem('givespot_charity');
+        localStorage.removeItem('givespot_charity_user');
         return false;
     }
 }
@@ -145,7 +145,7 @@ function getCurrentCharity() {
 
 // Logout charity
 function logoutCharity() {
-    localStorage.removeItem('givespot_charity');
+    localStorage.removeItem('givespot_charity_user');
     showSuccess('Logged out successfully');
     
     // Redirect to login page after short delay
@@ -237,7 +237,7 @@ function displayCharityDashboard(charity, items) {
         itemsListEl.innerHTML = html;
     }
     
-    console.log('✅ Dashboard updated for:', charity.name);
+    console.log('Dashboard updated for:', charity.name);
 }
 
 // Add new item (placeholder for Step 8)
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Charity registration page
     if (path.includes('charity/register.html')) {
-        console.log('🏪 Charity registration page loaded');
+        console.log('Charity registration page loaded');
         
         const form = document.getElementById('charityRegisterForm');
         if (form) {
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Charity login page
     else if (path.includes('charity/login.html')) {
-        console.log('🔑 Charity login page loaded');
+        console.log('Charity login page loaded');
         
         const form = document.getElementById('charityLoginForm');
         if (form) {
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Charity dashboard page
     else if (path.includes('charity/dashboard.html')) {
-        console.log('📊 Charity dashboard page loaded');
+        console.log('Charity dashboard page loaded');
         
         // Check if logged in
         if (!isCharityLoggedIn()) {
