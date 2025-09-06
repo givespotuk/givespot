@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Charity - GiveSpot</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="../index.html" class="logo-link">
+                        <span class="logo-icon">❤️</span>
+                        <h1 class="logo-text">GiveSpot</h1>
+                    </a>
+                </div>
+                <nav class="nav">
+                    <a href="../browse.html" class="nav-link">Browse Items</a>
+                    <a href="login.html" class="nav-link btn-outline">Login</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="register-section">
+                <div class="register-container">
+                    <div class="register-header">
+                        <h2>Join GiveSpot</h2>
+                        <p>Register your charity to start selling items online</p>
+                    </div>
+
+                    <div class="pricing-info">
+                        <h3>Simple Pricing</h3>
+                        <div class="pricing-card">
+                            <span class="price">£0.10</span>
+                            <span class="price-text">per item listed</span>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>✅ No monthly fees</li>
+                            <li>✅ No setup costs</li>
+                            <li>✅ Only pay when you list items</li>
+                            <li>✅ Reach local customers</li>
+                        </ul>
+                    </div>
+
+                    <form id="charityRegisterForm" class="register-form">
+                        <h3>Charity Details</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name" class="form-label">Charity Name *</label>
+                                <input 
+                                    type="text" 
+                                    id="name" 
+                                    name="name" 
+                                    class="form-input" 
+                                    required
+                                    placeholder="Enter your charity name"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="registrationNumber" class="form-label">Charity Registration Number</label>
+                                <input 
+                                    type="text" 
+                                    id="registrationNumber" 
+                                    name="registrationNumber" 
+                                    class="form-input"
+                                    placeholder="UK charity registration number"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="form-input" 
+                                    required
+                                    placeholder="charity@example.org"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input 
+                                    type="tel" 
+                                    id="phone" 
+                                    name="phone" 
+                                    class="form-input"
+                                    placeholder="0161 123 4567"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address" class="form-label">Full Address</label>
+                            <textarea 
+                                id="address" 
+                                name="address" 
+                                class="form-textarea"
+                                placeholder="Enter your charity's full address"
+                            ></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="postcode" class="form-label">Postcode *</label>
+                            <input 
+                                type="text" 
+                                id="postcode" 
+                                name="postcode" 
+                                class="form-input" 
+                                required
+                                placeholder="M1 1AA"
+                                pattern="[A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2}"
+                            >
+                        </div>
+
+                        <h3>Contact Person</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contactPerson" class="form-label">Contact Person Name</label>
+                                <input 
+                                    type="text" 
+                                    id="contactPerson" 
+                                    name="contactPerson" 
+                                    class="form-input"
+                                    placeholder="Full name of main contact"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contactPosition" class="form-label">Position/Role</label>
+                                <input 
+                                    type="text" 
+                                    id="contactPosition" 
+                                    name="contactPosition" 
+                                    class="form-input"
+                                    placeholder="Manager, Volunteer Coordinator, etc."
+                                >
+                            </div>
+                        </div>
+
+                        <div class="application-info">
+                            <h4>Next Steps</h4>
+                            <ol>
+                                <li>Submit your application</li>
+                                <li>We'll verify your charity details (1-2 business days)</li>
+                                <li>Once approved, you'll receive login details</li>
+                                <li>Start adding items immediately!</li>
+                            </ol>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" onclick="history.back()" class="btn-secondary">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                Submit Application
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="register-footer">
+                        <p>Already registered? <a href="login.html">Sign in here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon">❤️</span>
+                    <span class="logo-text">GiveSpot</span>
+                </div>
+                <p class="footer-text">
+                    Connecting communities with local charities
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/charity.js"></script>
+</body>
+</html>
