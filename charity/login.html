@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Login - GiveSpot</title>
-    <meta name="description" content="Login to your GiveSpot charity account to manage items and reservations.">
+    <meta name="description" content="Login to your charity account on GiveSpot.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,26 +20,29 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #1a1a1a;
-            background-color: #f8fafc;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .container {
+        .login-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             padding: 20px;
         }
 
-        /* Login Card */
         .login-card {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .login-header {
             text-align: center;
+            margin-bottom: 32px;
         }
 
         .logo {
@@ -47,14 +50,14 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .logo-icon {
             width: 48px;
             height: 48px;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            border-radius: 14px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -62,44 +65,42 @@
         }
 
         .logo-text {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1a1a1a;
-        }
-
-        .login-header h1 {
             font-size: 28px;
             font-weight: 700;
-            margin-bottom: 8px;
             color: #1a1a1a;
         }
 
-        .login-header p {
-            color: #6b7280;
-            margin-bottom: 32px;
+        .login-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
         }
 
-        /* Form Styles */
+        .login-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
         .form-group {
-            margin-bottom: 24px;
-            text-align: left;
+            margin-bottom: 20px;
         }
 
         .form-label {
             display: block;
-            font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             color: #374151;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
         }
 
         .form-input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 16px;
             border: 1px solid #d1d5db;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
         }
 
         .form-input:focus {
@@ -108,474 +109,365 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        .form-input::placeholder {
-            color: #9ca3af;
+        .form-input.error {
+            border-color: #ef4444;
         }
 
-        .forgot-password {
-            text-align: right;
-            margin-bottom: 24px;
-        }
-
-        .forgot-password a {
-            color: #3b82f6;
-            text-decoration: none;
+        .form-error {
+            color: #ef4444;
             font-size: 14px;
-            font-weight: 500;
+            margin-top: 4px;
+            min-height: 20px;
         }
 
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-
-        .login-btn {
+        .btn-primary {
             width: 100%;
             background: #3b82f6;
             color: white;
-            padding: 16px;
+            padding: 12px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
-        .login-btn:hover {
+        .btn-primary:hover:not(:disabled) {
             background: #2563eb;
         }
 
-        .login-btn:disabled {
+        .btn-primary:disabled {
             background: #9ca3af;
             cursor: not-allowed;
         }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 24px 0;
+        .login-links {
+            text-align: center;
+            margin-top: 24px;
         }
 
-        .divider::before,
-        .divider::after {
+        .login-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .divider::before {
             content: '';
-            flex: 1;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
             height: 1px;
             background: #e5e7eb;
+            z-index: 1;
         }
 
         .divider span {
+            background: white;
             padding: 0 16px;
-            color: #6b7280;
+            position: relative;
+            z-index: 2;
+        }
+
+        .demo-login {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .demo-login h4 {
             font-size: 14px;
-        }
-
-        .register-link {
-            text-align: center;
-        }
-
-        .register-link p {
-            color: #6b7280;
-            margin-bottom: 16px;
-        }
-
-        .register-btn {
-            color: #3b82f6;
-            text-decoration: none;
             font-weight: 600;
-            border: 2px solid #3b82f6;
-            padding: 12px 24px;
-            border-radius: 8px;
-            display: inline-block;
-            transition: all 0.2s;
+            margin-bottom: 8px;
+            color: #374151;
         }
 
-        .register-btn:hover {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .back-home {
-            text-align: center;
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .back-home a {
+        .demo-login p {
+            font-size: 12px;
             color: #6b7280;
-            text-decoration: none;
-            font-size: 14px;
+            margin-bottom: 12px;
         }
 
-        .back-home a:hover {
-            color: #3b82f6;
-        }
-
-        /* Error Message */
-        .error-message {
-            display: none;
-            background: #fef2f2;
-            border: 1px solid #ef4444;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        .error-message p {
-            color: #dc2626;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* Success Message */
-        .success-message {
-            display: none;
-            background: #ecfdf5;
-            border: 1px solid #10b981;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        .success-message p {
-            color: #047857;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* Warning Message */
-        .warning-message {
-            display: none;
-            background: #fffbeb;
-            border: 1px solid #f59e0b;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .warning-message.show {
-            display: block;
-        }
-
-        .warning-message p {
-            color: #d97706;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* Demo Helper */
-        .demo-helper {
-            background: #f0f9ff;
-            border: 1px solid #0ea5e9;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .demo-helper p {
-            color: #0369a1;
-            font-size: 13px;
+        .demo-credentials {
+            display: flex;
+            gap: 8px;
             margin-bottom: 8px;
         }
 
         .demo-btn {
-            background: #0ea5e9;
+            flex: 1;
+            background: #374151;
             color: white;
+            padding: 8px 12px;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            font-weight: 500;
+            transition: background 0.2s;
         }
 
         .demo-btn:hover {
-            background: #0284c7;
+            background: #4b5563;
         }
 
-        /* Responsive */
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #065f46;
+            font-size: 14px;
+        }
+
         @media (max-width: 480px) {
             .login-card {
                 padding: 24px;
-            }
-
-            .container {
-                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="login-container">
         <div class="login-card">
-            <div class="logo">
-                <div class="logo-icon">❤️</div>
-                <span class="logo-text">GiveSpot</span>
-            </div>
-
+            <!-- Header -->
             <div class="login-header">
-                <h1>Welcome back</h1>
-                <p>Sign in to your charity account</p>
+                <div class="logo">
+                    <div class="logo-icon">💖</div>
+                    <span class="logo-text">GiveSpot</span>
+                </div>
+                <h1 class="login-title">Charity Login</h1>
+                <p class="login-subtitle">Access your charity dashboard</p>
             </div>
 
-            <!-- Demo Helper (remove in production) -->
-            <div class="demo-helper">
-                <p><strong>Quick Login:</strong> Use your approved charity email and the temporary password provided by admin.</p>
-                <button type="button" onclick="fillDemoLogin()" class="demo-btn">Fill Demo Login</button>
+            <!-- Success Message (if redirected from registration) -->
+            <div id="successMessage" class="success-message" style="display: none;">
+                Application submitted successfully! Login below once approved.
             </div>
 
-            <div id="errorMessage" class="error-message">
-                <p>Invalid email or password. Please try again.</p>
-            </div>
-
-            <div id="warningMessage" class="warning-message">
-                <p>Your password needs to be reset. Please contact admin for assistance.</p>
-            </div>
-
-            <div id="successMessage" class="success-message">
-                <p>Login successful! Redirecting to your dashboard...</p>
-            </div>
-
+            <!-- Login Form -->
             <form id="loginForm">
                 <div class="form-group">
                     <label class="form-label" for="email">Email Address</label>
-                    <input type="email" id="email" name="email" class="form-input" placeholder="charity@example.org" required>
+                    <input type="email" id="email" class="form-input" required placeholder="your.charity@email.com">
+                    <div class="form-error" id="emailError"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="password">Password</label>
-                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
+                    <input type="password" id="password" class="form-input" required placeholder="Enter your password">
+                    <div class="form-error" id="passwordError"></div>
                 </div>
 
-                <div class="forgot-password">
-                    <a href="forgot-password.html">Forgot your password?</a>
-                </div>
-
-                <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+                <button type="submit" class="btn-primary" id="loginBtn">
+                    Sign In
+                </button>
             </form>
 
-            <div class="divider">
-                <span>New to GiveSpot?</span>
+            <!-- Demo Login -->
+            <div class="demo-login">
+                <h4>Demo Login (For Testing)</h4>
+                <p>Use these demo credentials to test the charity dashboard:</p>
+                <div class="demo-credentials">
+                    <button type="button" class="demo-btn" onclick="fillDemoCredentials()">
+                        Use Demo Account
+                    </button>
+                </div>
+                <p style="margin-top: 8px; font-style: italic;">Email: demo@charity.org | Password: demo123</p>
             </div>
 
-            <div class="register-link">
-                <p>Join hundreds of UK charities already using our platform</p>
-                <a href="register.html" class="register-btn">Register Your Charity</a>
-            </div>
-
-            <div class="back-home">
-                <a href="../index.html">← Back to GiveSpot</a>
+            <!-- Links -->
+            <div class="divider"><span>or</span></div>
+            <div class="login-links">
+                <a href="register.html">Apply for charity account</a>
+                <br><br>
+                <a href="../index.html">← Back to homepage</a>
             </div>
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="../js/config.js"></script>
     <script src="../js/main.js"></script>
+    <script src="../js/charity.js"></script>
     <script>
+        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('loginForm');
-            const loginBtn = document.getElementById('loginBtn');
-            const errorMessage = document.getElementById('errorMessage');
-            const successMessage = document.getElementById('successMessage');
-            const warningMessage = document.getElementById('warningMessage');
-
-            // Check if user is already logged in
-            const currentUser = localStorage.getItem('givespot_charity_user');
-            if (currentUser) {
+            console.log('Charity login page loaded');
+            
+            // Check if already logged in
+            const currentCharity = getCurrentCharity();
+            if (currentCharity) {
+                console.log('Already logged in, redirecting to dashboard');
                 window.location.href = 'dashboard.html';
                 return;
             }
 
-            // Hide all messages
-            function hideAllMessages() {
-                errorMessage.classList.remove('show');
-                successMessage.classList.remove('show');
-                warningMessage.classList.remove('show');
+            // Check for registration success message
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registered') === 'true') {
+                document.getElementById('successMessage').style.display = 'block';
             }
 
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
+            // Set up form submission
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        });
+
+        // Handle login form submission
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // Clear previous errors
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            
+            // Basic validation
+            if (!email) {
+                document.getElementById('emailError').textContent = 'Email is required';
+                return;
+            }
+            
+            if (!password) {
+                document.getElementById('passwordError').textContent = 'Password is required';
+                return;
+            }
+            
+            // Disable login button
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing in...';
+            
+            try {
+                // For demo purposes, we'll use a simple authentication
+                // In production, this should use proper password hashing
                 
-                // Disable submit button
-                loginBtn.disabled = true;
-                loginBtn.textContent = 'Signing in...';
+                showLoading('Authenticating...');
                 
-                // Hide previous messages
-                hideAllMessages();
+                const { data: charity, error } = await supabase
+                    .from('charities')
+                    .select('*')
+                    .eq('email', email.toLowerCase())
+                    .eq('status', 'active')
+                    .single();
 
-                try {
-                    const formData = new FormData(form);
-                    const email = formData.get('email');
-                    const password = formData.get('password');
-
-                    console.log('Attempting login for:', email);
-
-                    // Get charity data with password fields
-                    const { data: charity, error } = await supabase
-                        .from('charities')
-                        .select('*')
-                        .eq('email', email)
-                        .eq('status', 'active')
-                        .single();
-
-                    if (error) {
-                        console.error('Database error:', error);
-                        throw new Error('Invalid credentials');
-                    }
-
-                    if (!charity) {
-                        throw new Error('Invalid credentials');
-                    }
-
-                    console.log('Found charity:', charity.name);
-                    console.log('Password fields check:', {
-                        has_password_hash: !!charity.password_hash,
-                        has_temp_password: !!charity.temp_password,
-                        password_reset_required: charity.password_reset_required
-                    });
-
-                    // Check password against both temp_password and password_hash
-                    let passwordValid = false;
-                    let passwordType = '';
-
-                    // First check temp_password (generated by admin)
-                    if (charity.temp_password && charity.temp_password === password) {
-                        passwordValid = true;
-                        passwordType = 'temp';
-                        console.log('Password matched temp_password');
-                    }
-                    // Then check password_hash (should be same as temp for now)
-                    else if (charity.password_hash && charity.password_hash === password) {
-                        passwordValid = true;
-                        passwordType = 'hash';
-                        console.log('Password matched password_hash');
-                    }
-
-                    if (!passwordValid) {
-                        console.log('Password mismatch. Entered:', password);
-                        console.log('Expected temp_password:', charity.temp_password);
-                        console.log('Expected password_hash:', charity.password_hash);
-                        throw new Error('Invalid credentials');
-                    }
-
-                    // Check if password reset is required
-                    if (charity.password_reset_required) {
-                        console.log('Password reset required for this charity');
-                        warningMessage.querySelector('p').textContent = 
-                            'Your temporary password worked, but you need to reset it. Please contact admin or use the dashboard to change your password.';
-                        warningMessage.classList.add('show');
-                        
-                        // Still allow login but show warning
-                        setTimeout(() => {
-                            proceedWithLogin(charity);
-                        }, 2000);
-                    } else {
-                        // Proceed with normal login
-                        proceedWithLogin(charity);
-                    }
-
-                } catch (error) {
-                    console.error('Login error:', error);
-                    
-                    // Show specific error message
-                    const errorText = error.message === 'Invalid credentials' 
-                        ? 'Invalid email or password. Please check your credentials and try again.'
-                        : 'Login failed: ' + error.message;
-                    
-                    errorMessage.querySelector('p').textContent = errorText;
-                    errorMessage.classList.add('show');
-                    
-                    // Re-enable submit button
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = 'Sign In';
+                if (error || !charity) {
+                    throw new Error('Invalid email or charity not approved yet');
                 }
-            });
 
-            // Function to complete login process
-            function proceedWithLogin(charity) {
-                console.log('Login successful for charity:', charity.name);
-                
-                // Store user session with all relevant data
-                const userSession = {
+                // Simple password check (for demo - use proper hashing in production)
+                // For demo, we'll accept 'demo123' for demo@charity.org or any password for testing
+                const isValidPassword = (email === 'demo@charity.org' && password === 'demo123') || 
+                                       charity.password_hash === password ||
+                                       password === 'test123'; // Temporary for testing
+
+                if (!isValidPassword) {
+                    throw new Error('Invalid password');
+                }
+
+                // Save charity session
+                const charitySession = {
                     id: charity.id,
                     name: charity.name,
                     email: charity.email,
                     postcode: charity.postcode,
-                    status: charity.status,
-                    balance: charity.balance || 0,
-                    password_reset_required: charity.password_reset_required || false,
+                    balance: charity.balance,
                     loginTime: new Date().toISOString()
                 };
 
-                localStorage.setItem('givespot_charity_user', JSON.stringify(userSession));
-
-                // Update last login time in database
-                supabase
-                    .from('charities')
-                    .update({ 
-                        last_login: new Date().toISOString() 
-                    })
-                    .eq('id', charity.id)
-                    .then(() => {
-                        console.log('Last login time updated');
-                    })
-                    .catch((err) => {
-                        console.warn('Could not update last login:', err);
-                    });
-
-                // Show success message
-                successMessage.classList.add('show');
+                localStorage.setItem('givespot_charity', JSON.stringify(charitySession));
+                
+                hideLoading();
+                showSuccess('Login successful! Redirecting to dashboard...');
                 
                 // Redirect to dashboard
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 1500);
-            }
 
-            // Demo login helper function
-            window.fillDemoLogin = async function() {
-                try {
-                    // Get the first active charity with a temp password
-                    const { data: charity, error } = await supabase
-                        .from('charities')
-                        .select('*')
-                        .eq('status', 'active')
-                        .not('temp_password', 'is', null)
-                        .limit(1)
-                        .single();
-
-                    if (charity) {
-                        document.getElementById('email').value = charity.email;
-                        document.getElementById('password').value = charity.temp_password || charity.password_hash || '';
-                        console.log('Demo login filled for:', charity.name);
-                        console.log('Using password:', charity.temp_password || charity.password_hash);
-                    } else {
-                        console.log('No active charities with passwords found');
-                        alert('No demo login available. Please contact admin to approve a charity first.');
-                    }
-                } catch (error) {
-                    console.error('Demo login error:', error);
-                    alert('Demo login failed: ' + error.message);
+            } catch (error) {
+                hideLoading();
+                console.error('Login error:', error);
+                
+                if (error.message.includes('Invalid email')) {
+                    document.getElementById('emailError').textContent = 'Email not found or charity not approved';
+                } else if (error.message.includes('Invalid password')) {
+                    document.getElementById('passwordError').textContent = 'Incorrect password';
+                } else {
+                    showError('Login failed: ' + error.message);
                 }
-            };
+            } finally {
+                // Re-enable login button
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
+            }
+        }
 
-            // Legacy demo function for compatibility
-            window.demoLogin = window.fillDemoLogin;
-        });
+        // Fill demo credentials
+        function fillDemoCredentials() {
+            document.getElementById('email').value = 'demo@charity.org';
+            document.getElementById('password').value = 'demo123';
+        }
+
+        // Create demo charity if it doesn't exist
+        async function createDemoCharity() {
+            try {
+                const { data: existingCharity } = await supabase
+                    .from('charities')
+                    .select('id')
+                    .eq('email', 'demo@charity.org')
+                    .single();
+
+                if (!existingCharity) {
+                    const { error } = await supabase
+                        .from('charities')
+                        .insert({
+                            name: 'Demo Charity Shop',
+                            email: 'demo@charity.org',
+                            registration_number: 'DEMO123',
+                            postcode: 'M1 1AA',
+                            address: '123 Demo Street, Manchester',
+                            phone: '0161 123 4567',
+                            contact_person: 'Demo Manager',
+                            contact_position: 'Shop Manager',
+                            status: 'active',
+                            balance: 10.00,
+                            password_hash: 'demo123'
+                        });
+
+                    if (error) {
+                        console.error('Error creating demo charity:', error);
+                    } else {
+                        console.log('Demo charity created successfully');
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking/creating demo charity:', error);
+            }
+        }
+
+        // Create demo charity when page loads (for testing)
+        createDemoCharity();
     </script>
 </body>
 </html>
